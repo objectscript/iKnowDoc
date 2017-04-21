@@ -2,6 +2,7 @@ Class Search.Sort {
 
 ClassMethod Partition(array As %ArrayOfObjects, start As %Integer, end As %Integer) As %Integer
 {
+
 	set pivot = array(1)
     set i = start
     set j = end    
