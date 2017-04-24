@@ -1,5 +1,3 @@
-//NEW CONTROLLER
-
 var searchApp = angular.module('searchApp');
  
 searchApp
