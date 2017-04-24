@@ -1,4 +1,3 @@
-//
 var searchApp = angular.module('searchApp');
  
 searchApp
