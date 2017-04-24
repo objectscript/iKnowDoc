@@ -94,7 +94,7 @@ searchApp
 		
 		$scope.change = function (){
 								
-				$http.get('http://localhost:57773/api/iknow/v1/docbook/domain/1/entities/' + $scope.search.text + '/similar')
+				$http.get('http://' + location.host + '/api/iknow/v1/docbook/domain/1/entities/' + $scope.search.text + '/similar')
 					.then(function(response) {
 							tempArray = response.data.entities;
 							$scope.searchItems = tempArray.slice(0, 10);
@@ -106,7 +106,9 @@ searchApp
 		
 		$scope.handleClick = function (item){
 			$scope.currrentSearchItem = item;
-			$scope.search.text = $scope.currrentSearchItem.value;			
+			$scope.search.text = $scope.currrentSearchItem.value;
+			$scope.toggle = false;
+			$scope.imputToggle = true;
 		}
 		
 		$scope.handleArrows = function (event) {
@@ -133,7 +135,7 @@ searchApp
 
 			if ($scope.search.text != '')
 			{
-				$http.get('http://localhost:57773/csp/docsearch/rest/SearchByText/' + $scope.search.text)
+				$http.get('http://' + location.host + '/csp/docsearch/rest/SearchByText/' + $scope.search.text)
 					.then(function(response) {
 							$scope.resObj = response.data.sources;
 							pagination.setResults(response.data.sources);
