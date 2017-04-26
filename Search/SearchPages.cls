@@ -62,7 +62,7 @@ ClassMethod FormQuery(obj)
 	if phrase'="" {
 		s text = text_" ("_phrase_")"
 	}
-
+ 
 	if anyWords'="" {
 		//Удаляем пробелы
 		set anyWords = $REPLACE(anyWords," ","")  
