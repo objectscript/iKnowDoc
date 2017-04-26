@@ -18,62 +18,137 @@ ClassMethod Search(text) As %Status
 // Метод формирования запроса к БД
 ClassMethod FormQuery(obj)
 {
+	
+	// Со словами:
+	s words=obj.words
+	// со словосочетанием: 
+	s phrase=obj.phrase
+	// с любым из этих слов:
+	s anyWords=obj.anyWords
+	// без слов:
+	s without=obj.without
+	
+	/*
     s startRecord=obj.startRecord	
 	s recordCount=obj.recordCount
+	*/
 	
-	
-	s condition=""	
-	for i=1:1:obj.filters.Count() {	
-		s field=obj.filters.GetAt(i).field
-	 	s val=obj.filters.GetAt(i).value
-	 	s comp=obj.filters.GetAt(i).comparsion
-	 	s type=obj.filters.GetAt(i).type		 	
-		s str=..FormFiltersCondition(field,val,comp,type, withHistory, tableName)		 	  
-		if str'="" {									
-				s condition=condition_str_" AND "								
+	/*
+	//Тестовые значения переменных
+	s words = "iknow"
+	s phrase= "rest api"
+	s anyWords = "json, sql"
+	s without = "class, you, ifind, Enhancements"
+	*/	
+	s text=""
+	if words'="" {
+		s text = text_words
+	}
+
+	if phrase'="" {
+		s text = text_" ("_phrase_")"
+	}
+
+	if anyWords'="" {
+		//Удаляем пробелы
+		set anyWords = $REPLACE(anyWords," ","")  
+		//Извлекаем до ,
+		s listAny=$LISTFROMSTRING(anyWords,",")
+		s strAny=" OR ("_$LIST(listAny,1)
+		for i=2:1:$LISTLENGTH(listAny) {
+			s strAny = strAny_" OR "_$LIST(listAny,i) 
 			}
+		s text = text_strAny_")"
 	}
-	s oldn = "RMIS"
-	s security = ""
-	if (tableName [ "Security.Roles") {
-		s security = " Name NOT LIKE '\%%' ESCAPE '\'  AND Name!='MPRL_Master'   AND Name!='MPRL_Operator'"	
+
+	// без слов:
+	if without'="" {
+		s text = text_")"
+		//Удаляем пробелы
+		set without = $REPLACE(without," ","")  
+		//Извлекаем до ,
+		s listOut=$LISTFROMSTRING(without,",")
+		s strOut=" NOT ("_$LIST(listOut,1)
+		for i=2:1:$LISTLENGTH(listOut) {
+			s strOut = strOut_" OR "_$LIST(listOut,i) 
+			}
+		s text = "("_text
+		s text = text_strOut_")"
 	}
+	
+	w "text: ",text
+	
+	////////////////////////////
+	
+	SET createquery = "CREATE TABLE temptable (idSQL INT,content VARCHAR(30000),link VARCHAR(10000),	frequency FLOAT,title VARCHAR(10000))"
+  	SET createStatement = ##class(%SQL.Statement).%New()
+  	SET createStatus = createStatement.%Prepare(createquery)
+   	IF createStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(createStatus) QUIT}
+  	SET createRset = createStatement.%Execute()
+	ZNSPACE "DOCBOOK"
+	
+	// Выполняем поиск слова с помощью iFind в DocBook.block
+	set tempArray = ##class(%ArrayOfDataTypes).%New()
+	set count = 0	
+	SET myquery = "SELECT id,content, component->blockid As link,book->title As title FROM DocBook.block WHERE %ID %FIND search_index(contentInd,'"_text_"',0)"
+  	SET tStatement = ##class(%SQL.Statement).%New()
+  	SET qStatus = tStatement.%Prepare(myquery)
+   	IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
+  	SET rset = tStatement.%Execute()
+  	WHILE rset.%Next() {
+	  	ZNSPACE "DOCSEARCH"
+	  	set tempArray(count,0)= rset.id
+	  	set tempArray(count,1) = ##class(Search.Parser).Parse(rset.content)
+    	set tempArray(count,2) = rset.link
+    	set tempArray(count,3) = ##class(Search.Parser).Frequency(tempArray(count,1),text)
+    	set tempArray(count,4) = rset.title
+    	set newquery ="insert into SQLUser.temptable(idSQL,content,link,frequency,title) VALUES(?,?,?,?,?)"
+  		SET rset2 = ##class(%SQL.Statement).%ExecDirect(,.newquery,tempArray(count,0),tempArray(count,1),tempArray(count,2),tempArray(count,3),tempArray(count,4))
+    	IF rset2.%SQLCODE'=0 {WRITE !,"1st ExecDirect SQLCODE=",rset2.%SQLCODE,!,rset2.%Message  QUIT}
+  		s count = count + 1
+    	ZNSPACE "DOCBOOK"
+       } 
+       
+    // Получаем данные с временной таблицы отсортированные по частоте
+    ZNSPACE "DOCSEARCH"
+   	
+	s count = count - 1
+	
+	
+	//SET resultQuery = "SELECT JSON_OBJECT('idSQL':idSQL, 'content':content, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
+  	SET resultQuery = "SELECT TOP 100 JSON_OBJECT('idSQL':id, 'content': {fn CONCAT(content,' ')},'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
+  	SET Statement = ##class(%SQL.Statement).%New()
+  	SET Status = Statement.%Prepare(resultQuery)
+   	IF Status'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(Status) QUIT}
+  	SET result = Statement.%Execute()
+   	//WHILE result.%Next() {DO result.%Print(" ^ ")}
+
+  	set countZap=0
+  	s count = 99
+  	w "{""sources"":["
+    WHILE result.%Next() {
+     DO result.%Print(" ^ ")
+     if ((countZap'=count)) {
+      w ","
+      s countZap=countZap+1 
+     }
+    }
+    w "]}"
+    
+	//Удалим временную таблицу
+    SET dropquery = "drop table SQLUser.temptable"
+  	SET dropStatement = ##class(%SQL.Statement).%New()
+  	SET dropStatus = dropStatement.%Prepare(dropquery)
+   	IF dropStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(dropStatus) QUIT}
+  	SET dropRset = dropStatement.%Execute()
+	s st=$$$OK
+	q st
+
+	
+	/////////////////////////////////////////
+	/*
+	
 		
-	if condition '= "" {		
-		s condition=$extract(condition,1,$length(condition)-4)				
-		if security '= "" s condition = " where "_condition_" AND "_security
-		else  s condition = " where "_condition  				
-	} else {
-		if security '= "" {s condition = " where "_security}
-		elseif onlyEtalon = 1 {s condition = " where etalon = 1 "} 			
-	}
-		
-	s query="select count(ID) as rowcount from "_tableName_condition
-	s resultArr = ##class(%ArrayOfDataTypes).%New()	
-	s body = ##class(%ListOfDataTypes).%New()
-	
-	//Считаем количество отфильтрованных записей
-	
-	//w query	
-	if (tableName [ "Security") {		
-		s $Namespace = "%SYS"		
-	}	
-	s result=##class(%ResultSet).%New("%DynamicQuery:SQL")
- 	s sc=result.Prepare(query)
-	If $$$ISERR(sc) d DisplayError^%apiOBJ(sc) q
-	s sc=result.Execute(10000) If $$$ISERR(sc) d DisplayError^%apiOBJ(sc) q	
-	
-	//Помещаем в ответ их количество	
-	WHILE result.Next(.sc) {
-		If $$$ISERR(sc) q		
-		s totalCount=result.Data("rowcount")
-		d resultArr.SetAt(totalCount,"totalCount")
-	}	
-	s $Namespace = oldn
-	s finalquery=..FormSortConditions(sortField,direction,condition,startRecord,recordCount,withHistory,totalCount, tableName)
-	if (tableName [ "Security") {		
-		s $Namespace = "%SYS"		
-	}	
 	//w finalquery
 	//выполняем новый запрос	
 	s result=##class(%ResultSet).%New("%DynamicQuery:SQL")
@@ -91,7 +166,11 @@ ClassMethod FormQuery(obj)
 				DO $SYSTEM.Status.DisplayError($SYSTEM.Status.Error(ex.Code,ex.Data))
 				d ##class(Utils.GetServiceResponse).FormJSON("500","Ошибка при работе с объектом: "_$system.Status.GetErrorText(ex.AsStatus(),"ru")) q	  
 			} 		
-	}		
+	}
+	
+	
+	
+			
 	s i = ""
 	d resultArr.SetAt(body,"data")		
  	d resultArr.SetAt("200","errorCode")
@@ -99,6 +178,7 @@ ClassMethod FormQuery(obj)
 	d ##class(Utils.CacheJSON).EncodeLarge(resultArr)
 
 	s IDs="",resultArr="",body="",list="", obj="",result="",sc=""
+	*/
 	q
 }
 
