@@ -9,7 +9,10 @@ ClassMethod Search(text) As %Status
 	  		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(str,,.obj,1))
 	  		d ##class(Utils.DataQuery).FormQuery(obj,tableName, className)
 	  	} catch ex {
-	       d ##class(Utils.GetServiceResponse).FormJSON("4","Ошибка разбора JSON запроса"_$system.Status.GetErrorText(ex.AsStatus(),"ru"))	
+	  	   set err = "Ошибка разбора JSON запроса"_$system.Status.GetErrorText(ex.AsStatus(),"ru")
+	  	   set error1 = ##class(%DynamicObject).%New()
+	  	   set error1.ErrorCode = err  		
+	  	write "Ошибка: "_error1.%ToJSON()
 	   } 
 	
 	q $$$OK
