@@ -1,9 +1,9 @@
 Class Search.SearchPages {
 
 /// POST метод поиска по документации
-ClassMethod Search(text) As %Status
+ClassMethod Search(obj) As %Status
 {
-	try {
+	/*try {
 	 		s %request.Content.Attributes("CharEncoding")="UTF8"
 	  	 	s str = $ZCVT(%request.Content.Read(),"I","UTF8")
 	  		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(str,,.obj,1))
@@ -13,6 +13,20 @@ ClassMethod Search(text) As %Status
 	   } 
 	
 	q $$$OK
+	*/
+
+	try {
+		s %request.Content.Attributes("CharEncoding")="UTF8"
+		s str = $ZCVT(%request.Content.Read(),"I","UTF8")
+		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(str,,.obj,1))
+		d ##class(Search.SearchPages).FormQuery(obj)
+    } catch ex {
+       	set err = "Ошибка разбора JSON запроса"_$system.Status.GetErrorText(ex.AsStatus(),"ru")
+       	set error1 = ##class(%DynamicObject).%New()
+       	set error1.ErrorCode = err    
+       	write "ошибка: "_error1.%ToJSON()    
+    } 
+ q $$$OK
 }
 
 // Метод формирования запроса к БД
