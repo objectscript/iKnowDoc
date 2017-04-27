@@ -38,61 +38,6 @@
 					</button>
 				</form><br>
 			</div>
-			<div class="col-md-offset-3 col-md-9 col-sm-offset-3 col-sm-9 col-xs-offset-2 col-xs-10">
-				<div>
-					<!-- Навигация -->
-					 <ul class="nav nav-tabs lis" role="tablist">
-						<li class="active"><a href="#today" aria-controls="today" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-education"></span> Guides</a></li>
-						<li><a href="#week" aria-controls="week " role="tab" data-toggle="tab"><span class="glyphicon glyphicon-wrench"></span> Settings</a></li>
-					</ul>
-				</div>
-			
-				<!-- Содержимое вкладки Guides -->
-				<div class="tab-content">
-					<div role="tabpanel" id="today" class="tab-pane fade in active">			
-						<div class="radio">
- 							<label>
-  							<input type="radio" name="optionsRadios" id="radio1" value="option1" checked>
-  							Настройка 1
-							</label>
-						</div>
-						<div class="radio">
- 							<label>
-  							<input type="radio" name="optionsRadios" id="radio2" value="option2">
-  							Настройка 2
- 							</label>
-						</div>
-						<div class="radio">
-  							<label>
-  							<input type="radio" name="optionsRadios" id="radio3" value="option3">
-  							Настройка 3
- 							</label>
-						</div>
-					</div>
-					
-					<!-- Содержимое вкладки Settings -->
-					<div role="tabpanel" id="week" class="tab-pane fade">			
-						<div class="radio">
- 							<label>
-  							<input type="radio" name="optionsRadios" id="radio4" value="option4" checked>
-  							Settings 1
-							</label>
-						</div>
-						<div class="radio">
- 							<label>
-  							<input type="radio" name="optionsRadios" id="radio5" value="option5">
-  							Settings 2
- 							</label>
-						</div>
-						<div class="radio">
-  							<label>
-  							<input type="radio" name="optionsRadios" id="radio6" value="option6">
-  							Settings 3
- 							</label>
-						</div>
-					</div>
-				</div>
-			</div>
 			
 			<footer class="footer"> <!-- Подвал -->
 			<div  class="hidden-xs FloatLeft">

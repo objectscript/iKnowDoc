@@ -6,7 +6,7 @@
 		<link href = "style/DocSearch.css" rel="stylesheet"> <!-- Стили CSS -->
 		<link href="style/images/icon.png" rel="icon" type="image/x-icon"/> <!-- Иконка -->
 	</head>
-
+ 
 	<body ng-controller="searchController">
 	<!-- Advanced Search -->
 	<div class="AdvancedSearch">
