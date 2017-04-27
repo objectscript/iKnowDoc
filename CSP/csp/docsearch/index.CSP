@@ -121,14 +121,8 @@
 						<button type="submit" class="btn btn-primary hidden-md hidden-lg" ng-click = "makeSearch()">
 							<span class="glyphicon glyphicon-search"></span>
 						</button>
-						<div class="btn-group dropdown pull-right"> <!-- Меню настроек -->
-							<button class="btn dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span></button>
-							<ul class="dropdown-menu">
-								<li><a href="#">111</a></li>
-								<li><a href="#">222</a></li>
-								<li><a href="#">333</a></li>
-								<li><a href="#">444</a></li>
-							</ul>
+						<div class="pull-right"> <!-- Меню настроек -->
+							<button type="button" >Settings <span class="caret"></span></button>
 						</div>
 					</div>	
 				</form>

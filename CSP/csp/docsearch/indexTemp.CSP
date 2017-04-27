@@ -3,8 +3,8 @@
 		<title>	DocSearch </title>
 		<meta charset="utf-8">
 		<link href = "style/frameworks/bootstrap.min.css" rel="stylesheet"> <!-- bootstrap -->
-		<link href = "style/DocSearch.css" rel="stylesheet"> <!-- Ð¡Ñ‚Ð¸Ð»Ð¸ CSS -->
-		<link href="style/images/icon.png" rel="icon" type="image/x-icon"/> <!-- Ð˜ÐºÐ¾Ð½ÐºÐ° -->
+		<link href = "style/DocSearch.css" rel="stylesheet"> <!-- Ñòèëè CSS -->
+		<link href="style/images/icon.png" rel="icon" type="image/x-icon"/> <!-- Èêîíêà -->
 	</head>
 
 	<body ng-controller="searchController">
