@@ -1,6 +1,7 @@
 Class Search.SearchPages {
 
 /// POST метод поиска по документации
+// Пример запроса {"words":"iknow","phrase":"rest api","anyWords":"json, sql","without":"class, you, ifind, Enhancements"}
 ClassMethod Search(obj) As %Status
 {
 	/*try {
@@ -27,7 +28,7 @@ ClassMethod Search(obj) As %Status
        	set err = "Ошибка разбора JSON запроса"_$system.Status.GetErrorText(ex.AsStatus(),"ru")
        	set error1 = ##class(%DynamicObject).%New()
        	set error1.ErrorCode = err    
-       	write "ошибка: "_error1.%ToJSON()    
+       	write " ошибка: "_error1.%ToJSON()    
     } 
  q $$$OK
 }
@@ -93,7 +94,7 @@ ClassMethod FormQuery(obj)
 		s text = text_strOut_")"
 	}
 	
-	w "text: ",text
+	//w "text: ",text
 	
 	////////////////////////////
 	
