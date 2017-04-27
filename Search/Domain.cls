@@ -139,19 +139,21 @@ ClassMethod SearchByText(text) As %Status
     ZNSPACE "DOCSEARCH"
    	
 	s count = count - 1
-	
-	SET resultQuery = "SELECT JSON_OBJECT('idSQL':idSQL, 'content':content, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
+	//в портале - SELECT TOP 500 JSON_OBJECT('idSQL':id, 'content': {fn CONCAT(content,' ')}) FROM docbook.block WHERE %ID %FIND search_index(contentInd,'lower',0) 
+	SET resultQuery = "SELECT TOP 100 JSON_OBJECT('idSQL':idSQL, 'content': {fn CONCAT(content,' ')}, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
+	//SET resultQuery = "SELECT TOP 500 JSON_OBJECT('idSQL':idSQL, 'content':content, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
   	SET Statement = ##class(%SQL.Statement).%New()
   	SET Status = Statement.%Prepare(resultQuery)
    	IF Status'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(Status) QUIT}
   	SET result = Statement.%Execute()
    	//WHILE result.%Next() {DO result.%Print(" ^ ")}
 
-  	set countZap=0
+  	set countZap=1
   	w "{""sources"":["
     WHILE result.%Next() {
      DO result.%Print(" ^ ")
      if ((countZap'=count)) {
+     if (countZap=100) {q}
       w ","
       s countZap=countZap+1 
      }
