@@ -95,10 +95,9 @@ searchApp
 		
 		$scope.change = function (){
 								
-				$http.get('http://' + location.host + '/api/iknow/v1/docbook/domain/1/entities/' + $scope.search.words + '/similar')
+				$http.get('http://' + location.host + '/csp/docsearch/rest/GetSimilar/' + $scope.search.words)
 					.then(function(response) {
-							tempArray = response.data.entities;
-							$scope.searchItems = tempArray.slice(0, 10);
+							$scope.searchItems = response.data.entities;
 						});		
 				if ($scope.search.words == '')
 					$scope.imputToggle = false;

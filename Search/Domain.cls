@@ -92,6 +92,7 @@ ClassMethod GetSimilar(SearchString) As %Status
 	}	
 	set text = resultArray.%ToJSON()
 	//set text = ##class(Search.Parser).Parse(text)
+	set text = $REPLACE(text,",","},{")
 	set text = $REPLACE(text,"10","value")
 	set text = $REPLACE(text,"0","value")
 	set text = $REPLACE(text,"1","value")
