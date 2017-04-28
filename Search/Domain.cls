@@ -84,15 +84,28 @@ ClassMethod GetSimilar(SearchString) As %Status
 	set resultArray={}
 	set SC = ##class(%iKnow.Queries.EntityAPI).GetSimilar(.Result, domId, SearchString)
 	quit:$$$ISERR(SC) ""
-	
 	for i=0:1:10 {
+		//set Result(i) = ##class(Search.Parser).Parse(Result(i))
 		set îrd = $order(Result(i),1,Data)
-		d resultArray.%Set(""_i,"similar")
+		//d resultArray.%Set(""_i,"similar")
 		d resultArray.%Set(""_i,$li(Data,2))
-
-	}
-	
-	w resultArray.%ToJSON()
+	}	
+	set text = resultArray.%ToJSON()
+	//set text = ##class(Search.Parser).Parse(text)
+	set text = $REPLACE(text,"10","value")
+	set text = $REPLACE(text,"0","value")
+	set text = $REPLACE(text,"1","value")
+	set text = $REPLACE(text,"2","value")
+	set text = $REPLACE(text,"3","value")
+	set text = $REPLACE(text,"4","value")
+	set text = $REPLACE(text,"5","value")
+	set text = $REPLACE(text,"6","value")
+	set text = $REPLACE(text,"7","value")
+	set text = $REPLACE(text,"8","value")
+	set text = $REPLACE(text,"9","value")
+	w "{""entities"":["
+	w text
+	w "]}"
 	ZNSPACE "DOCSEARCH"
 	q $$$OK
 }
@@ -127,7 +140,7 @@ ClassMethod SearchByText(text) As %Status
 	  	set tempArray(count,1) = ##class(Search.Parser).Parse(rset.content)
     	set tempArray(count,2) = rset.link
     	set tempArray(count,3) = ##class(Search.Parser).Frequency(tempArray(count,1),text)
-    	set tempArray(count,4) = rset.title
+    	set tempArray(count,4) = ##class(Search.Parser).ParseTitle(rset.title)
     	set newquery ="insert into SQLUser.temptable(idSQL,content,link,frequency,title) VALUES(?,?,?,?,?)"
   		SET rset2 = ##class(%SQL.Statement).%ExecDirect(,.newquery,tempArray(count,0),tempArray(count,1),tempArray(count,2),tempArray(count,3),tempArray(count,4))
     	IF rset2.%SQLCODE'=0 {WRITE !,"1st ExecDirect SQLCODE=",rset2.%SQLCODE,!,rset2.%Message  QUIT}
