@@ -84,15 +84,28 @@ ClassMethod GetSimilar(SearchString) As %Status
 	set resultArray={}
 	set SC = ##class(%iKnow.Queries.EntityAPI).GetSimilar(.Result, domId, SearchString)
 	quit:$$$ISERR(SC) ""
-	
 	for i=0:1:10 {
+		//set Result(i) = ##class(Search.Parser).Parse(Result(i))
 		set оrd = $order(Result(i),1,Data)
-		d resultArray.%Set(""_i,"similar")
+		//d resultArray.%Set(""_i,"similar")
 		d resultArray.%Set(""_i,$li(Data,2))
-
-	}
-	
-	w resultArray.%ToJSON()
+	}	
+	set text = resultArray.%ToJSON()
+	//set text = ##class(Search.Parser).Parse(text)
+	set text = $REPLACE(text,"10","value")
+	set text = $REPLACE(text,"0","value")
+	set text = $REPLACE(text,"1","value")
+	set text = $REPLACE(text,"2","value")
+	set text = $REPLACE(text,"3","value")
+	set text = $REPLACE(text,"4","value")
+	set text = $REPLACE(text,"5","value")
+	set text = $REPLACE(text,"6","value")
+	set text = $REPLACE(text,"7","value")
+	set text = $REPLACE(text,"8","value")
+	set text = $REPLACE(text,"9","value")
+	w "{""entities"":["
+	w text
+	w "]}"
 	ZNSPACE "DOCSEARCH"
 	q $$$OK
 }
@@ -127,7 +140,7 @@ ClassMethod SearchByText(text) As %Status
 	  	set tempArray(count,1) = ##class(Search.Parser).Parse(rset.content)
     	set tempArray(count,2) = rset.link
     	set tempArray(count,3) = ##class(Search.Parser).Frequency(tempArray(count,1),text)
-    	set tempArray(count,4) = rset.title
+    	set tempArray(count,4) = ##class(Search.Parser).ParseTitle(rset.title)
     	set newquery ="insert into SQLUser.temptable(idSQL,content,link,frequency,title) VALUES(?,?,?,?,?)"
   		SET rset2 = ##class(%SQL.Statement).%ExecDirect(,.newquery,tempArray(count,0),tempArray(count,1),tempArray(count,2),tempArray(count,3),tempArray(count,4))
     	IF rset2.%SQLCODE'=0 {WRITE !,"1st ExecDirect SQLCODE=",rset2.%SQLCODE,!,rset2.%Message  QUIT}
@@ -139,19 +152,21 @@ ClassMethod SearchByText(text) As %Status
     ZNSPACE "DOCSEARCH"
    	
 	s count = count - 1
-	
-	SET resultQuery = "SELECT JSON_OBJECT('idSQL':idSQL, 'content':content, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
+	//в портале - SELECT TOP 500 JSON_OBJECT('idSQL':id, 'content': {fn CONCAT(content,' ')}) FROM docbook.block WHERE %ID %FIND search_index(contentInd,'lower',0) 
+	SET resultQuery = "SELECT TOP 100 JSON_OBJECT('idSQL':idSQL, 'content': {fn CONCAT(content,' ')}, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
+	//SET resultQuery = "SELECT TOP 500 JSON_OBJECT('idSQL':idSQL, 'content':content, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
   	SET Statement = ##class(%SQL.Statement).%New()
   	SET Status = Statement.%Prepare(resultQuery)
    	IF Status'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(Status) QUIT}
   	SET result = Statement.%Execute()
    	//WHILE result.%Next() {DO result.%Print(" ^ ")}
 
-  	set countZap=0
+  	set countZap=1
   	w "{""sources"":["
     WHILE result.%Next() {
      DO result.%Print(" ^ ")
      if ((countZap'=count)) {
+     if (countZap=100) {q}
       w ","
       s countZap=countZap+1 
      }

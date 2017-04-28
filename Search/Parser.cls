@@ -1,6 +1,6 @@
 Class Search.Parser {
  
-/// Парсер, заменяющий XML-теги на пробел:
+/// РџР°СЂСЃРµСЂ, Р·Р°РјРµРЅСЏСЋС‰РёР№ XML-С‚РµРіРё РЅР° РїСЂРѕР±РµР»:
 ClassMethod Parse(textTag) As %String
 {
 		set i =1
@@ -31,16 +31,30 @@ link	For i=1:1:$LENGTH(text)
 			 }
 			
 		}
+		
+		set text = $REPLACE(text,"&reg;","В®")
+		set text = $REPLACE(text,"&ntilde;","Г±")
+		set text = $REPLACE(text,"&#39;","'")
+		set text = $REPLACE(text,"&ldquo;","вЂњ")
+		set text = $REPLACE(text,"&rdquo;","вЂќ")
+		set text = $REPLACE(text,"&amp;","&")
+		set text = $REPLACE(text,"&lt;","<")
+		set text = $REPLACE(text,"&gt;",">")
+		set text = $REPLACE(text,"&mdash;","вЂ”")
+		set text = $REPLACE(text,"&eacute;","Г©")
+		set text = $REPLACE(text,"\"," ")
+		set text = $REPLACE(text,"/"," ")
+		set text = $REPLACE(text,""""," ")
 		set text = $REPLACE(text,"{"," ")
 		set text = $REPLACE(text,"}"," ")
 		set text = $REPLACE(text,"["," ")
 		set text = $REPLACE(text,"]"," ")
-		set text = $REPLACE(text,"\n","")
-  		set text = $REPLACE(text,"\s","")
-  		set text = $REPLACE(text,"\t","")
-  		set text = $REPLACE(text,"\f","")
-  		set text = $REPLACE(text,"\d","")
-  		set text = $REPLACE(text,"\a","")
+		set text = $REPLACE(text,"\n"," ")
+  		set text = $REPLACE(text,"\s"," ")
+  		set text = $REPLACE(text,"\t"," ")
+  		set text = $REPLACE(text,"\f"," ")
+  		set text = $REPLACE(text,"\d"," ")
+  		set text = $REPLACE(text,"\a"," ")
  		set text = $REPLACE(text,"  "," ") 
   		set text = $REPLACE(text,"       "," ")
   		set text = $REPLACE(text,"      "," ")
@@ -51,10 +65,33 @@ link	For i=1:1:$LENGTH(text)
 		q text
 }
 
+/// РљРѕСЂСЂРµРєС‚РёСЂСѓРµС‚ РЅРµСЃС‚Р°РЅРґР°СЂС‚РЅС‹Рµ СЃРёРјРІРѕР»С‹
+ClassMethod ParseTitle(textTag) As %String
+{
+		set i =1
+		set empty=" "
+		set subtext=""
+		set condition = 0
+		s text = textTag
+		set text = $REPLACE(text,"&reg;","В®")
+		set text = $REPLACE(text,"&ntilde;","Г±")
+		set text = $REPLACE(text,"&#39;","'")
+		set text = $REPLACE(text,"&ldquo;","вЂњ")
+		set text = $REPLACE(text,"&rdquo;","вЂќ")
+		set text = $REPLACE(text,"&amp;","&")
+		set text = $REPLACE(text,"&lt;","<")
+		set text = $REPLACE(text,"&gt;",">")
+		set text = $REPLACE(text,"&mdash;","вЂ”")
+		set text = $REPLACE(text,"&eacute;","Г©")
+		q text
+}
+
+
+
 ClassMethod Frequency(text, word) As %Float
 {
 		set frequency = 0
-		// Посмотреть для сложных запросов
+		// РџРѕСЃРјРѕС‚СЂРµС‚СЊ РґР»СЏ СЃР»РѕР¶РЅС‹С… Р·Р°РїСЂРѕСЃРѕРІ
 		set frequency = $LENGTH(text,word) / $LENGTH(text, " ")
 		q frequency
 }
