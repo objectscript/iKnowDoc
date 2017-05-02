@@ -34,7 +34,7 @@ ClassMethod Search(obj) As %Status
 }
 
 // Метод формирования запроса к БД
-ClassMethod FormQuery(obj)
+ClassMethod FormQuery(obj) As %Status
 {
 	
 	// Со словами:
@@ -46,10 +46,10 @@ ClassMethod FormQuery(obj)
 	// без слов:
 	s without=obj.without
 	
-	/*
+	
     s startRecord=obj.startRecord	
 	s recordCount=obj.recordCount
-	*/
+	
 	
 	/*
 	//Тестовые значения переменных
@@ -98,6 +98,7 @@ ClassMethod FormQuery(obj)
 	
 	////////////////////////////
 	
+
 	SET createquery = "CREATE TABLE temptable (idSQL INT,content VARCHAR(30000),link VARCHAR(10000),	frequency FLOAT,title VARCHAR(10000))"
   	SET createStatement = ##class(%SQL.Statement).%New()
   	SET createStatus = createStatement.%Prepare(createquery)
@@ -132,26 +133,53 @@ ClassMethod FormQuery(obj)
    	
 	s count = count - 1
 	
+	//w count
+	//
+	// Пагинация
+	//s startRecord =1
+	//s recordCount=20
+	set commonCount = count
+	if commonCount<startRecord s startRecord=1
+	s offset=recordCount+startRecord-1	
+	if (offset>commonCount) s recordCount=recordCount-(offset-commonCount)
+	
+	//
 	
 	//SET resultQuery = "SELECT JSON_OBJECT('idSQL':idSQL, 'content':content, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
-  	SET resultQuery = "SELECT TOP 100 JSON_OBJECT('idSQL':id, 'content': {fn CONCAT(content,' ')},'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
+  	//SET resultQuery = "SELECT JSON_OBJECT('idSQL':idSQL, 'content':{fn CONCAT(content,' ')}, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
+  	
+  	//SET resultQuery = "select TOP "_recordCount_" * from (SELECT TOP "_offset_" id,JSON_OBJECT('idSQL':id, 'content': {fn CONCAT(content,' ')},'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC) ORDER BY id DESC ORDER BY id ASC"
+  	//SET resultQuery = " (select TOP "_recordCount_" * from (SELECT TOP "_offset_" id,content, link, frequency,title FROM SQLUser.temptable ORDER BY frequency DESC) ORDER BY frequency ASC)ORDER BY frequency DESC"
+  	SET resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from SQLUser.temptable order by frequency DESC) order by frequency ASC) order by frequency DESC"
+  	//w count,!
+  	//w resultQuery,!
+  	//w resultQuery
   	SET Statement = ##class(%SQL.Statement).%New()
   	SET Status = Statement.%Prepare(resultQuery)
    	IF Status'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(Status) QUIT}
   	SET result = Statement.%Execute()
    	//WHILE result.%Next() {DO result.%Print(" ^ ")}
 
-  	set countZap=0
-  	s count = 99
-  	w "{""sources"":["
-    WHILE result.%Next() {
+  	//set countZap=0
+  	//s count = 99
+
+  	//w "{""sources"":["
+    /*WHILE result.%Next() {
      DO result.%Print(" ^ ")
-     if ((countZap'=count)) {
+     if ((countZap'=(recordCount-1))) {
       w ","
       s countZap=countZap+1 
      }
+    }*/
+    set ResultJSON = { "sources": [] }
+    
+    WHILE result.%Next() {
+    	set tJSON = { "content":(result.content), "link":(result.link), "frequency": (result.frequency), "title": (result.title) }
+		do ResultJSON.sources.%Push(tJSON)
     }
-    w "]}"
+
+    
+    
     
 	//Удалим временную таблицу
     SET dropquery = "drop table SQLUser.temptable"
@@ -160,9 +188,9 @@ ClassMethod FormQuery(obj)
    	IF dropStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(dropStatus) QUIT}
   	SET dropRset = dropStatement.%Execute()
 	s st=$$$OK
-	q st
+	//q st
 
-	
+	quit ..%ProcessResult(st, $g(ResultJSON))
 	/////////////////////////////////////////
 	/*
 	
@@ -197,9 +225,33 @@ ClassMethod FormQuery(obj)
 
 	s IDs="",resultArr="",body="",list="", obj="",result="",sc=""
 	*/
-	q
+	
 }
 
-
+ClassMethod %ProcessResult(pSC As %Status, pResult As %DynamicObject = "") As %Status [ Internal ]
+{
+	set tSC = $$$OK
+	if $$$ISERR(pSC) {
+		//set tSC = ..StatusToJSON(pSC, .tJSON)
+		if $isobject(tJSON) {
+			set pResult = tJSON
+		} else {
+			set pResult = { "errors": [ { "error": "Unknown error parsing status code" } ] }
+		}
+	} elseif '$isobject(pResult) {
+		set pResult = {}
+	}
+	if $g(%debug)'="" {
+		//$$$IKRESTSTOPTIMER(total)
+		set tIterator = %debug.timerStart.%GetIterator()
+		while tIterator.%GetNext(.n,.s) {
+			do %debug.timer.%Set(n, ($zh-s)_" (unfinished)")
+		}
+		do %debug.%Remove("timerStart")
+		set pResult.debug = %debug
+	}
+	write pResult.%ToJSON()
+	quit tSC
+}
 
 }
