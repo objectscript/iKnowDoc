@@ -7,8 +7,8 @@ ClassMethod Parse(textTag As %String) As %String
 		set empty=" "
 		set subtext=""
 		set condition = 0
-		s text = textTag
-link	For i=1:1:$LENGTH(text)
+		set text = textTag
+link	for i=1:1:$LENGTH(text)
 		{
 			set char = $EXTRACT(text,i)
 			if (condition = 1) 
@@ -24,7 +24,7 @@ link	For i=1:1:$LENGTH(text)
 				 set i=1
 				 goto link
 		     }
-			IF (char="<")
+			if (char="<")
 			 {
 				 set subtext=subtext_char
 				 set condition=1		 
@@ -62,17 +62,17 @@ link	For i=1:1:$LENGTH(text)
   		set text = $REPLACE(text,"    "," ")
   		set text = $REPLACE(text,"   "," ")
   		set text = $REPLACE(text,"  "," ")  
-		q text
+		quit text
 }
 
-/// Корректирует нестандартные символы
+/// Корректирует нестандартные символы в заголовках
 ClassMethod ParseTitle(textTag) As %String
 {
 		set i =1
 		set empty=" "
 		set subtext=""
 		set condition = 0
-		s text = textTag
+		set text = textTag
 		set text = $REPLACE(text,"&reg;","®")
 		set text = $REPLACE(text,"&ntilde;","ñ")
 		set text = $REPLACE(text,"&#39;","'")
@@ -83,17 +83,15 @@ ClassMethod ParseTitle(textTag) As %String
 		set text = $REPLACE(text,"&gt;",">")
 		set text = $REPLACE(text,"&mdash;","—")
 		set text = $REPLACE(text,"&eacute;","é")
-		q text
+		quit text
 }
-
-
 
 ClassMethod Frequency(text, word) As %Float
 {
 		set frequency = 0
 		// Посмотреть для сложных запросов
 		set frequency = $LENGTH(text,word) / $LENGTH(text, " ")
-		q frequency
+		quit frequency
 }
 
 }
