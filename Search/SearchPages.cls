@@ -182,7 +182,8 @@ ClassMethod FormQuery(obj) As %Status
 		do ResultJSON.sources.%Push(tJSON)
     }
     set totalCountJ = {"totalCount":(+count)}
-    do ResultJSON.sources.%Push(totalCountJ)
+    set CountJSON = { "totalCount": [] }
+    do CountJSON.totalCount.%Push(totalCountJ)
     
 	//Удалим временную таблицу
     
@@ -193,7 +194,8 @@ ClassMethod FormQuery(obj) As %Status
   	set dropRset = dropStatement.%Execute()
 	set st=$$$OK
 	//q st
-
+	do ..%ProcessResult(st, $g(CountJSON))
+	w ","
 	quit ..%ProcessResult(st, $g(ResultJSON))
 	
 	
