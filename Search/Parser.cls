@@ -1,7 +1,7 @@
 Class Search.Parser {
  
 /// Парсер, заменяющий XML-теги на пробел:
-ClassMethod Parse(textTag) As %String
+ClassMethod Parse(textTag As %String) As %String
 {
 		set i =1
 		set empty=" "

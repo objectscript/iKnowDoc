@@ -1,16 +1,16 @@
 Class Search.Domain extends %Persistent {
 
-// Неоходимо запустить следующей командой на выполнение(сильно грузит комьютер, рекомендуется закрыть остальные программы)
+// РќРµРѕС…РѕРґРёРјРѕ Р·Р°РїСѓСЃС‚РёС‚СЊ СЃР»РµРґСѓСЋС‰РµР№ РєРѕРјР°РЅРґРѕР№ РЅР° РІС‹РїРѕР»РЅРµРЅРёРµ(СЃРёР»СЊРЅРѕ РіСЂСѓР·РёС‚ РєРѕРјСЊСЋС‚РµСЂ, СЂРµРєРѕРјРµРЅРґСѓРµС‚СЃСЏ Р·Р°РєСЂС‹С‚СЊ РѕСЃС‚Р°Р»СЊРЅС‹Рµ РїСЂРѕРіСЂР°РјРјС‹)
 
 // do ##class(Search.Domain).%Build()
 
-// Выполняется минут 5-10
+// Р’С‹РїРѕР»РЅСЏРµС‚СЃСЏ РјРёРЅСѓС‚ 5-10
 
-// После создания домена, проверить командой и найти название домена в выведенном списке
+// РџРѕСЃР»Рµ СЃРѕР·РґР°РЅРёСЏ РґРѕРјРµРЅР°, РїСЂРѕРІРµСЂРёС‚СЊ РєРѕРјР°РЅРґРѕР№ Рё РЅР°Р№С‚Рё РЅР°Р·РІР°РЅРёРµ РґРѕРјРµРЅР° РІ РІС‹РІРµРґРµРЅРЅРѕРј СЃРїРёСЃРєРµ
 
 // do $system.iKnow.ListDomains()
 
-/// Метод создания домена, построения структуры домена и заполнения его данными
+/// РњРµС‚РѕРґ СЃРѕР·РґР°РЅРёСЏ РґРѕРјРµРЅР°, РїРѕСЃС‚СЂРѕРµРЅРёСЏ СЃС‚СЂСѓРєС‚СѓСЂС‹ РґРѕРјРµРЅР° Рё Р·Р°РїРѕР»РЅРµРЅРёСЏ РµРіРѕ РґР°РЅРЅС‹РјРё
 ClassMethod %Build() As %Status
 {
 	
@@ -18,7 +18,7 @@ ClassMethod %Build() As %Status
 	
 	ZNSPACE "DOCBOOK"
 	
-	// Создание домена или открытие
+	// РЎРѕР·РґР°РЅРёРµ РґРѕРјРµРЅР° РёР»Рё РѕС‚РєСЂС‹С‚РёРµ
 	SET dname="DocSearch"  
 	 	
    	IF (##class(%iKnow.Domain).Exists(dname)){
@@ -30,21 +30,21 @@ ClassMethod %Build() As %Status
        	DO domoref.%Save()
     }	
   
-   	//Иницилизация листера и лоадера
+   	//РРЅРёС†РёР»РёР·Р°С†РёСЏ Р»РёСЃС‚РµСЂР° Рё Р»РѕР°РґРµСЂР°
    	SET domId=domoref.Id
   	SET flister=##class(%iKnow.Source.SQL.Lister).%New(domId)
   	SET myloader=##class(%iKnow.Source.Loader).%New(domId)
   	
-  	// Построение запроса
+  	// РџРѕСЃС‚СЂРѕРµРЅРёРµ Р·Р°РїСЂРѕСЃР°
 	
    	SET myquery="SELECT id,content, blockid, component->blockid As component_blockid, component->title As component_title, book->blockid As book_blockid, book->title As book_title FROM DocBook.block"
   	 	
   	SET idfld="id"
-  	SET grpfld="id" // TODO: Посмотреть как лучше
+  	SET grpfld="id" // TODO: РџРѕСЃРјРѕС‚СЂРµС‚СЊ РєР°Рє Р»СѓС‡С€Рµ
   	SET dataflds=$LB("content")
   	SET metaflds=$LB("id","blockid","component_blockid","component_title","book_blockid","book_title")
   	
-  	//Метаданные
+  	//РњРµС‚Р°РґР°РЅРЅС‹Рµ
   	SET val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"id",$LB("="),$$$MDDTNUMBER)
   	SET val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"blockid",$LB("="),$$$MDDTSTRING)
   	SET val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"component_blockid",$LB("="),$$$MDDTSTRING)
@@ -52,16 +52,16 @@ ClassMethod %Build() As %Status
   	SET val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"book_blockid",$LB("="),$$$MDDTSTRING)
   	SET val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"book_title",$LB("="),$$$MDDTSTRING)
   	
-  	// Запуск листера
+  	// Р—Р°РїСѓСЃРє Р»РёСЃС‚РµСЂР°
   	SET stat=flister.AddListToBatch(myquery,idfld,grpfld,dataflds,metaflds)
       IF stat '= 1 {WRITE "The lister failed: ",$System.Status.DisplayError(stat) QUIT }
-    // Запуск загрузчика
+    // Р—Р°РїСѓСЃРє Р·Р°РіСЂСѓР·С‡РёРєР°
     SET stat=myloader.ProcessBatch()
       IF stat '= 1 {
 	      QUIT 
 	       }
  
-    //Функционал
+    //Р¤СѓРЅРєС†РёРѕРЅР°Р»
     SET numSrcD=##class(%iKnow.Queries.SourceQAPI).GetCountByDomain(domId)
   	WRITE "The domain contains ",numSrcD," sources",!
   	SET numSentD=##class(%iKnow.Queries.SentenceQAPI).GetCountByDomain(domId)
@@ -73,7 +73,9 @@ ClassMethod %Build() As %Status
   	q st
 }
 
-/// Метод поиска подобных сущностей. Возвращает строку слов, разделенных запятой.
+//
+
+/// РњРµС‚РѕРґ РїРѕРёСЃРєР° РїРѕРґРѕР±РЅС‹С… СЃСѓС‰РЅРѕСЃС‚РµР№. Р’РѕР·РІСЂР°С‰Р°РµС‚ СЃС‚СЂРѕРєСѓ СЃР»РѕРІ, СЂР°Р·РґРµР»РµРЅРЅС‹С… Р·Р°РїСЏС‚РѕР№.
 ClassMethod GetSimilar(SearchString) As %Status
 {
 	ZNSPACE "DOCBOOK"
@@ -84,14 +86,17 @@ ClassMethod GetSimilar(SearchString) As %Status
 	set resultArray={}
 	set SC = ##class(%iKnow.Queries.EntityAPI).GetSimilar(.Result, domId, SearchString)
 	quit:$$$ISERR(SC) ""
-	for i=0:1:10 {
+	for i=1:1:10 {
 		//set Result(i) = ##class(Search.Parser).Parse(Result(i))
-		set оrd = $order(Result(i),1,Data)
+		//zw Result
+		set Рѕrd = $order(Result(i),1,Data)
 		//d resultArray.%Set(""_i,"similar")
+		//s temptext=##class(Search.Parser).Parse($li(Data,2))
 		d resultArray.%Set(""_i,$li(Data,2))
-	}	
+		//d resultArray.%Set(""_i,temptext)
+	}
 	set text = resultArray.%ToJSON()
-	//set text = ##class(Search.Parser).Parse(text)
+	set text = $REPLACE(text,",","},{")
 	set text = $REPLACE(text,"10","value")
 	set text = $REPLACE(text,"0","value")
 	set text = $REPLACE(text,"1","value")
@@ -103,22 +108,70 @@ ClassMethod GetSimilar(SearchString) As %Status
 	set text = $REPLACE(text,"7","value")
 	set text = $REPLACE(text,"8","value")
 	set text = $REPLACE(text,"9","value")
+	//РџР°СЂСЃРµСЂ
+	set i =1
+	set empty=" "
+	set subtext=""
+	set condition = 0
+link	For i=1:1:$LENGTH(text)
+		{
+			set char = $EXTRACT(text,i)
+			if (condition = 1) 
+			{
+			    set subtext=subtext_char 
+			    
+			}
+			if (char=">")
+			 {
+				 set text = $REPLACE(text,subtext,empty,1,1)
+				 set condition = 0
+				 set subtext=""
+				 set i=1
+				 goto link
+		     }
+			IF (char="<")
+			 {
+				 set subtext=subtext_char
+				 set condition=1		 
+			 }
+			
+		}
+		set text = $REPLACE(text,"&reg;","В®")
+		set text = $REPLACE(text,"&ntilde;","Г±")
+		set text = $REPLACE(text,"&#39;","'")
+		set text = $REPLACE(text,"&ldquo;","вЂњ")
+		set text = $REPLACE(text,"&rdquo;","вЂќ")
+		set text = $REPLACE(text,"&amp;","&")
+		set text = $REPLACE(text,"&lt;","<")
+		set text = $REPLACE(text,"&gt;",">")
+		set text = $REPLACE(text,"&mdash;","вЂ”")
+		set text = $REPLACE(text,"&eacute;","Г©")
+		set text = $REPLACE(text,"\"," ")
+		set text = $REPLACE(text,"/"," ")
+		set text = $REPLACE(text," "," ") 
+ 		set text = $REPLACE(text,"  "," ") 
+  		set text = $REPLACE(text,"       "," ")
+  		set text = $REPLACE(text,"      "," ")
+  		set text = $REPLACE(text,"     "," ")
+  		set text = $REPLACE(text,"    "," ")
+  		set text = $REPLACE(text,"   "," ")
+  		set text = $REPLACE(text,"  "," ")  
+	//Р’С‹РІРѕРґ
 	w "{""entities"":["
 	w text
 	w "]}"
-	ZNSPACE "DOCSEARCH"
 	q $$$OK
 }
 
 /*
-Вставить следующие строки в область DOCBOOK, в класс DocBook.block перед компиляцией
-/// Создание базового индекса iFind
+Р’СЃС‚Р°РІРёС‚СЊ СЃР»РµРґСѓСЋС‰РёРµ СЃС‚СЂРѕРєРё РІ РѕР±Р»Р°СЃС‚СЊ DOCBOOK, РІ РєР»Р°СЃСЃ DocBook.block РїРµСЂРµРґ РєРѕРјРїРёР»СЏС†РёРµР№
+/// РЎРѕР·РґР°РЅРёРµ Р±Р°Р·РѕРІРѕРіРѕ РёРЅРґРµРєСЃР° iFind
 Index contentInd On (content) As %iFind.Index.Basic(INDEXOPTION = 0, LOWER = 1, RANKERCLASS = 1);
 */
-/// Получение информации и ссылки по тексту для поиска
+/// РџРѕР»СѓС‡РµРЅРёРµ РёРЅС„РѕСЂРјР°С†РёРё Рё СЃСЃС‹Р»РєРё РїРѕ С‚РµРєСЃС‚Сѓ РґР»СЏ РїРѕРёСЃРєР°
 ClassMethod SearchByText(text) As %Status
 {
-	//Создадим временную таблицу для хранения результатов поиска
+	//РЎРѕР·РґР°РґРёРј РІСЂРµРјРµРЅРЅСѓСЋ С‚Р°Р±Р»РёС†Сѓ РґР»СЏ С…СЂР°РЅРµРЅРёСЏ СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РїРѕРёСЃРєР°
 	SET createquery = "CREATE TABLE temptable (idSQL INT,content VARCHAR(30000),link VARCHAR(10000),	frequency FLOAT,title VARCHAR(10000))"
   	SET createStatement = ##class(%SQL.Statement).%New()
   	SET createStatus = createStatement.%Prepare(createquery)
@@ -126,7 +179,7 @@ ClassMethod SearchByText(text) As %Status
   	SET createRset = createStatement.%Execute()
 	ZNSPACE "DOCBOOK"
 	
-	// Выполняем поиск слова с помощью iFind в DocBook.block
+	// Р’С‹РїРѕР»РЅСЏРµРј РїРѕРёСЃРє СЃР»РѕРІР° СЃ РїРѕРјРѕС‰СЊСЋ iFind РІ DocBook.block
 	set tempArray = ##class(%ArrayOfDataTypes).%New()
 	set count = 0	
 	SET myquery = "SELECT id,content, component->blockid As link,book->title As title FROM DocBook.block WHERE %ID %FIND search_index(contentInd,'"_text_"',0)"
@@ -148,11 +201,11 @@ ClassMethod SearchByText(text) As %Status
     	ZNSPACE "DOCBOOK"
        } 
        
-    // Получаем данные с временной таблицы отсортированные по частоте
+    // РџРѕР»СѓС‡Р°РµРј РґР°РЅРЅС‹Рµ СЃ РІСЂРµРјРµРЅРЅРѕР№ С‚Р°Р±Р»РёС†С‹ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅС‹Рµ РїРѕ С‡Р°СЃС‚РѕС‚Рµ
     ZNSPACE "DOCSEARCH"
    	
 	s count = count - 1
-	//в портале - SELECT TOP 500 JSON_OBJECT('idSQL':id, 'content': {fn CONCAT(content,' ')}) FROM docbook.block WHERE %ID %FIND search_index(contentInd,'lower',0) 
+	//РІ РїРѕСЂС‚Р°Р»Рµ - SELECT TOP 500 JSON_OBJECT('idSQL':id, 'content': {fn CONCAT(content,' ')}) FROM docbook.block WHERE %ID %FIND search_index(contentInd,'lower',0) 
 	SET resultQuery = "SELECT TOP 100 JSON_OBJECT('idSQL':idSQL, 'content': {fn CONCAT(content,' ')}, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
 	//SET resultQuery = "SELECT TOP 500 JSON_OBJECT('idSQL':idSQL, 'content':content, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
   	SET Statement = ##class(%SQL.Statement).%New()
@@ -173,7 +226,7 @@ ClassMethod SearchByText(text) As %Status
     }
     w "]}"
     
-	//Удалим временную таблицу
+	//РЈРґР°Р»РёРј РІСЂРµРјРµРЅРЅСѓСЋ С‚Р°Р±Р»РёС†Сѓ
     SET dropquery = "drop table SQLUser.temptable"
   	SET dropStatement = ##class(%SQL.Statement).%New()
   	SET dropStatus = dropStatement.%Prepare(dropquery)
