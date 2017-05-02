@@ -65,82 +65,18 @@ ClassMethod GetSimilar(SearchString) As %Status
 	set resultArray = ##class(%DynamicArray).%New()
 	set resultArray={}
 	set SC = ##class(%iKnow.Queries.EntityAPI).GetSimilar(.Result, domId, SearchString)
+	znspace "DOCSEARCH"
 	quit:$$$ISERR(SC) ""
 
-	for i=1:1:10 {
-		//set Result(i) = ##class(Search.Parser).Parse(Result(i))
-		//zw Result
-		set оrd = $order(Result(i),1,Data)
-		//do resultArray.%Set(""_i,"similar")
-		//set temptext=##class(Search.Parser).Parse($li(Data,2))
-		do resultArray.%Set(""_i,$li(Data,2))
-		//do resultArray.%Set(""_i,temptext)
-	}
-	set text = resultArray.%ToJSON()
-	//set text = ##class(Search.Parser).Parse(text)
-	set text = $REPLACE(text,",","},{")
-	set text = $REPLACE(text,"10","value")
-	set text = $REPLACE(text,"0","value")
-	set text = $REPLACE(text,"1","value")
-	set text = $REPLACE(text,"2","value")
-	set text = $REPLACE(text,"3","value")
-	set text = $REPLACE(text,"4","value")
-	set text = $REPLACE(text,"5","value")
-	set text = $REPLACE(text,"6","value")
-	set text = $REPLACE(text,"7","value")
-	set text = $REPLACE(text,"8","value")
-	set text = $REPLACE(text,"9","value")
-	//Парсер
-	set i =1
-	set empty=" "
-	set subtext=""
-	set condition = 0
-link	for i=1:1:$LENGTH(text)
-			{
-			set char = $EXTRACT(text,i)
-			if (condition = 1) 
-			{
-			    set subtext=subtext_char 
-			}
-			if (char=">")
-			 {
-				 set text = $REPLACE(text,subtext,empty,1,1)
-				 set condition = 0
-				 set subtext=""
-				 set i=1
-				 goto link
-		     }
-			if (char="<")
-			 {
-				 set subtext=subtext_char
-				 set condition=1		 
-			 }
-		}
-		set text = $REPLACE(text,"&reg;","®")
-		set text = $REPLACE(text,"&ntilde;","ñ")
-		set text = $REPLACE(text,"&#39;","'")
-		set text = $REPLACE(text,"&ldquo;","“")
-		set text = $REPLACE(text,"&rdquo;","”")
-		set text = $REPLACE(text,"&amp;","&")
-		set text = $REPLACE(text,"&lt;","<")
-		set text = $REPLACE(text,"&gt;",">")
-		set text = $REPLACE(text,"&mdash;","—")
-		set text = $REPLACE(text,"&eacute;","é")
-		set text = $REPLACE(text,"\"," ")
-		set text = $REPLACE(text,"/"," ")
-		set text = $REPLACE(text," "," ") 
- 		set text = $REPLACE(text,"  "," ") 
-  		set text = $REPLACE(text,"       "," ")
-  		set text = $REPLACE(text,"      "," ")
-  		set text = $REPLACE(text,"     "," ")
-  		set text = $REPLACE(text,"    "," ")
-  		set text = $REPLACE(text,"   "," ")
-  		set text = $REPLACE(text,"  "," ")  
-	//Вывод
-	write "{""entities"":["
-	write text
-	write "]}"
-	quit $$$OK
+	set ResultJSON = { "entities": [] }
+    for i=1:1:10 {
+    	set оrd = $order(Result(i),1,Data)
+    	set tJSON = { "value":(##class(Search.Parser).Parse($li(Data,2))) }
+		do ResultJSON.entities.%Push(tJSON)
+    }
+    set st=$$$OK
+    
+	quit ##class(Search.SearchPages).%ProcessResult(st, $g(ResultJSON))
 }
 /*
 Вставить следующие строки в область DOCBOOK, в класс DocBook.block перед компиляцией
