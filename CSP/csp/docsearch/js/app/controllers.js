@@ -82,31 +82,36 @@ searchApp
 	.controller('searchController', function ($scope, $http, pagination) {
 				
 		$scope.search = {
-			text: ''	
+			words: '',
+			phrase: '',
+			anyWords:'',
+			without:''
 		};
 		
-		var index = 0;
+		var index = -1;
 		
 		$scope.toggle = true;
 		$scope.imputToggle = false;
 		
 		$scope.change = function (){
 								
-				$http.get('http://' + location.host + '/api/iknow/v1/docbook/domain/1/entities/' + $scope.search.text + '/similar')
+				$http.get('http://' + location.host + '/csp/docsearch/rest/GetSimilar/' + $scope.search.words)
 					.then(function(response) {
-							tempArray = response.data.entities;
-							$scope.searchItems = tempArray.slice(0, 10);
+							$scope.searchItems = response.data.entities;
 						});		
-				if ($scope.search.text == '')
+				if ($scope.search.words == '')
 					$scope.imputToggle = false;
-				else $scope.imputToggle = true;
+				else
+					$scope.imputToggle = true;
 		}
 		
 		$scope.handleClick = function (item){
 			$scope.currrentSearchItem = item;
-			$scope.search.text = $scope.currrentSearchItem.value;
+			$scope.search.words = $scope.currrentSearchItem.value;
 			$scope.toggle = false;
 			$scope.imputToggle = true;
+			if ($scope.toggle == false)
+					$scope.imputToggle = false;
 		}
 		
 		$scope.handleArrows = function (event) {
@@ -122,18 +127,29 @@ searchApp
 				index = 0;	
 			if 	((event.keyCode  === 40) || (event.keyCode  === 38))
 			{
-				$scope.search.text = $scope.searchItems[index].value;
+				$scope.search.words = $scope.searchItems[index].value;
 				$scope.currrentSearchItem = $scope.searchItems[index];
-				//$scope.toggle = false;
 			}
+			if (event.keyCode  === 13)
+					$scope.imputToggle = false;
 			
 		}
-				
+		
+		$scope.advancedSearch = function(){
+			
+			$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
+				.then(function(response) {
+							$scope.tempo = response.data.sources;
+						});	
+			
+		}
+		
 		$scope.makeSearch = function (){
 
-			if ($scope.search.text != '')
+			if ($scope.search.words != '')
 			{
-				$http.get('http://' + location.host + '/csp/docsearch/rest/SearchByText/' + $scope.search.text)
+				//$http.get('http://' + location.host + '/csp/docsearch/rest/SearchByText/' + $scope.search.words)
+				$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
 					.then(function(response) {
 							$scope.resObj = response.data.sources;
 							pagination.setResults(response.data.sources);

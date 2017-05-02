@@ -1,0 +1,70 @@
+<html lang="en" ng-app="searchApp">
+	<head>
+		<title>	DocSearch </title>
+		<meta charset="utf-8">
+		<link href = "style/frameworks/bootstrap.min.css" rel="stylesheet"> <!-- bootstrap -->
+		<link href = "style/DocSearch.css" rel="stylesheet"> <!-- Стили CSS -->
+		<link href="style/images/icon.png" rel="icon" type="image/x-icon"/> <!-- Иконка -->
+	</head>
+ 
+	<body ng-controller="searchController">
+	<!-- Advanced Search -->
+	<div class="AdvancedSearch">
+		<div class="AdvancedSearchHeader">
+			Advanced Search
+		</div>
+		<form class="form-horizontal"  autocomplete="off" >
+			<p><b>Find pages with...</b></p>
+			<div class="form-group">
+				<label for="Search1" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label">all these words:</label>
+				<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+					<input type="text" ng-model="search.words" class="form-control" id="Search1" placeholder="Type the important words"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="Search2" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label">this exact word or phrase:</label>
+				<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+					<input type="text" ng-model="search.phrase" class="form-control" id="Search2" placeholder="Put exact words in quotes"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="Search3" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label">any of these words:</label>
+				<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+					<input type="text" ng-model="search.anyWords" class="form-control" id="Search3" placeholder="Type OR between all the words you want"/>
+				</div>
+			</div>
+			<div class="form-group">
+				<label for="Search4" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label">none of these words:</label>
+				<div class="col-lg-8 col-md-8 col-sm-8 col-xs-8">
+					<input type="text" ng-model="search.without" class="form-control" id="Search4" placeholder="Type OR between all the words you want"/>
+				</div>
+			</div>
+			<div class="form-group" >
+  				<div class="col-md-offset-8 col-md-2 col-sm-offset-8 col-sm-2 col-xs-offset-8 col-xs-2">
+					<button type="submit" class="btn btn-primary" ng-click = "advancedSearch()">
+						<span class="glyphicon glyphicon-search"></span> Advanced Search
+					</button>
+  				</div>
+ 			</div>
+		</form>
+	</div>
+	
+		<div> <!-- Результаты поиска -->
+			<ul>
+				<li ng-repeat = "result in tempo" style="margin-top:10px; list-style-type: none;">
+					<a href="http://localhost:57773/csp/docbook/DocBook.UI.Page.cls?KEY={{result.link}}" target="_blank">{{result.title}}</a>
+					<br>
+					<span>{{result.content}}</span>
+				</li>
+			</ul>
+		</div>
+	
+		<script type="text/javascript" src = "js/vendor/jquery-3.2.0.min.js"></script>  
+		<script type="text/javascript" src = "js/vendor/bootstrap.min.js"></script>
+		<script type="text/javascript" src = "js/vendor/angular.js"></script>
+		
+		<script type="text/javascript" src = "js/app/app.js"></script>
+		<script type="text/javascript" src = "js/app/controllers.js"></script>
+	
+</body>
+</html>

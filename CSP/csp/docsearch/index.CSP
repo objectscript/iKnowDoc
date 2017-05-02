@@ -20,7 +20,7 @@
 			<div> <!-- Поисковая строка и кнопки поиска для разных размеров окна браузера -->
 				<form class="form-horizontal container-fluid MarginSearchLine ui-widgetui-widget"  autocomplete="off">
 					<div class="input-groop col-md-offset-3 col-md-6 col-sm-offset-3 col-sm-6 col-xs-offset-2 col-xs-8">
-							<input type="text" ng-model="search.text" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
+							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
 							
 							<div ng-show = "imputToggle" class = "toggler">
 								<ul class = "listStyle">
@@ -37,61 +37,6 @@
 						<span class="glyphicon glyphicon-search"></span>
 					</button>
 				</form><br>
-			</div>
-			<div class="col-md-offset-3 col-md-9 col-sm-offset-3 col-sm-9 col-xs-offset-2 col-xs-10">
-				<div>
-					<!-- Навигация -->
-					 <ul class="nav nav-tabs lis" role="tablist">
-						<li class="active"><a href="#today" aria-controls="today" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-education"></span> Guides</a></li>
-						<li><a href="#week" aria-controls="week " role="tab" data-toggle="tab"><span class="glyphicon glyphicon-wrench"></span> Settings</a></li>
-					</ul>
-				</div>
-			
-				<!-- Содержимое вкладки Guides -->
-				<div class="tab-content">
-					<div role="tabpanel" id="today" class="tab-pane fade in active">			
-						<div class="radio">
- 							<label>
-  							<input type="radio" name="optionsRadios" id="radio1" value="option1" checked>
-  							Настройка 1
-							</label>
-						</div>
-						<div class="radio">
- 							<label>
-  							<input type="radio" name="optionsRadios" id="radio2" value="option2">
-  							Настройка 2
- 							</label>
-						</div>
-						<div class="radio">
-  							<label>
-  							<input type="radio" name="optionsRadios" id="radio3" value="option3">
-  							Настройка 3
- 							</label>
-						</div>
-					</div>
-					
-					<!-- Содержимое вкладки Settings -->
-					<div role="tabpanel" id="week" class="tab-pane fade">			
-						<div class="radio">
- 							<label>
-  							<input type="radio" name="optionsRadios" id="radio4" value="option4" checked>
-  							Settings 1
-							</label>
-						</div>
-						<div class="radio">
- 							<label>
-  							<input type="radio" name="optionsRadios" id="radio5" value="option5">
-  							Settings 2
- 							</label>
-						</div>
-						<div class="radio">
-  							<label>
-  							<input type="radio" name="optionsRadios" id="radio6" value="option6">
-  							Settings 3
- 							</label>
-						</div>
-					</div>
-				</div>
 			</div>
 			
 			<footer class="footer"> <!-- Подвал -->
@@ -112,7 +57,15 @@
 						<a href="javascript:window.location.reload()"><img ng-src = "style/images/Logo.png" width ="100%" title ="InterSystems"/></a>
 					</div>
 					<div class="input-groop col-md-6 col-sm-6 col-xs-6 MarginHeader"> <!-- Строка поиска -->
-							<input type="text" ng-model="search.text" class="form-control" id="Search" placeholder="Search"/>
+							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
+							
+							<div ng-show = "imputToggle" class = "toggler">
+								<ul class = "listStyle">
+									<li class = "hint" ng-repeat = "item in searchItems" ng-class="{'activeToggle': item.value == currrentSearchItem.value}" ng-click = "handleClick(item)">
+										{{item.value}}
+									</li>
+								</ul>
+							</div>
 					</div>
 					<div class="col-md-3 col-sm-3 col-xs-3 MarginHeader"> <!-- Кнопки поиска для разных размеров окна браузера -->
 						<button type="submit" class="btn btn-primary hidden-sm hidden-xs" ng-click = "makeSearch()">
@@ -121,14 +74,8 @@
 						<button type="submit" class="btn btn-primary hidden-md hidden-lg" ng-click = "makeSearch()">
 							<span class="glyphicon glyphicon-search"></span>
 						</button>
-						<div class="btn-group dropdown pull-right"> <!-- Меню настроек -->
-							<button class="btn dropdown-toggle" data-toggle="dropdown">Settings <span class="caret"></span></button>
-							<ul class="dropdown-menu">
-								<li><a href="#">111</a></li>
-								<li><a href="#">222</a></li>
-								<li><a href="#">333</a></li>
-								<li><a href="#">444</a></li>
-							</ul>
+						<div class="pull-right"> <!-- Меню настроек -->
+							<button type="button" >Settings <span class="caret"></span></button>
 						</div>
 					</div>	
 				</form>
