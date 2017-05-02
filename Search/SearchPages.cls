@@ -177,7 +177,8 @@ ClassMethod FormQuery(obj) As %Status
     	set tJSON = { "content":(result.content), "link":(result.link), "frequency": (result.frequency), "title": (result.title) }
 		do ResultJSON.sources.%Push(tJSON)
     }
-
+    set totalCountJ = {"totalCount":(+count)}
+    do ResultJSON.sources.%Push(totalCountJ)
     
     
     
