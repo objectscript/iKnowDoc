@@ -47,11 +47,11 @@ ClassMethod FormQuery(obj) As %Status
     set startRecord=obj.startRecord	
 	set recordCount=obj.recordCount
 
-	s without=obj.without
+	set without=obj.without
 	
 	
-    s startRecord=obj.startRecord	
-	s recordCount=obj.recordCount
+    set startRecord=obj.startRecord	
+	set recordCount=obj.recordCount
 	
 	/*
 	//Тестовые значения переменных
@@ -111,13 +111,6 @@ ClassMethod FormQuery(obj) As %Status
   	set createRset = createStatement.%Execute()
 	znspace "DOCBOOK"
 
-	SET createquery = "CREATE TABLE temptable (idSQL INT,content VARCHAR(30000),link VARCHAR(10000),	frequency FLOAT,title VARCHAR(10000))"
-  	SET createStatement = ##class(%SQL.Statement).%New()
-  	SET createStatus = createStatement.%Prepare(createquery)
-   	IF createStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(createStatus) QUIT}
-  	SET createRset = createStatement.%Execute()
-	ZNSPACE "DOCBOOK"
-
 	
 	// Выполняем поиск слова с помощью iFind в DocBook.block
 	set tempArray = ##class(%ArrayOfDataTypes).%New()
@@ -127,7 +120,7 @@ ClassMethod FormQuery(obj) As %Status
   	set qStatus = tStatement.%Prepare(myquery)
    	if qStatus'=1 {write "%Prepare failed:" do $System.Status.DisplayError(qStatus) quit}
   	set rset = tStatement.%Execute()
-  	WHILE rset.%Next() {
+  	while rset.%Next() {
 	  	znspace "DOCSEARCH"
 	  	set tempArray(count,0)= rset.id
 	  	set tempArray(count,1) = ##class(Search.Parser).Parse(rset.content)
@@ -140,13 +133,9 @@ ClassMethod FormQuery(obj) As %Status
   		set count = count + 1
     	znspace "DOCBOOK"
        } 
-       
     // Получаем данные с временной таблицы отсортированные по частоте
     znspace "DOCSEARCH"
-   	
 	set count = count - 1
-	
-
 	//write count
 	//
 	// Пагинация
@@ -157,20 +146,7 @@ ClassMethod FormQuery(obj) As %Status
 	set offset=recordCount+startRecord-1	
 	if (offset>commonCount) set recordCount=recordCount-(offset-commonCount)
 
-	//w count
-	//
-	// Пагинация
-	//s startRecord =1
-	//s recordCount=20
-	set commonCount = count
-	if commonCount<startRecord s startRecord=1
-	s offset=recordCount+startRecord-1	
-	if (offset>commonCount) s recordCount=recordCount-(offset-commonCount)
-	
-	//
-
-	//
-	
+		
 	//set resultQuery = "SELECT JSON_OBJECT('idSQL':idSQL, 'content':content, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
   	//set resultQuery = "SELECT JSON_OBJECT('idSQL':idSQL, 'content':{fn CONCAT(content,' ')}, 'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC"
   	
@@ -191,108 +167,35 @@ ClassMethod FormQuery(obj) As %Status
   	
   	//SET resultQuery = "select TOP "_recordCount_" * from (SELECT TOP "_offset_" id,JSON_OBJECT('idSQL':id, 'content': {fn CONCAT(content,' ')},'link':link, 'frequency':frequency, 'title':title) FROM SQLUser.temptable ORDER BY frequency DESC) ORDER BY id DESC ORDER BY id ASC"
   	//SET resultQuery = " (select TOP "_recordCount_" * from (SELECT TOP "_offset_" id,content, link, frequency,title FROM SQLUser.temptable ORDER BY frequency DESC) ORDER BY frequency ASC)ORDER BY frequency DESC"
-  	SET resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from SQLUser.temptable order by frequency DESC) order by frequency ASC) order by frequency DESC"
+  	set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from SQLUser.temptable order by frequency DESC) order by frequency ASC) order by frequency DESC"
   	//w count,!
   	//w resultQuery,!
   	//w resultQuery
-  	SET Statement = ##class(%SQL.Statement).%New()
-  	SET Status = Statement.%Prepare(resultQuery)
-   	IF Status'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(Status) QUIT}
-  	SET result = Statement.%Execute()
-   	//WHILE result.%Next() {DO result.%Print(" ^ ")}
-
-
-  	//set countZap=0
-
-  	//set count = 99
-
-  	//write "{""sources"":["
-    /*WHILE result.%Next() {
-     do result.%Print(" ^ ")
-     if ((countZap'=(recordCount-1))) {
-      write ","
-      set countZap=countZap+1 
-=======
-  	//s count = 99
-
-  	//w "{""sources"":["
-    /*WHILE result.%Next() {
-     DO result.%Print(" ^ ")
-     if ((countZap'=(recordCount-1))) {
-      w ","
-      s countZap=countZap+1 
-     }
-    }*/
+  	set Statement = ##class(%SQL.Statement).%New()
+  	set Status = Statement.%Prepare(resultQuery)
+   	if Status'=1 {write "%Prepare failed:" do $System.Status.DisplayError(Status) quit}
+  	set result = Statement.%Execute()
+   	
     set ResultJSON = { "sources": [] }
-
-    
-    WHILE result.%Next() {
+    while result.%Next() {
     	set tJSON = { "content":(result.content), "link":(result.link), "frequency": (result.frequency), "title": (result.title) }
 		do ResultJSON.sources.%Push(tJSON)
     }
     set totalCountJ = {"totalCount":(+count)}
     do ResultJSON.sources.%Push(totalCountJ)
     
-    
-
-    
-    WHILE result.%Next() {
-    	set tJSON = { "content":(result.content), "link":(result.link), "frequency": (result.frequency), "title": (result.title) }
-		do ResultJSON.sources.%Push(tJSON)
-    }
 	//Удалим временную таблицу
-
+    
     set dropquery = "drop table SQLUser.temptable"
   	set dropStatement = ##class(%SQL.Statement).%New()
   	set dropStatus = dropStatement.%Prepare(dropquery)
    	if dropStatus'=1 {write "%Prepare failed:" do $System.Status.DisplayError(dropStatus) quit}
   	set dropRset = dropStatement.%Execute()
 	set st=$$$OK
-	//quit st
-    SET dropquery = "drop table SQLUser.temptable"
-  	SET dropStatement = ##class(%SQL.Statement).%New()
-  	SET dropStatus = dropStatement.%Prepare(dropquery)
-   	IF dropStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(dropStatus) QUIT}
-  	SET dropRset = dropStatement.%Execute()
-	s st=$$$OK
 	//q st
 
-
 	quit ..%ProcessResult(st, $g(ResultJSON))
-	/////////////////////////////////////////
-	/*
 	
-		
-	//write finalquery
-	//выполняем новый запрос	
-	set result=##class(%ResultSet).%New("%DynamicQuery:SQL")
- 	set sc=result.Prepare(finalquery)
-	if $$$ISERR(sc) do DisplayError^%apiOBJ(sc) q
-	set sc=result.Execute(10000) if $$$ISERR(sc) do DisplayError^%apiOBJ(sc) q	
-	set $Namespace = oldn	
-	set i = 1		
-	WHILE result.Next(.sc) {
-			if $$$ISERR(sc) q	
-			try {	    				
-				do body.InsertAt($CLASSMETHOD(className,"getArrById",result.Data("ID")),i)	
-				set i = i+1
-			} catch ex {
-				do $SYSTEM.Status.DisplayError($SYSTEM.Status.Error(ex.Code,ex.Data))
-				do ##class(Utils.GetServiceResponse).FormJSON("500","Ошибка при работе с объектом: "_$system.Status.GetErrorText(ex.AsStatus(),"ru")) q	  
-			} 		
-	}
-	
-	
-	 
-			
-	set i = ""
-	do resultArr.SetAt(body,"data")		
- 	do resultArr.SetAt("200","errorCode")
-	do resultArr.SetAt("Получены все объекты","errorMessage")		
-	do ##class(Utils.CacheJSON).EncodeLarge(resultArr)
-
-	set IDs="",resultArr="",body="",list="", obj="",result="",sc=""
-	*/
 	
 }
 
@@ -321,5 +224,4 @@ ClassMethod %ProcessResult(pSC As %Status, pResult As %DynamicObject = "") As %S
 	write pResult.%ToJSON()
 	quit tSC
 }
-
 }
