@@ -8,7 +8,7 @@ Class Search.Domain extends %Persistent {
 
 ClassMethod %Build() As %Status
 {
-	#include %IKPublic
+	#Include %IKPublic
 	znspace "DOCBOOK"
 	// Создание домена или открытие
 	set dname="DocSearch"  
@@ -117,7 +117,7 @@ link	for i=1:1:$LENGTH(text)
 			 }
 		}
 		set text = $REPLACE(text,"&reg;","®")
-		set text = $REPLACE(text,"&ntilde;","ñ")
+		set text = $REPLACE(text,"&ntilde;","n")
 		set text = $REPLACE(text,"&#39;","'")
 		set text = $REPLACE(text,"&ldquo;","“")
 		set text = $REPLACE(text,"&rdquo;","”")
@@ -125,7 +125,7 @@ link	for i=1:1:$LENGTH(text)
 		set text = $REPLACE(text,"&lt;","<")
 		set text = $REPLACE(text,"&gt;",">")
 		set text = $REPLACE(text,"&mdash;","—")
-		set text = $REPLACE(text,"&eacute;","é")
+		set text = $REPLACE(text,"&eacute;","e")
 		set text = $REPLACE(text,"\"," ")
 		set text = $REPLACE(text,"/"," ")
 		set text = $REPLACE(text," "," ") 

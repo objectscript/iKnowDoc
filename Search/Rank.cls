@@ -99,39 +99,4 @@ ClassMethod Ranking(SearchString As %String) As %Float
 	quit rank
 }
 
-ClassMethod GetOccurrenceCountBySource(domainid As %Integer, sourceidlist As %List, Output sc As %Status = {$$$OK}, enttype As %Integer = {$$$ENTTYPEANY}) As %Integer
-{
- $$$IKQBEGINR("",sc,-1)
- if (domainid'=0) { $$$CHECKDOMAINEXISTSR(domainid,sc,-1) }  //проверка существования домена
- quit:sourceidlist="" 0			//
- 
- set tVersionTables = $$$IKVERSIONATLEAST(domainid,$$$IKVERSIONTABLES)   //проверка версии iknow
- 
- // accepting single source IDs (non-list) as well
- $$$IKENSURELISTNUM(sourceidlist)
- 
- set total = 0, ptr = 0		//total - число entities, ptr -
- while $listnext(sourceidlist, ptr, srcId) {		
-  continue:'+srcId
-  $$$CHECKASRCIDEXISTSX(domainid,srcId,srcDetails,vSrcId,sc)
-  
-  if (enttype = $$$ENTTYPEANY) && 'tVersionTables {
-   set total = total + $lg(srcDetails,4)		
-  } else {
-   
-   set gEntOccId = $$$IKVGLOBNAME(domainid,"EntOccId",vSrcId)
-   set tFrom = $lg(srcDetails,3)+1, tTo = tFrom+$lg(srcDetails,4)-1
-   for tPartId = tFrom:1:tTo {
-    set tEntOcc = @gEntOccId@(tPartId)
-    set tEntType = $lg(tEntOcc,2)
-    continue:tEntType=$$$ENTTYPENONREL
-    set:(enttype=$$$ENTTYPEANY)||(enttype=tEntType) x = $i(total)
-   }
-  }
- }
- quit:$$$ISERR(sc) -1
- 
- quit total
-}
-
 }
