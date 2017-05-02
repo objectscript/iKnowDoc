@@ -93,7 +93,7 @@ ClassMethod FormQuery(obj) As %Status
 		s text = "("_text
 		s text = text_strOut_")"
 	}
-	
+	 
 	//w "text: ",text
 	
 	////////////////////////////
