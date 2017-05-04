@@ -59,6 +59,8 @@ footer div ul li a:visited
 	border:1px solid Silver;
 	background:white;
 	z-index:9999;
+	position:absolute;
+	width:95%;
 }
 .listStyle 
 {

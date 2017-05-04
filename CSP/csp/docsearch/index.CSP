@@ -20,7 +20,7 @@
 			<div> <!-- Поисковая строка и кнопки поиска для разных размеров окна браузера -->
 				<form class="form-horizontal container-fluid MarginSearchLine ui-widgetui-widget"  autocomplete="off">
 					<div class="input-groop col-md-offset-3 col-md-6 col-sm-offset-3 col-sm-6 col-xs-offset-2 col-xs-8">
-							<input type="text" ng-model="search.text" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
+							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
 							
 							<div ng-show = "imputToggle" class = "toggler">
 								<ul class = "listStyle">
@@ -48,7 +48,7 @@
 			</div>
 			</footer>
 		</div>
-		
+		 
 		<!-- Страница с результатами поиска -->
 		<div ng-show = "!toggle">
 			<header class="ResultHeader"> <!-- Шапка -->
@@ -57,7 +57,15 @@
 						<a href="javascript:window.location.reload()"><img ng-src = "style/images/Logo.png" width ="100%" title ="InterSystems"/></a>
 					</div>
 					<div class="input-groop col-md-6 col-sm-6 col-xs-6 MarginHeader"> <!-- Строка поиска -->
-							<input type="text" ng-model="search.text" class="form-control" id="Search" placeholder="Search"/>
+							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
+							
+							<div ng-show = "imputToggle" class = "toggler">
+								<ul class = "listStyle">
+									<li class = "hint" ng-repeat = "item in searchItems" ng-class="{'activeToggle': item.value == currrentSearchItem.value}" ng-click = "handleClick(item)">
+										{{item.value}}
+									</li>
+								</ul>
+							</div>
 					</div>
 					<div class="col-md-3 col-sm-3 col-xs-3 MarginHeader"> <!-- Кнопки поиска для разных размеров окна браузера -->
 						<button type="submit" class="btn btn-primary hidden-sm hidden-xs" ng-click = "makeSearch()">
@@ -90,9 +98,9 @@
 		
 	</div>
 	
-		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.2/angular.min.js"></script>  
+		<script type="text/javascript" src = "js/vendor/jquery-3.2.0.min.js"></script>  
 		<script type="text/javascript" src = "js/vendor/bootstrap.min.js"></script>
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+		<script type="text/javascript" src = "js/vendor/angular.js"></script>
 		
 		<script type="text/javascript" src = "js/app/app.js"></script>
 		<script type="text/javascript" src = "js/app/controllers.js"></script>
