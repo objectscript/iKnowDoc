@@ -59,6 +59,8 @@ footer div ul li a:visited
 	border:1px solid Silver;
 	background:white;
 	z-index:9999;
+	position:absolute;
+	width:95%;
 }
 .listStyle 
 {
@@ -75,4 +77,18 @@ footer div ul li a:visited
 .hint
 {
 	list-style-type: none
+}
+.SilverLine
+{
+	border-bottom:1px solid silver;
+}
+.AdvancedSearchHeader
+{
+	margin:20px;
+	color:red;
+	font-size:18pt;
+}
+.AdvancedSearch
+{
+	margin:20px;
 }
