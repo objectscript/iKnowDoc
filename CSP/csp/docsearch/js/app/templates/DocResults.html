@@ -1,8 +1,8 @@
-	 		<div>
+<div>
 	 		<header class="ResultHeader"> <!-- Шапка -->
 				<form class="form-horizontal"  autocomplete="off">
 					<div class="col-md-3 col-sm-3 col-xs-3 Logo"> <!-- Лого -->
-						<a href="javascript:window.location.reload()"><img ng-src = "style/images/Logo.png" width ="100%" title ="InterSystems"/></a>
+						<a href="#!DocSearch"><img ng-src = "style/images/Logo.png" width ="100%" title ="InterSystems"/></a>
 					</div>
 					<div class="input-groop col-md-6 col-sm-6 col-xs-6 MarginHeader"> <!-- Строка поиска -->
 							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
@@ -23,7 +23,7 @@
 							<span class="glyphicon glyphicon-search"></span>
 						</button>
 						<div class="pull-right"> <!-- Меню настроек -->
-							<button type="button" >Settings <span class="caret"></span></button>
+							<a href="#!SearchAdvance" class="btn btn-primary">Settings</a>
 						</div>
 					</div>	
 				</form>
@@ -31,7 +31,7 @@
 		<div> <!-- Результаты поиска -->
 			<ul>
 				<li ng-repeat = "result in results" style="margin-top:10px; list-style-type: none;">
-					<a href="http://localhost:57773/csp/docbook/DocBook.UI.Page.cls?KEY={{result.link}}" target="_blank">{{result.title}}</a>
+					<a href="http://" + location.host + "/csp/docbook/DocBook.UI.Page.cls?KEY={{result.link}}" target="_blank">{{result.title}}</a>
 					<br>
 					<span>{{result.content}}</span>
 				</li>
@@ -43,4 +43,4 @@
 				<li ng-repeat="page in paginationList" ng-click="showPage(page.link)" ng-class="{'active': currentPageNum() == page.link}"><a ng-bind-html="page.name"></a></li>
 			</ul>
 		</div>
-		</div>
+</div>

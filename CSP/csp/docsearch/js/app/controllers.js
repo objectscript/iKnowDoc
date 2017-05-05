@@ -2,7 +2,7 @@ var searchApp = angular.module('searchApp');
  
 searchApp
 	
-	.controller('searchController', function ($scope, $http, pagination) {
+	.controller('searchController', function ($scope, $http, pagination, $location) {
 				
 		$scope.search = {
 			words: '',
@@ -15,7 +15,6 @@ searchApp
 		
 		var index = -1;
 		
-		$scope.toggle = true;
 		$scope.imputToggle = false;
 		
 		$scope.change = function (){
@@ -37,7 +36,6 @@ searchApp
 			$scope.search.words = $scope.currrentSearchItem.value;
 			$scope.makeSearch();
 			
-			$scope.toggle = false;
 			$scope.imputToggle = true;
 
 			if ($scope.toggle == false)
@@ -72,6 +70,7 @@ searchApp
 				.then(function(response) {
 							$scope.tempo = response.data.sources;
 						});
+			$location.path("/DocResults");
 		}
 		
 
@@ -84,15 +83,12 @@ searchApp
 					.then(function(response) {
 							$scope.results = response.data.sources;
 							$scope.totalCount = $scope.results[$scope.search.recordCount].totalCount;
-							$scope.paginationList = pagination.getPaginationList($scope.totalCount, $scope.search.recordCount);
-							console.log($scope.totalCount);
-							
+							$scope.paginationList = pagination.getPaginationList($scope.totalCount, $scope.search.recordCount);							
 						});
-				
-				$scope.toggle = false;
+				$location.path("/DocResults");
 				
 			} else 
-				$scope.toggle = true;
+				$location.path("/DocSearch");
 		}
 
 		$scope.showPage = function (page) {
@@ -116,4 +112,7 @@ searchApp
 		$scope.currentPageNum = function() {
 			return pagination.getCurrentPageNum();
 		}
+
 	})/* END of controller - searchController */
+	
+
