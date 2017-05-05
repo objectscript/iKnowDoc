@@ -1,102 +1,66 @@
 Class Search.Rank {
 
-ClassMethod Ranking(SearchString As %String) As %Float
+ClassMethod Frequency(domainid As %Integer, sourceidlist As %List, wordidlist As %List) As %Float
 {
-	set rank=0
-	set wordArray = ##class(%ArrayOfDataTypes).%New()
-	//смотрит одно ли слово в запросе или несколько
-	set multiplewords = 0
-	for i=1:1:$length(SearchString)
-    	{
-    		set chara = $EXTRACT(SearchString,i)
-    		if (chara = " ")
-    		{
-    			set multiplewords = 1
-    			quit
-    		}
-    	}
-    if (multiplewords = 0) 
-    { 
-    set wordArray(1) = SearchString
-    set wordArray(2) = ""
-    set wordArray(3) = ""
-    set wordArray(4) = ""
-    set wordquantity = 1
-    }
-    else {
-	set wordArray(1) = $PIECE(SearchString," ",1)
-	set wordArray(2) = $PIECE(SearchString," ",2)
-	set wordArray(3) = $PIECE(SearchString," ",3)
-	set wordArray(4) = $PIECE(SearchString," ",4)
-	set wordquantity = 4
+	/*w "wordidlistR ",wordidlist,!
+	zw wordidlist*/
+	zn "docbook"
+	set numerator = ##class(%iKnow.Queries.EntityAPI).GetCountOneBySource(domainid,sourceidlist,wordidlist)
+	set denominator = ##class(%iKnow.Queries.EntityAPI).GetOccurrenceCountBySource(domainid,sourceidlist)
+	zn "docsearch"
+	//w numerator,!,denominator,!
+	set frequency=numerator/denominator
+	q frequency
+}
+
+ClassMethod Replace(domainid As %Integer, entitylist As %List, pagesize As %Integer) As %Library.ArrayOfObjects
+{
+	zn "docbook"
+	//set tSC = ##class(%iKnow.Queries.SourceAPI).GetByEntities(.tResult,9, $LB("iFind"),1,50)
+	set tSC = ##class(%iKnow.Queries.SourceAPI).GetByEntities(.tResult,domainid, entitylist,1,pagesize)
+	 /*
+	 tResult(1)=$lb(167666,":SQL:170615:170615")
+	 tResult(2)=$lb(166526,":SQL:169471:169471")
+	 tResult(3)=$lb(166488,":SQL:169433:169433")
+	 tResult(4)=$lb(166478,":SQL:169427:169427")
+	 tResult(5)=$lb(166311,":SQL:169259:169259")
+	 tResult(6)=$lb(166287,":SQL:169238:169238")
+	 tResult(7)=$lb(166213,":SQL:169157:169157")
+	 tResult(8)=$lb(166061,":SQL:169013:169013")
+	 tResult(9)=$lb(166055,":SQL:169004:169004")
+	 tResult(10)=$lb(114725,":SQL:117529:117529")
+	 */
+	zn "docsearch" 
+	 
+	set array = ##class(%Library.ArrayOfObjects).%New()
+	
+	set i = ""
+    for {
+	    set i = $order(tResult(i),1,tSrcData)
+	    quit:i=""	
+		set string=$lg(tSrcData,2)
+		
+		
+		set nul=$FIND(string,":",1)-1 
+		set from=$FIND(string,":",nul+1)-1
+		//w "from ",from,!
+	 
+		set to=$FIND(string,":",from+1)-1
+		
+		//w "to ",to,!
+		
+		// sql 
+		set substr=$EXTRACT(string,from+1,to-1)
+		// source
+		set first = $lg(tSrcData,1)
+		//w "first 	",first,!
+		//w "substr 	",substr,!
+		
+		set array(i,0)=substr
+		set array(i,1)=first
 	}
-	set spaceArray = ##class(%ArrayOfDataTypes).%New()
-	set wordCountArray = ##class(%ArrayOfDataTypes).%New()
-	znspace "DOCBOOK"
-	set tempArray = ##class(%ArrayOfDataTypes).%New()
-	set counter = 1
-	set myquery = "SELECT count(*) As cnt,content,component->blockid AS link FROM DocBook.block WHERE component->blockid='BXJV_globals'"
-  	set tStatement = ##class(%SQL.Statement).%New()
-  	set qStatus = tStatement.%Prepare(myquery)
-   	IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
-  	set rset = tStatement.%Execute()
-  	WHILE rset.%Next() {
-	  	ZNSPACE "DOCSEARCH"
-	  	set tempArray(counter) = ##class(Search.Parser).Parse(rset.content)
-    	set counter=counter+1
-    	set rowcount = rset.cnt
-  	}
-  	write tempArray(1)
-  	write rowcount,!
-    for k=1:1:wordquantity
-    { 
-	 set word = wordArray(k)
-	 if (word="") {quit}
-	 set spaceArray(k)=0
-  	 set wordCountArray(k)=0
-	 set Wordlength=$length(word)
-     for j=1:1:rowcount
-      {	
-      	set text=tempArray(j)
-      	write "text: "_text,!
-      	write "textlength: "_$length(text), !
-    	for i=1:1:$length(text)-Wordlength
-    	{
-    		write "wordlength: "_Wordlength,!
-	    	set substr=$EXTRACT(text,i,i+Wordlength-1)
-	    	write "substring: "_substr,!
-			set char = $EXTRACT(text,i)
-			if (char=" ")
-			{
-				set spaceArray(k)=spaceArray(k)+1
-				write "space count: "_spaceArray(k),!
-			}
-			if (substr=word)
-			{ 
-				set wordCountArray(k)=1+wordCountArray(k)
-			}
-    	}
-      }
-    }
-    set rank0=0
-    set rank1=0
-    set rank2=0
-    set rank3=0
-    set rank0 =wordCountArray(1)/spaceArray(1)
-    if (wordArray(2)'="")
-    	{set rank1 =wordCountArray(2)/spaceArray(2)}
-    if (wordArray(3)'="")
-    	{set rank2=wordCountArray(3)/spaceArray(3)}
-    if (wordArray(4)'="")
-    	{set rank3 =wordCountArray(4)/spaceArray(4)}
-    set rank=rank0+rank1+rank2+rank3
-    write "rank0: "_rank0,!
-    write "rank1: "_rank1,!
-    write "rank2: "_rank2,!
-    write "rank3: "_rank3,!
-    write "final rank: "_rank,!
-	set st=$$$OK
-	quit rank
+	zw array
+	q array
 }
 
 }
