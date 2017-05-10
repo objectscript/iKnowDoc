@@ -117,11 +117,18 @@ ClassMethod FormQuery(obj) As %Status
 	// Выполняем поиск слова с помощью iFind в DocBook.block
 	set tempArray = ##class(%ArrayOfDataTypes).%New()
 	set count = 0	
-	set myquery = "SELECT id,content, component->blockid As link,book->title As title FROM DocBook.block WHERE %ID %FIND search_index(contentInd,'"_text_"',0)"
+	set myquery = "SELECT id,content, component->blockid As link,book->title As title FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)"
+  	
   	set tStatement = ##class(%SQL.Statement).%New()
+  	SET qStatus = tStatement.%Prepare(.myquery)
+    IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
+    SET rset = tStatement.%Execute(text)
+  	
+  	
+  	/*set tStatement = ##class(%SQL.Statement).%New()
   	set qStatus = tStatement.%Prepare(myquery)
    	if qStatus'=1 {write "%Prepare failed:" do $System.Status.DisplayError(qStatus) quit}
-  	set rset = tStatement.%Execute()
+  	set rset = tStatement.%Execute()*/
   	while rset.%Next() {
 	  	znspace "DOCSEARCH"
 	  	set tempArray(count,0)= rset.id
