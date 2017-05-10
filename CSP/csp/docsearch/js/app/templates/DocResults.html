@@ -31,7 +31,7 @@
 		<div> <!-- Результаты поиска -->
 			<ul>
 				<li ng-repeat = "result in results" style="margin-top:10px; list-style-type: none;">
-					<a href="http://" + location.host + "/csp/docbook/DocBook.UI.Page.cls?KEY={{result.link}}" target="_blank">{{result.title}}</a>
+					<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.link}}" target="_blank">{{result.title}}</a>
 					<br>
 					<span>{{result.content}}</span>
 				</li>

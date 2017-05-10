@@ -12,8 +12,10 @@ searchApp
 			startRecord:'1',
 			recordCount: '20'	
 		};
+
+		$scope.mylocation = location.host;
 		
-		var index = -1;
+		var index = - 1;
 		
 		$scope.imputToggle = false;
 		
@@ -36,10 +38,7 @@ searchApp
 			$scope.search.words = $scope.currrentSearchItem.value;
 			$scope.makeSearch();
 			
-			$scope.imputToggle = true;
-
-			if ($scope.toggle == false)
-					$scope.imputToggle = false;
+			$scope.imputToggle = false;
 		}
 		
 		$scope.handleArrows = function (event) {
@@ -66,16 +65,22 @@ searchApp
 		
 		$scope.advancedSearch = function(){
 			
-			$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
-				.then(function(response) {
-							$scope.tempo = response.data.sources;
-						});
-			$location.path("/DocResults");
+			if ($scope.search.words != '')
+			{
+				$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
+					.then(function(response) {
+								$scope.results = response.data.sources;
+							});
+				$location.path("/DocResults");
+
+			} else 
+				$location.path("/DocSearch");
 		}
 		
 
 		$scope.makeSearch = function (){
 
+			$scope.search.startRecord = 1;
 			if ($scope.search.words != '')
 			{
 				
@@ -83,11 +88,15 @@ searchApp
 					.then(function(response) {
 							$scope.results = response.data.sources;
 							$scope.totalCount = $scope.results[$scope.search.recordCount].totalCount;
-							$scope.paginationList = pagination.getPaginationList($scope.totalCount, $scope.search.recordCount);							
+							$scope.paginationList = pagination.getPaginationList($scope.totalCount, $scope.search.recordCount);
+							console.log($scope.search.startRecord);
 						});
+						
+						
 				$location.path("/DocResults");
 				
 			} else 
+			
 				$location.path("/DocSearch");
 		}
 
@@ -100,13 +109,13 @@ searchApp
 					} else {
 						$scope.results = pagination.getPageProducts( page );
 					}
-					
 					$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
 					.then(function(response) {
 							$scope.results = response.data.sources;
 						});
 					
 					$scope.search.startRecord = (pagination.getCurrentPageNum()) * $scope.search.recordCount + 1;
+					//console.log($scope.search.startRecord);
 		}
 				
 		$scope.currentPageNum = function() {
