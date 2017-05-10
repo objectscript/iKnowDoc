@@ -1,0 +1,46 @@
+<div>
+	 		<header class="ResultHeader"> <!-- Шапка -->
+				<form class="form-horizontal"  autocomplete="off">
+					<div class="col-md-3 col-sm-3 col-xs-3 Logo"> <!-- Лого -->
+						<a href="#!DocSearch"><img ng-src = "style/images/Logo.png" width ="100%" title ="InterSystems"/></a>
+					</div>
+					<div class="input-groop col-md-6 col-sm-6 col-xs-6 MarginHeader"> <!-- Строка поиска -->
+							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
+							
+							<div ng-show = "imputToggle" class = "toggler">
+								<ul class = "listStyle">
+									<li class = "hint" ng-repeat = "item in searchItems" ng-class="{'activeToggle': item.value == currrentSearchItem.value}" ng-click = "handleClick(item)">
+										{{item.value}}
+									</li>
+								</ul>
+							</div>
+					</div>
+					<div class="col-md-3 col-sm-3 col-xs-3 MarginHeader"> <!-- Кнопки поиска для разных размеров окна браузера -->
+						<button type="submit" class="btn btn-primary hidden-sm hidden-xs" ng-click = "makeSearch()">
+							<span class="glyphicon glyphicon-search"></span> Search
+						</button>
+						<button type="submit" class="btn btn-primary hidden-md hidden-lg" ng-click = "makeSearch()">
+							<span class="glyphicon glyphicon-search"></span>
+						</button>
+						<div class="pull-right"> <!-- Меню настроек -->
+							<a href="#!SearchAdvance" class="btn btn-primary">Settings</a>
+						</div>
+					</div>	
+				</form>
+			</header>
+		<div> <!-- Результаты поиска -->
+			<ul>
+				<li ng-repeat = "result in results" style="margin-top:10px; list-style-type: none;">
+					<a href="http://" + location.host + "/csp/docbook/DocBook.UI.Page.cls?KEY={{result.link}}" target="_blank">{{result.title}}</a>
+					<br>
+					<span>{{result.content}}</span>
+				</li>
+			</ul>
+		</div>
+		
+		<div class="pagination-wrap"> <!-- Пагинация -->
+			<ul class="pagination">
+				<li ng-repeat="page in paginationList" ng-click="showPage(page.link)" ng-class="{'active': currentPageNum() == page.link}"><a ng-bind-html="page.name"></a></li>
+			</ul>
+		</div>
+</div>

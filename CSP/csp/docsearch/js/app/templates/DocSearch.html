@@ -1,0 +1,39 @@
+<!-- Стартовая страница -->
+<div>
+			<header> <!-- Лого -->
+				<p class="text-center MarginHeader">
+					<img ng-src = "style/images/Logo.png" width ="40%" title ="InterSystems"  onclick = "logoClick()"/>
+				</p>
+			</header>
+			
+			<div> <!-- Поисковая строка и кнопки поиска для разных размеров окна браузера -->
+				<form class="form-horizontal container-fluid MarginSearchLine ui-widgetui-widget"  autocomplete="off">
+					<div class="input-groop col-md-offset-3 col-md-6 col-sm-offset-3 col-sm-6 col-xs-offset-2 col-xs-8">
+							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
+							
+							<div ng-show = "imputToggle" class = "toggler">
+								<ul class = "listStyle">
+									<li class = "hint" ng-repeat = "item in searchItems" ng-class="{'activeToggle': item.value == currrentSearchItem.value}" ng-click = "handleClick(item)">
+										{{item.value}}
+									</li>
+								</ul>
+							</div>
+					</div>
+					<button type="submit" class="btn btn-primary hidden-xs" ng-click = "makeSearch()">
+						<span class="glyphicon glyphicon-search"></span> Search
+					</button>
+					<button type="submit" class="btn btn-primary hidden-sm hidden-md hidden-lg" ng-click = "makeSearch()">
+						<span class="glyphicon glyphicon-search"></span>
+					</button>
+				</form><br>
+			</div>
+			
+			<footer class="footer"> <!-- Подвал -->
+				<div  class="hidden-xs FloatLeft">
+					<ul class="list-inline">
+						<li><a href="http://www.intersystems.com/" target="_blank">InterSystems</a></li>
+						<li><a href="https://docs.intersystems.com/latest/csp/docbook/DocBook.UI.Page.cls" target="_blank">Documentation</a></li>
+					</ul>
+				</div>
+			</footer>
+</div>
