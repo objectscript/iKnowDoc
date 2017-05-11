@@ -14,9 +14,7 @@ searchApp
 		};
 
 		$scope.mylocation = location.host;
-		
 		var index = - 1;
-		
 		$scope.imputToggle = false;
 		
 		$scope.change = function (){
@@ -63,13 +61,15 @@ searchApp
 			
 		}
 		
-		$scope.advancedSearch = function(){
-			
+		$scope.advancedSearch = function(){			
+			$scope.showPage(0);
 			if ($scope.search.words != '')
 			{
 				$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
 					.then(function(response) {
 								$scope.results = response.data.sources;
+								$scope.totalCount = $scope.results[$scope.search.recordCount].totalCount;
+								$scope.paginationList = pagination.getPaginationList($scope.totalCount, $scope.search.recordCount);
 							});
 				$location.path("/DocResults");
 
@@ -81,18 +81,19 @@ searchApp
 		$scope.makeSearch = function (){
 
 			$scope.search.startRecord = 1;
+			
+			$scope.imputToggle = false;
+			$scope.showPage(0);
+
 			if ($scope.search.words != '')
 			{
-				
 				$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
 					.then(function(response) {
 							$scope.results = response.data.sources;
 							$scope.totalCount = $scope.results[$scope.search.recordCount].totalCount;
 							$scope.paginationList = pagination.getPaginationList($scope.totalCount, $scope.search.recordCount);
-							console.log($scope.search.startRecord);
 						});
-						
-						
+ 
 				$location.path("/DocResults");
 				
 			} else 
@@ -113,15 +114,13 @@ searchApp
 					.then(function(response) {
 							$scope.results = response.data.sources;
 						});
-					
 					$scope.search.startRecord = (pagination.getCurrentPageNum()) * $scope.search.recordCount + 1;
-					//console.log($scope.search.startRecord);
+
 		}
 				
 		$scope.currentPageNum = function() {
-			return pagination.getCurrentPageNum();
+		
+				return pagination.getCurrentPageNum();
 		}
 
 	})/* END of controller - searchController */
-	
-
