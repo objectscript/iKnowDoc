@@ -1,6 +1,7 @@
 Class Search.Parser {
- 
-/// Парсер, заменяющий XML-теги на пробел:
+
+// Данные документации в БД храняться со всеми тегами, для дальнейшей вставки на страницу. Нам же теги не нужны,из-за этого из убираем
+/// Парсер, заменяющий XML-теги в источниках на пробел:
 ClassMethod Parse(textTag) As %String
 {
 		set i =1
@@ -31,7 +32,7 @@ link	for i=1:1:$LENGTH(text)
 			 }
 			
 		}
-		
+		//замена html символов
 		set text = $REPLACE(text,"&reg;","®")
 		set text = $REPLACE(text,"&ntilde;","ñ")
 		set text = $REPLACE(text,"&#39;","'")
@@ -45,6 +46,7 @@ link	for i=1:1:$LENGTH(text)
 		set text = $REPLACE(text,"\"," ")
 		set text = $REPLACE(text,"/"," ")
 		set text = $REPLACE(text,""""," ")
+		//убирает скобки чтоб предотвратить конфликты с JSON
 		set text = $REPLACE(text,"{"," ")
 		set text = $REPLACE(text,"}"," ")
 		set text = $REPLACE(text,"["," ")
@@ -55,7 +57,8 @@ link	for i=1:1:$LENGTH(text)
   		set text = $REPLACE(text,"\f"," ")
   		set text = $REPLACE(text,"\d"," ")
   		set text = $REPLACE(text,"\a"," ")
- 		set text = $REPLACE(text,"  "," ") 
+ 		set text = $REPLACE(text,"  "," ")
+ 		//убирает лишние пробелы после парсинга
   		set text = $REPLACE(text,"       "," ")
   		set text = $REPLACE(text,"      "," ")
   		set text = $REPLACE(text,"     "," ")
@@ -65,7 +68,7 @@ link	for i=1:1:$LENGTH(text)
 		quit text
 }
 
-/// Корректирует нестандартные символы в заголовках
+/// Корректирует нестандартные символы в заголовках результатов поиска
 ClassMethod ParseTitle(textTag) As %String
 {
 		set i =1
@@ -85,13 +88,4 @@ ClassMethod ParseTitle(textTag) As %String
 		set text = $REPLACE(text,"&eacute;","é")
 		quit text
 }
-
-ClassMethod Frequency(text, word) As %Float
-{
-		set frequency = 0
-		// Посмотреть для сложных запросов
-		set frequency = $LENGTH(text,word) / $LENGTH(text, " ")
-		quit frequency
-}
-
 }
