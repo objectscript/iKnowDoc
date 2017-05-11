@@ -8,7 +8,6 @@ XData UrlMap
 {
 
 <Routes>	
-	<Route Url="/SearchByText/:text" Method="GET" Call="Search.Domain:SearchByText"/>
 	<Route Url="/GetSimilar/:text" Method="GET" Call="Search.Domain:GetSimilar"/>
 	<Route Url="/Search" Method="POST" Call="Search.SearchPages:Search"/>
 </Routes>
