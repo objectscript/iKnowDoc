@@ -9,103 +9,16 @@
 
 	<body ng-controller="searchController">
 	
-	<!-- Стартовая страница -->
-		<div ng-show = "toggle">
-			<header> <!-- Лого -->
-				<p class="text-center MarginHeader">
-					<img ng-src = "style/images/Logo.png" width ="40%" title ="InterSystems"  onclick = "logoClick()"/>
-				</p>
-			</header>
-			
-			<div> <!-- Поисковая строка и кнопки поиска для разных размеров окна браузера -->
-				<form class="form-horizontal container-fluid MarginSearchLine ui-widgetui-widget"  autocomplete="off">
-					<div class="input-groop col-md-offset-3 col-md-6 col-sm-offset-3 col-sm-6 col-xs-offset-2 col-xs-8">
-							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
-							
-							<div ng-show = "imputToggle" class = "toggler">
-								<ul class = "listStyle">
-									<li class = "hint" ng-repeat = "item in searchItems" ng-class="{'activeToggle': item.value == currrentSearchItem.value}" ng-click = "handleClick(item)">
-										{{item.value}}
-									</li>
-								</ul>
-							</div>
-					</div>
-					<button type="submit" class="btn btn-primary hidden-xs" ng-click = "makeSearch()">
-						<span class="glyphicon glyphicon-search"></span> Search
-					</button>
-					<button type="submit" class="btn btn-primary hidden-sm hidden-md hidden-lg" ng-click = "makeSearch()">
-						<span class="glyphicon glyphicon-search"></span>
-					</button>
-				</form><br>
-			</div>
-			
-			<footer class="footer"> <!-- Подвал -->
-			<div  class="hidden-xs FloatLeft">
-				<ul class="list-inline">
-					<li><a href="http://www.intersystems.com/" target="_blank">InterSystems</a></li>
-					<li><a href="https://docs.intersystems.com/latest/csp/docbook/DocBook.UI.Page.cls" target="_blank">Documentation</a></li>
-				</ul>
-			</div>
-			</footer>
-		</div>
-		 
-		<!-- Страница с результатами поиска -->
-		<div ng-show = "!toggle">
-			<header class="ResultHeader"> <!-- Шапка -->
-				<form class="form-horizontal"  autocomplete="off">
-					<div class="col-md-3 col-sm-3 col-xs-3 Logo"> <!-- Лого -->
-						<a href="javascript:window.location.reload()"><img ng-src = "style/images/Logo.png" width ="100%" title ="InterSystems"/></a>
-					</div>
-					<div class="input-groop col-md-6 col-sm-6 col-xs-6 MarginHeader"> <!-- Строка поиска -->
-							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
-							
-							<div ng-show = "imputToggle" class = "toggler">
-								<ul class = "listStyle">
-									<li class = "hint" ng-repeat = "item in searchItems" ng-class="{'activeToggle': item.value == currrentSearchItem.value}" ng-click = "handleClick(item)">
-										{{item.value}}
-									</li>
-								</ul>
-							</div>
-					</div>
-					<div class="col-md-3 col-sm-3 col-xs-3 MarginHeader"> <!-- Кнопки поиска для разных размеров окна браузера -->
-						<button type="submit" class="btn btn-primary hidden-sm hidden-xs" ng-click = "makeSearch()">
-							<span class="glyphicon glyphicon-search"></span> Search
-						</button>
-						<button type="submit" class="btn btn-primary hidden-md hidden-lg" ng-click = "makeSearch()">
-							<span class="glyphicon glyphicon-search"></span>
-						</button>
-						<div class="pull-right"> <!-- Меню настроек -->
-							<button type="button" >Settings <span class="caret"></span></button>
-						</div>
-					</div>	
-				</form>
-			</header>
-		<div> <!-- Результаты поиска -->
-			<ul>
-				<li ng-repeat = "result in results" style="margin-top:10px; list-style-type: none;">
-					<a href="http://localhost:57773/csp/docbook/DocBook.UI.Page.cls?KEY={{result.link}}" target="_blank">{{result.title}}</a>
-					<br>
-					<span>{{result.content}}</span>
-				</li>
-			</ul>
-		</div>
+		<ng-view></ng-view>
 		
-		<div class="pagination-wrap"> <!-- Пагинация -->
-			<ul class="pagination">
-				<li ng-repeat="page in paginationList" ng-click="showPage(page.link)" ng-class="{'active': currentPageNum() == page.link}"><a ng-bind-html="page.name"></a></li>
-			</ul>
-		</div>
-		
-	</div>
-	
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>  
 		<script type="text/javascript" src = "js/vendor/bootstrap.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
 		<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
-		
+			
 		<script type="text/javascript" src = "js/app/app.js"></script>
 		<script type="text/javascript" src = "js/app/services/pagination.js"></script>
 		<script type="text/javascript" src = "js/app/controllers.js"></script>
 	
-</body>
+	</body>
 </html>
