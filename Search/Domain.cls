@@ -1,6 +1,5 @@
 Include %IKInclude
 Class Search.Domain extends %Persistent {
-
 // Неоходимо запустить следующей командой на выполнение(сильно грузит комьютер, рекомендуется закрыть остальные программы)
 // do ##class(Search.Domain).%Build()
 // Выполняется минут 5-10

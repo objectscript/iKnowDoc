@@ -3,7 +3,7 @@ Class Search.SearchPages {
 /// POST метод поиска по документации
 // ѕример POST запроса {"words":"iknow","phrase":"rest api","anyWords":"json, sql","without":"class, you, ifind, Enhancements", startRecord:1, recordCount:20}
 ClassMethod Search(obj) As %Status
-{
+{ 
 	try {
 		set %request.Content.Attributes("CharEncoding")="UTF8"
 		set str = $ZCVT(%request.Content.Read(),"I","UTF8")

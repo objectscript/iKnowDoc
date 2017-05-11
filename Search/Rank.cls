@@ -2,7 +2,7 @@ Class Search.Rank {
 
 // Метод высчитывающий отношение искомых слов к всем словам на найденной странице
 ClassMethod Frequency(domainid As %Integer, sourceidlist As %List, wordidlist As %List) As %Float
-{
+{ 
 	//zn "docbook"
 	// Получаем количество искомых слов(id искомых слов содержаться в wordidlist) в найденных страницах(которые состоят из источников, id источников содержаться в sourceidlist) 
 	set numerator = ##class(Search.Domain).GetCountWordsBySource(domainid,sourceidlist,wordidlist)
