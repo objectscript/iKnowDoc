@@ -75,6 +75,7 @@ searchApp
 								$scope.paginationList = pagination.getPaginationList($scope.totalCount, $scope.search.recordCount);
 								$scope.preloadToggle = false;
 							});
+				
 				$location.path("/DocResults");
 						
 			} else 
@@ -84,11 +85,12 @@ searchApp
 
 		$scope.makeSearch = function (){
 
-			$scope.search.startRecord = 1;
-			
+			$scope.search.startRecord = 1;			
 			$scope.imputToggle = false;
-			$scope.showPage(0);
 			$scope.preloadToggle = true;
+
+			$scope.showPage(0);
+			
 			if ($scope.search.words != '')
 			{
 				$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
@@ -104,9 +106,7 @@ searchApp
 			} else 
 			
 				$location.path("/DocSearch");
-
-				
-			
+	
 		}
 
 		$scope.showPage = function (page) {
