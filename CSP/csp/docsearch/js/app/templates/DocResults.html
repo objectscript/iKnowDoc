@@ -22,25 +22,56 @@
 						<button type="submit" class="btn btn-primary hidden-md hidden-lg" ng-click = "makeSearch()">
 							<span class="glyphicon glyphicon-search"></span>
 						</button>
-						<div class="pull-right"> <!-- Меню настроек -->
-							<a href="#!SearchAdvance" class="btn btn-primary">Settings</a>
+						<div class="pull-right"> <!-- Кнопка расширенного поиска -->
+							<a href="#!SearchAdvance" class="btn btn-link">Advanced Search</a>
 						</div>
 					</div>	
 				</form>
 			</header>
-		<div> <!-- Результаты поиска -->
-			<ul>
-				<li ng-repeat = "result in results" style="margin-top:10px; list-style-type: none;">
-					<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.link}}" target="_blank">{{result.title}}</a>
-					<br>
-					<span>{{result.content}}</span>
-				</li>
-			</ul>
-		</div>
-		
-		<div class="pagination-wrap"> <!-- Пагинация -->
-			<ul class="pagination">
-				<li ng-repeat="page in paginationList" ng-click="showPage(page.link)" ng-class="{'active': currentPageNum() == page.link}"><a ng-bind-html="page.name"></a></li>
-			</ul>
-		</div>
+			
+			<div ng-show = "preloadToggle">
+				<div class="cssload-container">
+					<div class="cssload-cube">
+						<div class="cssload-half1">
+							<div class="cssload-side cssload-s1"></div>
+							<div class="cssload-side cssload-s2"></div>
+							<div class="cssload-side cssload-s5"></div>
+						</div>
+						<div class="cssload-half2">
+							<div class="cssload-side cssload-s3"></div>
+							<div class="cssload-side cssload-s4"></div>
+							<div class="cssload-side cssload-s6"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div ng-show = "resultToggle"> <!-- Результаты поиска -->
+				   <ul>
+					    <li ng-repeat = "result in results" style="margin-top:10px; list-style-type: none;">
+						     <a href="http://{{location.host }}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.link}}" target="_blank">{{result.title}}</a>
+						     <br>
+						      <span>{{result.content}}</span>
+					    </li>
+				   </ul>
+			  </div>
+			
+			<div style="text-center" ng-show = "!resultToggle">
+				Your search - {{Search.text}} - did not match any documents.
+				</br>
+				Suggestions:
+				</br>
+				Make sure that all words are spelled correctly.
+				</br>
+				Try different keywords.
+				</br>
+				Try more general keywords.
+				</br>
+			</div>
+			
+			<div class="pagination-wrap"> <!-- Пагинация -->
+				<ul class="pagination">
+					<li ng-repeat="page in paginationList" ng-click="showPage(page.link)" ng-class="{'active': currentPageNum() == page.link}"><a ng-bind-html="page.name"></a></li>
+				</ul>
+			</div>
 </div>
