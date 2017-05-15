@@ -23,8 +23,7 @@ searchApp
 				return Math.ceil(TotalObjNum / itemsPerPage);
 			}, /* END of getTotalPagesNum */
 			
-			//
-
+			//			
 			getPaginationList: function(page, pagesNum, check) {
 				var paginationList = [];
 				

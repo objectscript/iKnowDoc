@@ -54,12 +54,23 @@
 							     <span class="glyphicon glyphicon-arrow-right"></span>
 							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.docKey}}" target="_blank">{{result.title}}</a>
 							     <br>
+							     
 							     <ul>
-								     <li ng-repeat = "item in result.textInfo" style="margin-top:10px; list-style-type: none;">
+								     <li ng-repeat = "item in result.textInfo| limitTo:5" style="margin-top:10px; list-style-type: none;">
 								     	<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}" target="_blank">{{item.text}}</a>								     
 								     </li>
 								     <br>
+								     <button ng-click = "ShowAllResults()">Show/hide all results</button>
 							     </ul>
+							     	<div ng-show = "itemsNumToggle">
+							     		<ul>
+							     			<li ng-repeat = "item in result.textInfo| limitTo:result.textInfo.length:5" style="margin-top:10px; list-style-type: none;">
+							     				<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}" target="_blank">{{item.text}}</a>								     
+							     			</li>
+							     		</ul>
+								    </div>
+							    
+								<br>
 						    </li>
 					   </ul>
 				  </div>

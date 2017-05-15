@@ -14,7 +14,10 @@ searchApp
 		};
 		
 		var index = - 1;
+		var prevNextCheck = 0;
 		var check = '';
+		$scope.itemsNumToggle = false;
+		$scope.showAllResultsToggle = true;
 		$scope.mylocation = location.host;
 		$scope.inputToggle = false;
 		$scope.resultToggle = true;
@@ -23,6 +26,19 @@ searchApp
 		$scope.nextToggle = false;
 		$scope.checkToggle = false;
 		
+		$scope.ShowAllResults = function (){
+				
+				if($scope.showAllResultsToggle == true)
+				{
+					$scope.itemsNumToggle = true;
+					$scope.showAllResultsToggle = false;
+				}
+				else
+				{
+					$scope.itemsNumToggle = false;
+					$scope.showAllResultsToggle = true;
+				}
+		}
 		
 		$scope.change = function (){
 								
@@ -93,14 +109,6 @@ searchApp
 			}
 			else 
 				$scope.checkToggle = false;
-							
-			if (page == 'prev') {
-					$scope.results = pagination.getPrevPageProducts();
-			} else if (page == 'next') {
-					$scope.results = pagination.getNextPageProducts($scope.totalCount, $scope.search.recordCount);
-			} else {
-				$scope.results = pagination.getPageProducts(page);
-			}
 					
 			$scope.search.startRecord = (pagination.getCurrentPageNum()) * $scope.search.recordCount + 1;
 
@@ -112,13 +120,31 @@ searchApp
 					$scope.pagesNum = pagination.getTotalPagesNum($scope.totalCount, $scope.search.recordCount);
 					$scope.paginationList = pagination.getPaginationList($scope.currentPage, $scope.pagesNum, $scope.checkToggle);
 					$scope.preloadToggle = false;
-			});	
-			if ($scope.currentPage != 0)
+			});
+			
+			if(!isNaN(page))
+					prevNextCheck = page;
+			
+			if (page == 'prev') {
+					$scope.results = pagination.getPrevPageProducts();
+					prevNextCheck -= 1;
+					if (prevNextCheck < 0)
+						prevNextCheck = 0;
+			} else if (page == 'next') {
+					$scope.results = pagination.getNextPageProducts($scope.totalCount, $scope.search.recordCount);
+					prevNextCheck += 1;
+					if (prevNextCheck > $scope.pagesNum - 1)
+						prevNextCheck = $scope.pagesNum;
+			} else {
+				$scope.results = pagination.getPageProducts(page);
+			}
+	
+			if (prevNextCheck != 0)
 				$scope.prevToggle = true;
 			else
 				$scope.prevToggle = false;
 			
-			if ($scope.currentPage != $scope.pagesNum - 1)
+			if (prevNextCheck != $scope.pagesNum - 1)
 				$scope.nextToggle = true;
 			else
 				$scope.nextToggle = false;
