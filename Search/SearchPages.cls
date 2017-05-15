@@ -459,7 +459,8 @@ ClassMethod FormQueryNew(obj) As %Status
 	// Запрос к временной таблице отсортированной по частоте с учетом пагинации 
    	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from SQLUser.temptable order by frequency DESC) order by frequency ASC) order by frequency DESC"
   	//Пока что без пагинации
-  	set resultQuery = "select * from SQLUser.temptable order by docKey"
+  	//set resultQuery = "select * from( select * from SQLUser.temptable group by title) order by frequency DESC"
+  	set resultQuery = "select count(*) AS cnt,* from (select TOP "_recordCount_" * from (select TOP "_offset_" * from( select * from SQLUser.temptable group by title) order by frequency DESC) order by frequency ASC) order by frequency DESC"
   	set Statement = ##class(%SQL.Statement).%New()
   	set Status = Statement.%Prepare(resultQuery)
    	if Status'=1 {write "%Prepare failed:" do $System.Status.DisplayError(Status) quit}
@@ -471,12 +472,32 @@ ClassMethod FormQueryNew(obj) As %Status
     while result.%Next() {
     	// Заполняем массив данными
     	//set tJSON = { "text":(result.text), "textKey":(result.textKey), "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
-		set tJSON = {"textInfo":[{"text":(result.text), "textKey":(result.textKey)}], "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
+		set tJSON = {"textInfo":[], "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
+		//do ResultJSON.sources.%Push(tJSON)
+
+
+		set subresultQuery = "select * from SQLUser.temptable where docKey=?"
+	  	set subStatement = ##class(%SQL.Statement).%New()
+	  	set subStatus = subStatement.%Prepare(subresultQuery)
+	   	if subStatus'=1 {write "%Prepare failed:" do $System.Status.DisplayError(subStatus) quit}
+	  	set subresult = subStatement.%Execute(result.docKey)
+	  	while subresult.%Next() {
+	  		set subtextKey = result.docKey_"#"_subresult.textKey
+	  		set textInfoJSON = {"text":(subresult.text), "textKey":(subtextKey)}
+	  		do tJSON.textInfo.%Push(textInfoJSON)
+	  	}
+	  	
+	  	
+		//set textInfoJSON = {"text":(result.text), "textKey":(result.textKey)}
+		
+		//do ResultJSON.sources.%Push(textInfoJSON)
+		//do tJSON.textInfo.%Push(textInfoJSON)
 		do ResultJSON.sources.%Push(tJSON)
+		set totalCount=result.cnt
 		
     }
     // Вывод в JSON общего количества найденных результатов
-    set totalCountJ = {"totalCount":(+count)}
+    set totalCountJ = {"totalCount":(+totalCount)}
     do ResultJSON.sources.%Push(totalCountJ)
     
 	//Удалем временную таблицу
