@@ -5,6 +5,9 @@ searchApp
 	.factory('pagination', function( $sce ) {
 
 		var currentPage = 0;
+		var counter = 0;
+		var startPage = 0;
+				
 		var results = [];
 
 		return {		
@@ -17,29 +20,61 @@ searchApp
 			
 			//
 			getTotalPagesNum: function(TotalObjNum, itemsPerPage) {
-				return Math.ceil( TotalObjNum / itemsPerPage );
+				return Math.ceil(TotalObjNum / itemsPerPage);
 			}, /* END of getTotalPagesNum */
 			
 			//
-			getPaginationList: function(TotalPagesNum, itemsPerPage) {
-				var pagesNum = this.getTotalPagesNum(TotalPagesNum, itemsPerPage);
+
+			getPaginationList: function(page, pagesNum, check) {
 				var paginationList = [];
-				paginationList.push({
-					name: $sce.trustAsHtml('&laquo;'),
-					link: 'prev'
-				});
+				
+				if(check == true)
+				{
+					startPage = 0;
+				}
+				
+				var endPage = startPage + 10;				
+				
+				if(!isNaN(page))
+					counter = page;
+
+				if(endPage > pagesNum)
+					endPage = pagesNum;
+
+				if (page == 'prev')
+				{
+					page = counter - 1;
+					counter = page;
+					if (page % 10 == 9)
+						endPage = page + 1;
+					
+					startPage = endPage - 10;
+					
+					if(startPage < 0)
+						startPage = 0;
+				}
+				
+				if (page == 'next')
+				{
+					page = counter + 1;
+					counter = page;
+					if (page % 10 == 0)
+						startPage = page;
+					
+					endPage = startPage + 10;
 									
-				for (var i = 0; i < pagesNum; i++) {
+					if(endPage > pagesNum)
+						endPage = pagesNum;
+				}				
+									
+				for (var i = startPage; i < endPage; i++) {
 					var name = i + 1;
 					paginationList.push({
 						name: $sce.trustAsHtml( String(name) ),
 						link: i
 					});
 				};
-				paginationList.push({
-					name: $sce.trustAsHtml('&raquo;'),
-					link: 'next'
-				});
+				
 				if (pagesNum > 1) {
 					return paginationList;
 				} else {

@@ -12,24 +12,29 @@ searchApp
 			startRecord:'1',
 			recordCount: '20'	
 		};
-
-		$scope.mylocation = location.host;
+		
 		var index = - 1;
-		$scope.imputToggle = false;
+		var check = '';
+		$scope.mylocation = location.host;
+		$scope.inputToggle = false;
 		$scope.resultToggle = true;
 		$scope.preloadToggle = false;
+		$scope.prevToggle = false;
+		$scope.nextToggle = false;
+		$scope.checkToggle = false;
+		
 		
 		$scope.change = function (){
 								
-				$http.get('http://' + location.host + '/csp/docsearch/rest/GetSimilar/' + $scope.search.words)
-					.then(function(response) {
-							$scope.searchItems = response.data.entities;
-						});	
+			$http.get('http://' + location.host + '/csp/docsearch/rest/GetSimilar/' + $scope.search.words)
+				.then(function(response) {
+					$scope.searchItems = response.data.entities;
+			});	
 	
-				if ($scope.search.words == '')
-					$scope.imputToggle = false;
-				else 
-					$scope.imputToggle = true;
+			if ($scope.search.words == '')
+				$scope.inputToggle = false;
+			else 
+				$scope.inputToggle = true;
 		}
 		
 		$scope.handleClick = function (item) {
@@ -38,7 +43,7 @@ searchApp
 			$scope.search.words = $scope.currrentSearchItem.value;
 			$scope.makeSearch();
 			
-			$scope.imputToggle = false;
+			$scope.inputToggle = false;
 		}
 		
 		$scope.handleArrows = function (event) {
@@ -52,79 +57,71 @@ searchApp
 				index = 9;
 			if (index > 9)
 				index = 0;	
-			if 	((event.keyCode  === 40) || (event.keyCode  === 38))
+			if 	((event.keyCode === 40) || (event.keyCode === 38))
 			{
 				$scope.search.words = $scope.searchItems[index].value;
 				$scope.currrentSearchItem = $scope.searchItems[index];
 			}
 			
-			if (event.keyCode  === 13)
-					$scope.imputToggle = false;
+			if (event.keyCode === 13)
+					$scope.inputToggle = false;
 			
-		}
-		
-		$scope.advancedSearch = function(){			
-			$scope.showPage(0);
-			$scope.preloadToggle = true;
-			if ($scope.search.words != '')
-			{
-				$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
-					.then(function(response) {
-								$scope.results = response.data.sources;
-								$scope.totalCount = $scope.results[$scope.search.recordCount].totalCount;
-								$scope.paginationList = pagination.getPaginationList($scope.totalCount, $scope.search.recordCount);
-								$scope.preloadToggle = false;
-							});
-				
-				$location.path("/DocResults");
-						
-			} else 
-				$location.path("/DocSearch");
-		}
-		
+		}		
 
 		$scope.makeSearch = function (){
-
-			$scope.search.startRecord = 1;			
-			$scope.imputToggle = false;
-			$scope.preloadToggle = true;
-
-			$scope.showPage(0);
+			
+			$scope.inputToggle = false;			
 			
 			if ($scope.search.words != '')
 			{
-				$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
-					.then(function(response) {
-							$scope.results = response.data.sources;
-							$scope.totalCount = $scope.results[$scope.search.recordCount].totalCount;
-							$scope.paginationList = pagination.getPaginationList($scope.totalCount, $scope.search.recordCount);
-							$scope.preloadToggle = false;
-						});
- 
+				$scope.showPage(0); 
 				$location.path("/DocResults");				
 
-			} else 
-			
+			} else			
 				$location.path("/DocSearch");
 	
 		}
 
-		$scope.showPage = function (page) {
-					$scope.preloadToggle = true;
-					if ( page == 'prev' ) {
-						$scope.results = pagination.getPrevPageProducts();
-					} else if ( page == 'next' ) {
-						$scope.results = pagination.getNextPageProducts($scope.totalCount, $scope.search.recordCount);
-					} else {
-						$scope.results = pagination.getPageProducts( page );
-					}
-					$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
-					.then(function(response) {
-							$scope.results = response.data.sources;
-							$scope.preloadToggle = false;
-						});
-					$scope.search.startRecord = (pagination.getCurrentPageNum()) * $scope.search.recordCount + 1;
+		$scope.showPage = function (page) {		
+			
+			$scope.currentPage = page;			
+			
+			if(check != $scope.search.words)
+			{
+				$scope.checkToggle = true;
+				check = $scope.search.words;
+			}
+			else 
+				$scope.checkToggle = false;
+							
+			if (page == 'prev') {
+					$scope.results = pagination.getPrevPageProducts();
+			} else if (page == 'next') {
+					$scope.results = pagination.getNextPageProducts($scope.totalCount, $scope.search.recordCount);
+			} else {
+				$scope.results = pagination.getPageProducts(page);
+			}
+					
+			$scope.search.startRecord = (pagination.getCurrentPageNum()) * $scope.search.recordCount + 1;
 
+			$scope.preloadToggle = true;		
+			$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
+				.then(function(response) {
+					$scope.results = response.data.sources;
+					$scope.totalCount = $scope.results[$scope.results.length-1].totalCount;
+					$scope.pagesNum = pagination.getTotalPagesNum($scope.totalCount, $scope.search.recordCount);
+					$scope.paginationList = pagination.getPaginationList($scope.currentPage, $scope.pagesNum, $scope.checkToggle);
+					$scope.preloadToggle = false;
+			});	
+			if ($scope.currentPage != 0)
+				$scope.prevToggle = true;
+			else
+				$scope.prevToggle = false;
+			
+			if ($scope.currentPage != $scope.pagesNum - 1)
+				$scope.nextToggle = true;
+			else
+				$scope.nextToggle = false;
 		}
 				
 		$scope.currentPageNum = function() {
