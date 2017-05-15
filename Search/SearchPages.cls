@@ -465,11 +465,15 @@ ClassMethod FormQueryNew(obj) As %Status
    	if Status'=1 {write "%Prepare failed:" do $System.Status.DisplayError(Status) quit}
   	set result = Statement.%Execute()
    	// Формируем динамический обьект
+    //set ResultJSON = { "sources": [] }
     set ResultJSON = { "sources": [] }
+    
     while result.%Next() {
     	// Заполняем массив данными
-    	set tJSON = { "text":(result.text), "textKey":(result.textKey), "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
+    	//set tJSON = { "text":(result.text), "textKey":(result.textKey), "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
+		set tJSON = {"textInfo":{"text":(result.text), "textKey":(result.textKey)}, "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
 		do ResultJSON.sources.%Push(tJSON)
+		
     }
     // Вывод в JSON общего количества найденных результатов
     set totalCountJ = {"totalCount":(+count)}
