@@ -367,7 +367,7 @@ ClassMethod FormQueryNew(obj) As %Status
     	set count = count + 1
     	znspace "DOCBOOK"
        } 
-      w count,!
+     
     znspace "DOCSEARCH"
     // Всего получили строк в запросе
 	set count = count - 1
@@ -471,7 +471,7 @@ ClassMethod FormQueryNew(obj) As %Status
     while result.%Next() {
     	// Заполняем массив данными
     	//set tJSON = { "text":(result.text), "textKey":(result.textKey), "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
-		set tJSON = {"textInfo":{"text":(result.text), "textKey":(result.textKey)}, "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
+		set tJSON = {"textInfo":[{"text":(result.text), "textKey":(result.textKey)}], "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
 		do ResultJSON.sources.%Push(tJSON)
 		
     }

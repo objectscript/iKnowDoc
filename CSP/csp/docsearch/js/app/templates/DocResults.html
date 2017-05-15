@@ -50,9 +50,16 @@
 				<div ng-show = "resultToggle"> <!-- Результаты поиска -->
 					   <ul>
 						    <li ng-repeat = "result in results" style="margin-top:10px; list-style-type: none;">
-							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.link}}" target="_blank">{{result.title}}</a>
+							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.bookKey}}" target="_blank">{{result.bookTitle}}</a>
+							     <span class="glyphicon glyphicon-arrow-right"></span>
+							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.docKey}}" target="_blank">{{result.title}}</a>
 							     <br>
-							      <span>{{result.content}}</span>
+							     <ul>
+								     <li ng-repeat = "item in result.textInfo" style="margin-top:10px; list-style-type: none;">
+								     	<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}" target="_blank">{{item.text}}</a>								     
+								     </li>
+								     <br>
+							     </ul>
 						    </li>
 					   </ul>
 				  </div>
@@ -70,7 +77,7 @@
 					</br>
 				</div>
 				
-				<div class="pagination-wrap"> <!-- Пагинация -->
+				<div class="pagination-wrap text-center"> <!-- Пагинация -->
 					<ul class="pagination">
 						<li ng-click="showPage('prev')" ng-class="{'active': currentPageNum() == page.link}" ng-show = "prevToggle"><a >&laquo;</a></li>
 						<li ng-repeat="page in paginationList" ng-click="showPage(page.link)" ng-class="{'active': currentPageNum() == page.link}"><a ng-bind-html="page.name"></a></li>
