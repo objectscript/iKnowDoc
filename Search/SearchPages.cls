@@ -361,9 +361,9 @@ ClassMethod FormQueryNew(obj) As %Status
     	set tempArray(count,2) = rset.textKey
     	set tempArray(count,3) = 0
     	set tempArray(count,4) = rset.docKey
-    	set tempArray(count,5) = rset.title
+    	set tempArray(count,5) = ##class(Search.Parser).ParseTitle(rset.title)
     	set tempArray(count,6) = rset.bookKey
-    	set tempArray(count,7) = rset.bookTitle
+    	set tempArray(count,7) = ##class(Search.Parser).ParseTitle(rset.bookTitle)
     	set count = count + 1
     	znspace "DOCBOOK"
        } 
