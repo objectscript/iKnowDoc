@@ -4,7 +4,7 @@
 					<div class="col-md-3 col-sm-3 col-xs-3 Logo"> <!-- Лого -->
 						<a href="#!DocSearch"><img ng-src = "style/images/Logo.png" width ="100%" title ="InterSystems"/></a>
 					</div>
-					<div class="input-groop col-md-6 col-sm-6 col-xs-6 MarginHeader"> <!-- Строка поиска -->
+					<div class="input-groop col-lg-6 col-md-5 col-sm-5 col-xs-5 MarginHeader"> <!-- Строка поиска -->
 							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
 							
 							<div ng-show = "inputToggle" class = "toggler">
@@ -15,16 +15,11 @@
 								</ul>
 							</div>
 					</div>
-					<div class="col-md-3 col-sm-3 col-xs-3 MarginHeader"> <!-- Кнопки поиска для разных размеров окна браузера -->
-						<button type="submit" class="btn btn-primary hidden-sm hidden-xs" ng-click = "makeSearch()">
-							<span class="glyphicon glyphicon-search"></span> Search
+					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-4 MarginHeader btn-group"> <!-- Кнопки поиска для разных размеров окна браузера -->
+						<button type="submit" class="btn btn-primary" ng-click = "makeSearch()">
+							<span class="glyphicon glyphicon-search"></span><span class="hidden-sm hidden-xs"> Search</span>
 						</button>
-						<button type="submit" class="btn btn-primary hidden-md hidden-lg" ng-click = "makeSearch()">
-							<span class="glyphicon glyphicon-search"></span>
-						</button>
-						<div class="pull-right"> <!-- Кнопка расширенного поиска -->
-							<a href="#!SearchAdvance" class="btn btn-link">Advanced Search</a>
-						</div>
+							<a href="#!SearchAdvance" class="btn btn-default"><span class="glyphicon glyphicon-wrench"></span><span class="hidden-sm hidden-xs">Advanced Search</span></a>
 					</div>	
 				</form>
 			</header>
@@ -50,18 +45,18 @@
 				<div ng-show = "resultToggle"> <!-- Результаты поиска -->
 					   <ul>
 						    <li ng-repeat = "result in results" style="margin-top:10px; list-style-type: none;">
-							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.bookKey}}" target="_blank">{{result.bookTitle}}</a>
+							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.bookKey}}" target="_blank"><b>{{result.bookTitle}}</b></a>
 							     <span class="glyphicon glyphicon-arrow-right"></span>
-							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.docKey}}" target="_blank">{{result.title}}</a>
+							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.docKey}}" target="_blank"><b>{{result.title}}</b></a>
 							     <br>
 							     
 							     <ul>
 							     	<li ng-repeat = "item in result.textInfo|showAllResults:0:5:!result.show_all" style="margin-top:10px; list-style-type: none;">
-							     		<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}" target="_blank">{{item.text}}</a>								     
+							     		{{item.text}}<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}"  class="btn btn-info btn-xs linkColor" target="_blank"> link</a>								     
 							     	</li>
 							     </ul>
 								 <br>
-								<button ng-click = "result.show_all = !result.show_all" ng-hide = "result.textInfo.length <= 5">Show/hide all results</button>
+								<button class="btn" ng-class="!result.show_all ? 'btn-success' : 'btn-default'" ng-click = "result.show_all = !result.show_all;" ng-hide = "result.textInfo.length <= 5"><span ng-hide="result.show_all">Show</span><span ng-show="result.show_all">Hide</span> all results</button>
 						    </li>
 					   </ul>
 				  </div>
@@ -88,3 +83,4 @@
 				</div>
 			</div>
 </div>
+

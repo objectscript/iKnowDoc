@@ -25,6 +25,7 @@ searchApp
 		$scope.checkToggle = false;
 		
 		$scope.change = function (){
+							
 								
 			$http.get('http://' + location.host + '/csp/docsearch/rest/GetSimilar/' + $scope.search.words)
 				.then(function(response) {
