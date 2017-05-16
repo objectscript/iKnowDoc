@@ -23,10 +23,26 @@ searchApp
 		$scope.prevToggle = false;
 		$scope.nextToggle = false;
 		$scope.checkToggle = false;
+		$scope.advancedMenuShow = false;
+
+		$scope.wordsClear=function(){
+			$scope.search.words="";
+		}
+		
+		$scope.phraseClear=function(){
+			$scope.search.phrase="";
+		}
+		
+		$scope.anyWordsClear=function(){
+			$scope.search.anyWords="";
+		}
+		
+		$scope.withoutClear=function(){
+			$scope.search.without="";
+		}
 		
 		$scope.change = function (){
-							
-								
+										
 			$http.get('http://' + location.host + '/csp/docsearch/rest/GetSimilar/' + $scope.search.words)
 				.then(function(response) {
 					$scope.searchItems = response.data.entities;
@@ -71,7 +87,8 @@ searchApp
 
 		$scope.makeSearch = function (){
 			
-			$scope.inputToggle = false;			
+			$scope.inputToggle = false;		
+			$scope.search.phrase==''&& $scope.search.anyWords=='' && $scope.search.without=='' ? $scope.advancedMenuShow=false : $scope.advancedMenuShow=true;
 			
 			if ($scope.search.words != '')
 			{

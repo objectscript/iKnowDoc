@@ -92,3 +92,13 @@ footer div ul li a:visited
 {
 	margin:20px;
 }
+.ButtonSize
+{
+	font-size: 20px;
+}
+.MarginAdvancedMenu
+{
+	margin-top:10px; 
+	margin-left:10px; 
+	margin-right:10px;
+}
