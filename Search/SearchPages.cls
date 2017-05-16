@@ -460,7 +460,7 @@ ClassMethod FormQueryNew(obj) As %Status
    	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from SQLUser.temptable order by frequency DESC) order by frequency ASC) order by frequency DESC"
   	//Пока что без пагинации
   	//set resultQuery = "select * from( select * from SQLUser.temptable group by title) order by frequency DESC"
-  	set resultQuery = "select count(*) AS cnt,* from (select TOP "_recordCount_" * from (select TOP "_offset_" * from( select * from SQLUser.temptable group by title) order by frequency DESC) order by frequency ASC) order by frequency DESC"
+  	set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) AS cnt, * from ( select * from SQLUser.temptable group by title)) order by frequency DESC) order by frequency ASC) order by frequency DESC"
   	set Statement = ##class(%SQL.Statement).%New()
   	set Status = Statement.%Prepare(resultQuery)
    	if Status'=1 {write "%Prepare failed:" do $System.Status.DisplayError(Status) quit}
@@ -495,8 +495,11 @@ ClassMethod FormQueryNew(obj) As %Status
 		do ResultJSON.sources.%Push(tJSON)
 		set totalCount=result.cnt
 		
+		
     }
     // Вывод в JSON общего количества найденных результатов
+    //set totalCountJ = {"totalCount":(+count)}
+    //do ResultJSON.sources.%Push(totalCountJ)
     set totalCountJ = {"totalCount":(+totalCount)}
     do ResultJSON.sources.%Push(totalCountJ)
     
