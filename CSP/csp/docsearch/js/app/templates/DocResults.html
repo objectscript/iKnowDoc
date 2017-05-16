@@ -56,21 +56,12 @@
 							     <br>
 							     
 							     <ul>
-								     <li ng-repeat = "item in result.textInfo| limitTo:5" style="margin-top:10px; list-style-type: none;">
-								     	<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}" target="_blank">{{item.text}}</a>								     
-								     </li>
-								     <br>
-								     <button ng-click = "ShowAllResults()">Show/hide all results</button>
+							     	<li ng-repeat = "item in result.textInfo|showAllResults:0:5:!result.show_all" style="margin-top:10px; list-style-type: none;">
+							     		<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}" target="_blank">{{item.text}}</a>								     
+							     	</li>
 							     </ul>
-							     	<div ng-show = "itemsNumToggle">
-							     		<ul>
-							     			<li ng-repeat = "item in result.textInfo| limitTo:result.textInfo.length:5" style="margin-top:10px; list-style-type: none;">
-							     				<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}" target="_blank">{{item.text}}</a>								     
-							     			</li>
-							     		</ul>
-								    </div>
-							    
-								<br>
+								 <br>
+								<button ng-click = "result.show_all = !result.show_all" ng-hide = "result.textInfo.length <= 5">Show/hide all results</button>
 						    </li>
 					   </ul>
 				  </div>

@@ -10,14 +10,12 @@ searchApp
 			anyWords:'',
 			without:'',
 			startRecord:'1',
-			recordCount: '20'	
+			recordCount: '10'	
 		};
 		
 		var index = - 1;
 		var prevNextCheck = 0;
 		var check = '';
-		$scope.itemsNumToggle = false;
-		$scope.showAllResultsToggle = true;
 		$scope.mylocation = location.host;
 		$scope.inputToggle = false;
 		$scope.resultToggle = true;
@@ -25,20 +23,6 @@ searchApp
 		$scope.prevToggle = false;
 		$scope.nextToggle = false;
 		$scope.checkToggle = false;
-		
-		$scope.ShowAllResults = function (){
-				
-				if($scope.showAllResultsToggle == true)
-				{
-					$scope.itemsNumToggle = true;
-					$scope.showAllResultsToggle = false;
-				}
-				else
-				{
-					$scope.itemsNumToggle = false;
-					$scope.showAllResultsToggle = true;
-				}
-		}
 		
 		$scope.change = function (){
 								
@@ -148,6 +132,10 @@ searchApp
 				$scope.nextToggle = true;
 			else
 				$scope.nextToggle = false;
+
+			if ($scope.pagesNum == undefined)
+				$scope.nextToggle = false;
+
 		}
 				
 		$scope.currentPageNum = function() {
