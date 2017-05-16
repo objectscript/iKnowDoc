@@ -41,6 +41,13 @@ searchApp
 			$scope.search.without="";
 		}
 		
+		$scope.clearAll=function(){
+			$scope.search.words="";
+			$scope.search.phrase="";
+			$scope.search.anyWords="";
+			$scope.search.without="";
+		}
+		
 		$scope.change = function (){
 										
 			$http.get('http://' + location.host + '/csp/docsearch/rest/GetSimilar/' + $scope.search.words)

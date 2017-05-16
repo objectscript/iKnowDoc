@@ -2,7 +2,7 @@
 	 		<header class="ResultHeader"> <!-- Шапка -->
 				<form class="form-horizontal"  autocomplete="off">
 					<div class="col-md-3 col-sm-3 col-xs-3 Logo"> <!-- Лого -->
-						<a href="#!DocSearch"><img ng-src = "style/images/Logo.png" width ="100%" title ="InterSystems"/></a>
+						<a href="#!DocSearch" ng-click="clearAll()"><img ng-src = "style/images/Logo.png" width ="100%" title ="InterSystems"/></a>
 					</div>
 					<div class="input-groop col-lg-6 col-md-5 col-sm-5 col-xs-5 MarginHeader"> <!-- Строка поиска -->
 							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
