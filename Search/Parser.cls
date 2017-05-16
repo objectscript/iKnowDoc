@@ -1,7 +1,7 @@
 Class Search.Parser {
 
-// Данные документации в БД храняться со всеми тегами, для дальнейшей вставки на страницу. Нам же теги не нужны,из-за этого из убираем
-/// Парсер, заменяющий XML-теги в источниках на пробел:
+// Р”Р°РЅРЅС‹Рµ РґРѕРєСѓРјРµРЅС‚Р°С†РёРё РІ Р‘Р” С…СЂР°РЅСЏС‚СЊСЃСЏ СЃРѕ РІСЃРµРјРё С‚РµРіР°РјРё, РґР»СЏ РґР°Р»СЊРЅРµР№С€РµР№ РІСЃС‚Р°РІРєРё РЅР° СЃС‚СЂР°РЅРёС†Сѓ. РќР°Рј Р¶Рµ С‚РµРіРё РЅРµ РЅСѓР¶РЅС‹,РёР·-Р·Р° СЌС‚РѕРіРѕ РёР· СѓР±РёСЂР°РµРј
+/// РџР°СЂСЃРµСЂ, Р·Р°РјРµРЅСЏСЋС‰РёР№ XML-С‚РµРіРё РІ РёСЃС‚РѕС‡РЅРёРєР°С… РЅР° РїСЂРѕР±РµР»:
 ClassMethod Parse(textTag) As %String
 { 
 		set i =1
@@ -32,21 +32,22 @@ link	for i=1:1:$LENGTH(text)
 			 }
 			
 		}
-		//замена html символов
-		set text = $REPLACE(text,"&reg;","®")
-		set text = $REPLACE(text,"&ntilde;","ñ")
+		//Р·Р°РјРµРЅР° html СЃРёРјРІРѕР»РѕРІ
+		set text = $REPLACE(text,"&reg;","В®")
+		set text = $REPLACE(text,"&ntilde;","Г±")
 		set text = $REPLACE(text,"&#39;","'")
-		set text = $REPLACE(text,"&ldquo;","“")
-		set text = $REPLACE(text,"&rdquo;","”")
+		set text = $REPLACE(text,"&ldquo;","вЂњ")
+		set text = $REPLACE(text,"&rdquo;","вЂќ")
 		set text = $REPLACE(text,"&amp;","&")
 		set text = $REPLACE(text,"&lt;","<")
 		set text = $REPLACE(text,"&gt;",">")
-		set text = $REPLACE(text,"&mdash;","—")
-		set text = $REPLACE(text,"&eacute;","é")
+		set text = $REPLACE(text,"&mdash;","вЂ”")
+		set text = $REPLACE(text,"&eacute;","Г©")
+		set text = $REPLACE(text,"&EACUTE;","É")
 		set text = $REPLACE(text,"\"," ")
 		set text = $REPLACE(text,"/"," ")
 		set text = $REPLACE(text,""""," ")
-		//убирает скобки чтоб предотвратить конфликты с JSON
+		//СѓР±РёСЂР°РµС‚ СЃРєРѕР±РєРё С‡С‚РѕР± РїСЂРµРґРѕС‚РІСЂР°С‚РёС‚СЊ РєРѕРЅС„Р»РёРєС‚С‹ СЃ JSON
 		set text = $REPLACE(text,"{"," ")
 		set text = $REPLACE(text,"}"," ")
 		set text = $REPLACE(text,"["," ")
@@ -58,7 +59,7 @@ link	for i=1:1:$LENGTH(text)
   		set text = $REPLACE(text,"\d"," ")
   		set text = $REPLACE(text,"\a"," ")
  		set text = $REPLACE(text,"  "," ")
- 		//убирает лишние пробелы после парсинга
+ 		//СѓР±РёСЂР°РµС‚ Р»РёС€РЅРёРµ РїСЂРѕР±РµР»С‹ РїРѕСЃР»Рµ РїР°СЂСЃРёРЅРіР°
   		set text = $REPLACE(text,"       "," ")
   		set text = $REPLACE(text,"      "," ")
   		set text = $REPLACE(text,"     "," ")
@@ -68,7 +69,7 @@ link	for i=1:1:$LENGTH(text)
 		quit text
 }
 
-/// Корректирует нестандартные символы в заголовках результатов поиска
+/// РљРѕСЂСЂРµРєС‚РёСЂСѓРµС‚ РЅРµСЃС‚Р°РЅРґР°СЂС‚РЅС‹Рµ СЃРёРјРІРѕР»С‹ РІ Р·Р°РіРѕР»РѕРІРєР°С… СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ РїРѕРёСЃРєР°
 ClassMethod ParseTitle(textTag) As %String
 {
 		set i =1
@@ -76,16 +77,20 @@ ClassMethod ParseTitle(textTag) As %String
 		set subtext=""
 		set condition = 0
 		set text = textTag
-		set text = $REPLACE(text,"&reg;","®")
-		set text = $REPLACE(text,"&ntilde;","ñ")
+		set text = $REPLACE(text,"&reg;","В®")
+		set text = $REPLACE(text,"&ntilde;","Г±")
+		set text = $REPLACE(text,"&NTILDE;","Ñ")
 		set text = $REPLACE(text,"&#39;","'")
-		set text = $REPLACE(text,"&ldquo;","“")
-		set text = $REPLACE(text,"&rdquo;","”")
+		set text = $REPLACE(text,"&rsquo;","'")
+		set text = $REPLACE(text,"&ldquo;","вЂњ")
+		set text = $REPLACE(text,"&rdquo;","вЂќ")
 		set text = $REPLACE(text,"&amp;","&")
 		set text = $REPLACE(text,"&lt;","<")
 		set text = $REPLACE(text,"&gt;",">")
-		set text = $REPLACE(text,"&mdash;","—")
-		set text = $REPLACE(text,"&eacute;","é")
+		set text = $REPLACE(text,"&mdash;","вЂ”")
+		set text = $REPLACE(text,"&ndash;","-")
+		set text = $REPLACE(text,"&eacute;","Г©")
+		set text = $REPLACE(text,"&EACUTE;","É")
 		quit text
 }
 }
