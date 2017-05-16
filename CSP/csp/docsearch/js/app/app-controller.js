@@ -23,6 +23,12 @@ searchApp
 		$scope.prevToggle = false;
 		$scope.nextToggle = false;
 		$scope.checkToggle = false;
+		$scope.btnCol="btn-success"
+		
+		$scope.ShowAllResults=function(result){
+			result.show_all = !result.show_all;
+			$scope.btnCol = !result.show_all ? 'btn-success' : 'btn-default';
+		}
 		
 		$scope.change = function (){
 								
