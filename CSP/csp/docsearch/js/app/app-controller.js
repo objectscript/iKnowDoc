@@ -150,7 +150,7 @@ searchApp
 			$http.post(baseUrl + 'Search', $scope.search)
 				.then(function(response) {
 					$scope.results = response.data.sources;
-					$scope.totalCount = $scope.results[$scope.results.length - 1].totalCount;
+					$scope.totalCount = response.data.totalCount[0].total;
 					$scope.pagesNum = pagination.getTotalPagesNum($scope.totalCount, $scope.search.recordCount);
 					$scope.paginationList = pagination.getPaginationList($scope.currentPage, $scope.pagesNum, $scope.checkToggle);
 					
