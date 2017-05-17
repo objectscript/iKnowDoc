@@ -1,7 +1,7 @@
 Class Search.SearchPages {
 
-/// POST метод поиска по документации
-// Пример POST запроса {"words":"iknow","phrase":"rest api","anyWords":"json, sql","without":"class, you, ifind, Enhancements", startRecord:1, recordCount:20}
+/// POST РјРµС‚РѕРґ РїРѕРёСЃРєР° РїРѕ РґРѕРєСѓРјРµРЅС‚Р°С†РёРё
+// РџСЂРёРјРµСЂ POST Р·Р°РїСЂРѕСЃР° {"words":"iknow","phrase":"rest api","anyWords":"json, sql","without":"class, you, ifind, Enhancements", startRecord:1, recordCount:20}
 ClassMethod Search(obj) As %Status
 { 
 	try {
@@ -10,38 +10,38 @@ ClassMethod Search(obj) As %Status
 		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(str,,.obj,1))
 		do ##class(Search.SearchPages).FormQueryNew(obj)
     } catch ex {
-       	set err = "Ошибка разбора JSON запроса "_$system.Status.GetErrorText(ex.AsStatus(),"ru")
+       	set err = "РћС€РёР±РєР° СЂР°Р·Р±РѕСЂР° JSON Р·Р°РїСЂРѕСЃР° "_$system.Status.GetErrorText(ex.AsStatus(),"ru")
        	set error = ##class(%DynamicObject).%New()
        	set error.ErrorCode = err    
-       	write " Ошибка: "_error.%ToJSON()    
+       	write " РћС€РёР±РєР°: "_error.%ToJSON()    
     } 
  quit $$$OK
 }
-/// Метод формирования запроса к БД
+/// РњРµС‚РѕРґ С„РѕСЂРјРёСЂРѕРІР°РЅРёСЏ Р·Р°РїСЂРѕСЃР° Рє Р‘Р”
 ClassMethod FormQuery(obj) As %Status
 {
-	// Получаем параметры поиска:
-	// Поиск со словами:
+	// РџРѕР»СѓС‡Р°РµРј РїР°СЂР°РјРµС‚СЂС‹ РїРѕРёСЃРєР°:
+	// РџРѕРёСЃРє СЃРѕ СЃР»РѕРІР°РјРё:
 	set words=obj.words
-	// Поиск с словосочетанием: 
+	// РџРѕРёСЃРє СЃ СЃР»РѕРІРѕСЃРѕС‡РµС‚Р°РЅРёРµРј: 
 	set phrase=obj.phrase
-	// Поиск с любым из этих слов:
+	// РџРѕРёСЃРє СЃ Р»СЋР±С‹Рј РёР· СЌС‚РёС… СЃР»РѕРІ:
 	set anyWords=obj.anyWords
-	// Поиск без следующих слов:
+	// РџРѕРёСЃРє Р±РµР· СЃР»РµРґСѓСЋС‰РёС… СЃР»РѕРІ:
 	set without=obj.without
 	
-	// Параметры нужные для пагинации
-	// Начальная запись
+	// РџР°СЂР°РјРµС‚СЂС‹ РЅСѓР¶РЅС‹Рµ РґР»СЏ РїР°РіРёРЅР°С†РёРё
+	// РќР°С‡Р°Р»СЊРЅР°СЏ Р·Р°РїРёСЃСЊ
     set startRecord=obj.startRecord
-    // Число записей на странице	
+    // Р§РёСЃР»Рѕ Р·Р°РїРёСЃРµР№ РЅР° СЃС‚СЂР°РЅРёС†Рµ	
 	set recordCount=obj.recordCount
 	
-	// Переменная содержащая текст для запроса iFind в соответствии с форматированием нужным iFind
+	// РџРµСЂРµРјРµРЅРЅР°СЏ СЃРѕРґРµСЂР¶Р°С‰Р°СЏ С‚РµРєСЃС‚ РґР»СЏ Р·Р°РїСЂРѕСЃР° iFind РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ С„РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёРµРј РЅСѓР¶РЅС‹Рј iFind
 	set text=""
-	// Переменная содержащая текст запроса без форматирования. Нужна для получения id слов, используемых iKnow
+	// РџРµСЂРµРјРµРЅРЅР°СЏ СЃРѕРґРµСЂР¶Р°С‰Р°СЏ С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР° Р±РµР· С„РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёСЏ. РќСѓР¶РЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ id СЃР»РѕРІ, РёСЃРїРѕР»СЊР·СѓРµРјС‹С… iKnow
 	set wordText=""
 	
-	// Заполняем переменнные в зависимости от тех данных что ввели на фронте
+	// Р—Р°РїРѕР»РЅСЏРµРј РїРµСЂРµРјРµРЅРЅРЅС‹Рµ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РµС… РґР°РЅРЅС‹С… С‡С‚Рѕ РІРІРµР»Рё РЅР° С„СЂРѕРЅС‚Рµ
 	if words'="" {
 		set text = text_words
 		set wordText=wordText_words
@@ -51,9 +51,9 @@ ClassMethod FormQuery(obj) As %Status
 		set wordText=wordText_" "_phrase
 	}
 	if anyWords'="" {
-		//Удаляем пробелы
+		//РЈРґР°Р»СЏРµРј РїСЂРѕР±РµР»С‹
 		set anyWords = $REPLACE(anyWords," ","") 
-		//Извлекаем до ,
+		//РР·РІР»РµРєР°РµРј РґРѕ ,
 		set listAny=$LISTFROMSTRING(anyWords,",")
 		set strAny=" OR ("_$LIST(listAny,1)
 		set strAnyWord=$LIST(listAny,1)
@@ -64,9 +64,9 @@ ClassMethod FormQuery(obj) As %Status
 	}
 	if without'="" {
 		set text = text_")"
-		//Удаляем пробелы
+		//РЈРґР°Р»СЏРµРј РїСЂРѕР±РµР»С‹
 		set without = $REPLACE(without," ","")  
-		//Извлекаем до ,
+		//РР·РІР»РµРєР°РµРј РґРѕ ,
 		set listOut=$LISTFROMSTRING(without,",")
 		set strOut=" NOT ("_$LIST(listOut,1)
 		for i=2:1:$LISTLENGTH(listOut) {
@@ -75,24 +75,24 @@ ClassMethod FormQuery(obj) As %Status
 		set text = "("_text
 		set text = text_strOut_")"
 	}
-	// Список содержащий слова запроса
+	// РЎРїРёСЃРѕРє СЃРѕРґРµСЂР¶Р°С‰РёР№ СЃР»РѕРІР° Р·Р°РїСЂРѕСЃР°
 	set wordList=$LISTFROMSTRING(wordText, " ")
 	
-	// Формируем список содержащий id слов запроса из списка слов запроса
+	// Р¤РѕСЂРјРёСЂСѓРµРј СЃРїРёСЃРѕРє СЃРѕРґРµСЂР¶Р°С‰РёР№ id СЃР»РѕРІ Р·Р°РїСЂРѕСЃР° РёР· СЃРїРёСЃРєР° СЃР»РѕРІ Р·Р°РїСЂРѕСЃР°
 	set currPoint=0
 	set currWord=0
 	set textId=""
 	set cntList=0
 	zn "DOCBOOK"
-	// Получение id домена
+	// РџРѕР»СѓС‡РµРЅРёРµ id РґРѕРјРµРЅР°
 	set dname="DocSearch" 
 	set domoref=##class(%iKnow.Domain).Open(dname)
 	set domId=domoref.Id
-	// Получение id первого слова запроса
+	// РџРѕР»СѓС‡РµРЅРёРµ id РїРµСЂРІРѕРіРѕ СЃР»РѕРІР° Р·Р°РїСЂРѕСЃР°
 	set id = ##class(%iKnow.Queries.EntityAPI).GetId(domId,$LISTGET(wordList,1))
 	zn "DOCSEARCH"
 	set textId=textId_id
-	// Получение id остальных слов запроса
+	// РџРѕР»СѓС‡РµРЅРёРµ id РѕСЃС‚Р°Р»СЊРЅС‹С… СЃР»РѕРІ Р·Р°РїСЂРѕСЃР°
 	while $LISTNEXT(wordList,currPoint,currWord) {
 		if cntList>0{
 			zn "DOCBOOK"
@@ -102,18 +102,18 @@ ClassMethod FormQuery(obj) As %Status
 		}
 		set cntList = cntList+1
 	}
-	// Список содержащий id слов запроса
+	// РЎРїРёСЃРѕРє СЃРѕРґРµСЂР¶Р°С‰РёР№ id СЃР»РѕРІ Р·Р°РїСЂРѕСЃР°
 	set wordIdList=$LISTFROMSTRING(textId, " ")
 	
-	// Создаем временную таблицу в которую будем заносить то что нашли по запросу пользователя,
-	// высчитывать отношение искомых слов к всем словам на найденной странице и в зависимости от этого отношения сортировать результат запроса
+	// РЎРѕР·РґР°РµРј РІСЂРµРјРµРЅРЅСѓСЋ С‚Р°Р±Р»РёС†Сѓ РІ РєРѕС‚РѕСЂСѓСЋ Р±СѓРґРµРј Р·Р°РЅРѕСЃРёС‚СЊ С‚Рѕ С‡С‚Рѕ РЅР°С€Р»Рё РїРѕ Р·Р°РїСЂРѕСЃСѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ,
+	// РІС‹СЃС‡РёС‚С‹РІР°С‚СЊ РѕС‚РЅРѕС€РµРЅРёРµ РёСЃРєРѕРјС‹С… СЃР»РѕРІ Рє РІСЃРµРј СЃР»РѕРІР°Рј РЅР° РЅР°Р№РґРµРЅРЅРѕР№ СЃС‚СЂР°РЅРёС†Рµ Рё РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЌС‚РѕРіРѕ РѕС‚РЅРѕС€РµРЅРёСЏ СЃРѕСЂС‚РёСЂРѕРІР°С‚СЊ СЂРµР·СѓР»СЊС‚Р°С‚ Р·Р°РїСЂРѕСЃР°
 	set createquery = "CREATE TABLE temptable (idSQL INT,content VARCHAR(30000),link VARCHAR(10000),	frequency FLOAT,title VARCHAR(10000))"
   	set createStatement = ##class(%SQL.Statement).%New()
   	set createStatus = createStatement.%Prepare(createquery)
    	if createStatus'=1 {write "%Prepare failed:" do $System.Status.DisplayError(createStatus) quit}
   	set createRset = createStatement.%Execute()
 	
-	// Выполняем поиск слова с помощью iFind в DocBook.block
+	// Р’С‹РїРѕР»РЅСЏРµРј РїРѕРёСЃРє СЃР»РѕРІР° СЃ РїРѕРјРѕС‰СЊСЋ iFind РІ DocBook.block
 	znspace "DOCBOOK"
 	set tempArray = ##class(%ArrayOfDataTypes).%New()
 	set count = 0	
@@ -122,7 +122,7 @@ ClassMethod FormQuery(obj) As %Status
   	set qStatus = tStatement.%Prepare(.myquery)
     IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
     set rset = tStatement.%Execute(text)
-    // Заполняем массив найденными данными
+    // Р—Р°РїРѕР»РЅСЏРµРј РјР°СЃСЃРёРІ РЅР°Р№РґРµРЅРЅС‹РјРё РґР°РЅРЅС‹РјРё
   	while rset.%Next() {
 	  	znspace "DOCSEARCH"
 	  	set tempArray(count,0)= rset.id
@@ -134,10 +134,10 @@ ClassMethod FormQuery(obj) As %Status
     	znspace "DOCBOOK"
        } 
     znspace "DOCSEARCH"
-    // Всего получили строк в запросе
+    // Р’СЃРµРіРѕ РїРѕР»СѓС‡РёР»Рё СЃС‚СЂРѕРє РІ Р·Р°РїСЂРѕСЃРµ
 	set count = count - 1
 	
-	// Проходим по всем разным страницам и получаем в список id источников составляющих страницу. Нужно для iKnow 
+	// РџСЂРѕС…РѕРґРёРј РїРѕ РІСЃРµРј СЂР°Р·РЅС‹Рј СЃС‚СЂР°РЅРёС†Р°Рј Рё РїРѕР»СѓС‡Р°РµРј РІ СЃРїРёСЃРѕРє id РёСЃС‚РѕС‡РЅРёРєРѕРІ СЃРѕСЃС‚Р°РІР»СЏСЋС‰РёС… СЃС‚СЂР°РЅРёС†Сѓ. РќСѓР¶РЅРѕ РґР»СЏ iKnow 
     set textLink=tempArray(0,2)
 	for i=0:1:count-1 {
 		if (tempArray(i,2)'=tempArray(i+1,2)) && (tempArray(i+1,2)'=""){
@@ -162,13 +162,13 @@ ClassMethod FormQuery(obj) As %Status
 		    	znspace "DOCBOOK"
 		       }
 		zn "docbook"
-		// Получаем id источников содержащие слова из запроса
+		// РџРѕР»СѓС‡Р°РµРј id РёСЃС‚РѕС‡РЅРёРєРѕРІ СЃРѕРґРµСЂР¶Р°С‰РёРµ СЃР»РѕРІР° РёР· Р·Р°РїСЂРѕСЃР°
 		set tSC = ##class(%iKnow.Queries.SourceAPI).GetByEntities(.tResult,domId, wordList,1,500)
 		zn "docsearch" 
 		set array = ##class(%Library.ArrayOfObjects).%New()
 		set i = ""
 		set cntArray=0
-		// Через SQL получили ID источников, но ID SQL записей источников. Для iKnow требуются ID записей источников домена. Для этого мы получаем соотношения ID SQL и ID Домена и заменяем ID
+		// Р§РµСЂРµР· SQL РїРѕР»СѓС‡РёР»Рё ID РёСЃС‚РѕС‡РЅРёРєРѕРІ, РЅРѕ ID SQL Р·Р°РїРёСЃРµР№ РёСЃС‚РѕС‡РЅРёРєРѕРІ. Р”Р»СЏ iKnow С‚СЂРµР±СѓСЋС‚СЃСЏ ID Р·Р°РїРёСЃРµР№ РёСЃС‚РѕС‡РЅРёРєРѕРІ РґРѕРјРµРЅР°. Р”Р»СЏ СЌС‚РѕРіРѕ РјС‹ РїРѕР»СѓС‡Р°РµРј СЃРѕРѕС‚РЅРѕС€РµРЅРёСЏ ID SQL Рё ID Р”РѕРјРµРЅР° Рё Р·Р°РјРµРЅСЏРµРј ID
 	    for {
 		    set i = $order(tResult(i),1,tSrcData)
 		    quit:i=""	
@@ -186,14 +186,14 @@ ClassMethod FormQuery(obj) As %Status
 		   for i=1:1:cntArray {
 		   		set tempId=$Replace(tempId, array(i,0),array(i,1))   
 		   } 
-	    // Массив с ИД источников 
+	    // РњР°СЃСЃРёРІ СЃ РР” РёСЃС‚РѕС‡РЅРёРєРѕРІ 
 	    set idArr(currLink) =$LISTFROMSTRING(tempId, " ")
 	    set countSourses=countSourses+1
 		}
 		
 		znspace "DOCSEARCH"
 		set countSourses=countSourses-1
-		// Высчитываем отношение искомых слов к всем словам на найденной странице
+		// Р’С‹СЃС‡РёС‚С‹РІР°РµРј РѕС‚РЅРѕС€РµРЅРёРµ РёСЃРєРѕРјС‹С… СЃР»РѕРІ Рє РІСЃРµРј СЃР»РѕРІР°Рј РЅР° РЅР°Р№РґРµРЅРЅРѕР№ СЃС‚СЂР°РЅРёС†Рµ
 		set currPoint=0
 		set currLink=0
 		while $LISTNEXT(listLink,currPoint,currLink) {
@@ -205,36 +205,36 @@ ClassMethod FormQuery(obj) As %Status
 	    	}
 	}
 	 
-	// Запись построчно в временную таблицу
+	// Р—Р°РїРёСЃСЊ РїРѕСЃС‚СЂРѕС‡РЅРѕ РІ РІСЂРµРјРµРЅРЅСѓСЋ С‚Р°Р±Р»РёС†Сѓ
 	for i=0:1:count {
 		set newquery ="insert into SQLUser.temptable(idSQL,content,link,frequency,title) VALUES(?,?,?,?,?)"
   		set rset2 = ##class(%SQL.Statement).%ExecDirect(,.newquery,tempArray(i,0),tempArray(i,1),tempArray(i,2),tempArray(i,3),tempArray(i,4))
     	if rset2.%SQLCODE'=0 {write !,"1st ExecDirect SQLCODE=",rset2.%SQLCODE,!,rset2.%Message  quit}
 	}
 	
-	// Пагинация
+	// РџР°РіРёРЅР°С†РёСЏ
 	set commonCount = count
 	if commonCount<startRecord set startRecord=1
 	set offset=recordCount+startRecord-1	
 	if (offset>commonCount) set recordCount=recordCount-(offset-commonCount)
-	// Запрос к временной таблице отсортированной по частоте с учетом пагинации 
+	// Р—Р°РїСЂРѕСЃ Рє РІСЂРµРјРµРЅРЅРѕР№ С‚Р°Р±Р»РёС†Рµ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅРѕР№ РїРѕ С‡Р°СЃС‚РѕС‚Рµ СЃ СѓС‡РµС‚РѕРј РїР°РіРёРЅР°С†РёРё 
    	set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from SQLUser.temptable order by frequency DESC) order by frequency ASC) order by frequency DESC"
   	set Statement = ##class(%SQL.Statement).%New()
   	set Status = Statement.%Prepare(resultQuery)
    	if Status'=1 {write "%Prepare failed:" do $System.Status.DisplayError(Status) quit}
   	set result = Statement.%Execute()
-   	// Формируем динамический обьект
+   	// Р¤РѕСЂРјРёСЂСѓРµРј РґРёРЅР°РјРёС‡РµСЃРєРёР№ РѕР±СЊРµРєС‚
     set ResultJSON = { "sources": [] }
     while result.%Next() {
-    	// Заполняем массив данными
+    	// Р—Р°РїРѕР»РЅСЏРµРј РјР°СЃСЃРёРІ РґР°РЅРЅС‹РјРё
     	set tJSON = { "content":(result.content), "link":(result.link), "frequency": (result.frequency), "title": (result.title) }
 		do ResultJSON.sources.%Push(tJSON)
     }
-    // Вывод в JSON общего количества найденных результатов
+    // Р’С‹РІРѕРґ РІ JSON РѕР±С‰РµРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° РЅР°Р№РґРµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
     set totalCountJ = {"totalCount":(+count)}
     do ResultJSON.sources.%Push(totalCountJ)
     
-	//Удалем временную таблицу
+	//РЈРґР°Р»РµРј РІСЂРµРјРµРЅРЅСѓСЋ С‚Р°Р±Р»РёС†Сѓ
     set dropquery = "drop table SQLUser.temptable"
   	set dropStatement = ##class(%SQL.Statement).%New()
   	set dropStatus = dropStatement.%Prepare(dropquery)
@@ -242,37 +242,37 @@ ClassMethod FormQuery(obj) As %Status
   	set dropRset = dropStatement.%Execute()
 	set st=$$$OK
 	
-	// Метод преобразующий динамический обьект в JSON
+	// РњРµС‚РѕРґ РїСЂРµРѕР±СЂР°Р·СѓСЋС‰РёР№ РґРёРЅР°РјРёС‡РµСЃРєРёР№ РѕР±СЊРµРєС‚ РІ JSON
 	write ResultJSON.%ToJSON()
 	
 	quit st
 }
 
-/// Метод формирования запроса к БД
+/// РњРµС‚РѕРґ С„РѕСЂРјРёСЂРѕРІР°РЅРёСЏ Р·Р°РїСЂРѕСЃР° Рє Р‘Р”
 ClassMethod FormQueryNew(obj) As %Status
 {
-	// Получаем параметры поиска:
-	// Поиск со словами:
+	// РџРѕР»СѓС‡Р°РµРј РїР°СЂР°РјРµС‚СЂС‹ РїРѕРёСЃРєР°:
+	// РџРѕРёСЃРє СЃРѕ СЃР»РѕРІР°РјРё:
 	set words=obj.words
-	// Поиск с словосочетанием: 
+	// РџРѕРёСЃРє СЃ СЃР»РѕРІРѕСЃРѕС‡РµС‚Р°РЅРёРµРј: 
 	set phrase=obj.phrase
-	// Поиск с любым из этих слов:
+	// РџРѕРёСЃРє СЃ Р»СЋР±С‹Рј РёР· СЌС‚РёС… СЃР»РѕРІ:
 	set anyWords=obj.anyWords
-	// Поиск без следующих слов:
+	// РџРѕРёСЃРє Р±РµР· СЃР»РµРґСѓСЋС‰РёС… СЃР»РѕРІ:
 	set without=obj.without
 	
-	// Параметры нужные для пагинации
-	// Начальная запись
+	// РџР°СЂР°РјРµС‚СЂС‹ РЅСѓР¶РЅС‹Рµ РґР»СЏ РїР°РіРёРЅР°С†РёРё
+	// РќР°С‡Р°Р»СЊРЅР°СЏ Р·Р°РїРёСЃСЊ
     set startRecord=obj.startRecord
-    // Число записей на странице	
+    // Р§РёСЃР»Рѕ Р·Р°РїРёСЃРµР№ РЅР° СЃС‚СЂР°РЅРёС†Рµ	
 	set recordCount=obj.recordCount
 	
-	// Переменная содержащая текст для запроса iFind в соответствии с форматированием нужным iFind
+	// РџРµСЂРµРјРµРЅРЅР°СЏ СЃРѕРґРµСЂР¶Р°С‰Р°СЏ С‚РµРєСЃС‚ РґР»СЏ Р·Р°РїСЂРѕСЃР° iFind РІ СЃРѕРѕС‚РІРµС‚СЃС‚РІРёРё СЃ С„РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёРµРј РЅСѓР¶РЅС‹Рј iFind
 	set text=""
-	// Переменная содержащая текст запроса без форматирования. Нужна для получения id слов, используемых iKnow
+	// РџРµСЂРµРјРµРЅРЅР°СЏ СЃРѕРґРµСЂР¶Р°С‰Р°СЏ С‚РµРєСЃС‚ Р·Р°РїСЂРѕСЃР° Р±РµР· С„РѕСЂРјР°С‚РёСЂРѕРІР°РЅРёСЏ. РќСѓР¶РЅР° РґР»СЏ РїРѕР»СѓС‡РµРЅРёСЏ id СЃР»РѕРІ, РёСЃРїРѕР»СЊР·СѓРµРјС‹С… iKnow
 	set wordText=""
 	
-	// Заполняем переменнные в зависимости от тех данных что ввели на фронте
+	// Р—Р°РїРѕР»РЅСЏРµРј РїРµСЂРµРјРµРЅРЅРЅС‹Рµ РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ С‚РµС… РґР°РЅРЅС‹С… С‡С‚Рѕ РІРІРµР»Рё РЅР° С„СЂРѕРЅС‚Рµ
 	if words'="" {
 		set text = text_words
 		set wordText=wordText_words
@@ -282,9 +282,9 @@ ClassMethod FormQueryNew(obj) As %Status
 		set wordText=wordText_" "_phrase
 	}
 	if anyWords'="" {
-		//Удаляем пробелы
+		//РЈРґР°Р»СЏРµРј РїСЂРѕР±РµР»С‹
 		set anyWords = $REPLACE(anyWords," ","") 
-		//Извлекаем до ,
+		//РР·РІР»РµРєР°РµРј РґРѕ ,
 		set listAny=$LISTFROMSTRING(anyWords,",")
 		set strAny=" OR ("_$LIST(listAny,1)
 		set strAnyWord=$LIST(listAny,1)
@@ -295,9 +295,9 @@ ClassMethod FormQueryNew(obj) As %Status
 	}
 	if without'="" {
 		set text = text_")"
-		//Удаляем пробелы
+		//РЈРґР°Р»СЏРµРј РїСЂРѕР±РµР»С‹
 		set without = $REPLACE(without," ","")  
-		//Извлекаем до ,
+		//РР·РІР»РµРєР°РµРј РґРѕ ,
 		set listOut=$LISTFROMSTRING(without,",")
 		set strOut=" NOT ("_$LIST(listOut,1)
 		for i=2:1:$LISTLENGTH(listOut) {
@@ -306,24 +306,24 @@ ClassMethod FormQueryNew(obj) As %Status
 		set text = "("_text
 		set text = text_strOut_")"
 	}
-	// Список содержащий слова запроса
+	// РЎРїРёСЃРѕРє СЃРѕРґРµСЂР¶Р°С‰РёР№ СЃР»РѕРІР° Р·Р°РїСЂРѕСЃР°
 	set wordList=$LISTFROMSTRING(wordText, " ")
 	
-	// Формируем список содержащий id слов запроса из списка слов запроса
+	// Р¤РѕСЂРјРёСЂСѓРµРј СЃРїРёСЃРѕРє СЃРѕРґРµСЂР¶Р°С‰РёР№ id СЃР»РѕРІ Р·Р°РїСЂРѕСЃР° РёР· СЃРїРёСЃРєР° СЃР»РѕРІ Р·Р°РїСЂРѕСЃР°
 	set currPoint=0
 	set currWord=0
 	set textId=""
 	set cntList=0
 	zn "DOCBOOK"
-	// Получение id домена
+	// РџРѕР»СѓС‡РµРЅРёРµ id РґРѕРјРµРЅР°
 	set dname="DocSearch" 
 	set domoref=##class(%iKnow.Domain).Open(dname)
 	set domId=domoref.Id
-	// Получение id первого слова запроса
+	// РџРѕР»СѓС‡РµРЅРёРµ id РїРµСЂРІРѕРіРѕ СЃР»РѕРІР° Р·Р°РїСЂРѕСЃР°
 	set id = ##class(%iKnow.Queries.EntityAPI).GetId(domId,$LISTGET(wordList,1))
 	zn "DOCSEARCH"
 	set textId=textId_id
-	// Получение id остальных слов запроса
+	// РџРѕР»СѓС‡РµРЅРёРµ id РѕСЃС‚Р°Р»СЊРЅС‹С… СЃР»РѕРІ Р·Р°РїСЂРѕСЃР°
 	while $LISTNEXT(wordList,currPoint,currWord) {
 		if cntList>0{
 			zn "DOCBOOK"
@@ -333,18 +333,18 @@ ClassMethod FormQueryNew(obj) As %Status
 		}
 		set cntList = cntList+1
 	}
-	// Список содержащий id слов запроса
+	// РЎРїРёСЃРѕРє СЃРѕРґРµСЂР¶Р°С‰РёР№ id СЃР»РѕРІ Р·Р°РїСЂРѕСЃР°
 	set wordIdList=$LISTFROMSTRING(textId, " ")
 	
-	// Создаем временную таблицу в которую будем заносить то что нашли по запросу пользователя,
-	// высчитывать отношение искомых слов к всем словам на найденной странице и в зависимости от этого отношения сортировать результат запроса
+	// РЎРѕР·РґР°РµРј РІСЂРµРјРµРЅРЅСѓСЋ С‚Р°Р±Р»РёС†Сѓ РІ РєРѕС‚РѕСЂСѓСЋ Р±СѓРґРµРј Р·Р°РЅРѕСЃРёС‚СЊ С‚Рѕ С‡С‚Рѕ РЅР°С€Р»Рё РїРѕ Р·Р°РїСЂРѕСЃСѓ РїРѕР»СЊР·РѕРІР°С‚РµР»СЏ,
+	// РІС‹СЃС‡РёС‚С‹РІР°С‚СЊ РѕС‚РЅРѕС€РµРЅРёРµ РёСЃРєРѕРјС‹С… СЃР»РѕРІ Рє РІСЃРµРј СЃР»РѕРІР°Рј РЅР° РЅР°Р№РґРµРЅРЅРѕР№ СЃС‚СЂР°РЅРёС†Рµ Рё РІ Р·Р°РІРёСЃРёРјРѕСЃС‚Рё РѕС‚ СЌС‚РѕРіРѕ РѕС‚РЅРѕС€РµРЅРёСЏ СЃРѕСЂС‚РёСЂРѕРІР°С‚СЊ СЂРµР·СѓР»СЊС‚Р°С‚ Р·Р°РїСЂРѕСЃР°
 	set createquery = "CREATE TABLE temptable (idSQL INT,text VARCHAR(30000),textKey VARCHAR(10000),frequency FLOAT,docKey VARCHAR(10000),title VARCHAR(10000),bookKey VARCHAR(10000),bookTitle VARCHAR(10000))"
   	set createStatement = ##class(%SQL.Statement).%New()
   	set createStatus = createStatement.%Prepare(createquery)
    	if createStatus'=1 {write "%Prepare failed:" do $System.Status.DisplayError(createStatus) quit}
   	set createRset = createStatement.%Execute()
 	
-	// Выполняем поиск слова с помощью iFind в DocBook.block
+	// Р’С‹РїРѕР»РЅСЏРµРј РїРѕРёСЃРє СЃР»РѕРІР° СЃ РїРѕРјРѕС‰СЊСЋ iFind РІ DocBook.block
 	znspace "DOCBOOK"
 	set tempArray = ##class(%ArrayOfDataTypes).%New()
 	set count = 0	
@@ -353,7 +353,7 @@ ClassMethod FormQueryNew(obj) As %Status
   	set qStatus = tStatement.%Prepare(.myquery)
     IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
     set rset = tStatement.%Execute(text)
-    // Заполняем массив найденными данными
+    // Р—Р°РїРѕР»РЅСЏРµРј РјР°СЃСЃРёРІ РЅР°Р№РґРµРЅРЅС‹РјРё РґР°РЅРЅС‹РјРё
   	while rset.%Next() {
 	  	znspace "DOCSEARCH"
 	  	set tempArray(count,0)= rset.id
@@ -369,10 +369,10 @@ ClassMethod FormQueryNew(obj) As %Status
        } 
      
     znspace "DOCSEARCH"
-    // Всего получили строк в запросе
+    // Р’СЃРµРіРѕ РїРѕР»СѓС‡РёР»Рё СЃС‚СЂРѕРє РІ Р·Р°РїСЂРѕСЃРµ
 	set count = count - 1
 	
-	// Проходим по всем разным страницам и получаем в список id источников составляющих страницу. Нужно для iKnow 
+	// РџСЂРѕС…РѕРґРёРј РїРѕ РІСЃРµРј СЂР°Р·РЅС‹Рј СЃС‚СЂР°РЅРёС†Р°Рј Рё РїРѕР»СѓС‡Р°РµРј РІ СЃРїРёСЃРѕРє id РёСЃС‚РѕС‡РЅРёРєРѕРІ СЃРѕСЃС‚Р°РІР»СЏСЋС‰РёС… СЃС‚СЂР°РЅРёС†Сѓ. РќСѓР¶РЅРѕ РґР»СЏ iKnow 
     set textLink=tempArray(0,4)
 	for i=0:1:count-1 {
 		if (tempArray(i,4)'=tempArray(i+1,4)) && (tempArray(i+1,4)'=""){
@@ -397,13 +397,13 @@ ClassMethod FormQueryNew(obj) As %Status
 		    	znspace "DOCBOOK"
 		       }
 		zn "docbook"
-		// Получаем id источников содержащие слова из запроса
+		// РџРѕР»СѓС‡Р°РµРј id РёСЃС‚РѕС‡РЅРёРєРѕРІ СЃРѕРґРµСЂР¶Р°С‰РёРµ СЃР»РѕРІР° РёР· Р·Р°РїСЂРѕСЃР°
 		set tSC = ##class(%iKnow.Queries.SourceAPI).GetByEntities(.tResult,domId, wordList,1,500)
 		zn "docsearch" 
 		set array = ##class(%Library.ArrayOfObjects).%New()
 		set i = ""
 		set cntArray=0
-		// Через SQL получили ID источников, но ID SQL записей источников. Для iKnow требуются ID записей источников домена. Для этого мы получаем соотношения ID SQL и ID Домена и заменяем ID
+		// Р§РµСЂРµР· SQL РїРѕР»СѓС‡РёР»Рё ID РёСЃС‚РѕС‡РЅРёРєРѕРІ, РЅРѕ ID SQL Р·Р°РїРёСЃРµР№ РёСЃС‚РѕС‡РЅРёРєРѕРІ. Р”Р»СЏ iKnow С‚СЂРµР±СѓСЋС‚СЃСЏ ID Р·Р°РїРёСЃРµР№ РёСЃС‚РѕС‡РЅРёРєРѕРІ РґРѕРјРµРЅР°. Р”Р»СЏ СЌС‚РѕРіРѕ РјС‹ РїРѕР»СѓС‡Р°РµРј СЃРѕРѕС‚РЅРѕС€РµРЅРёСЏ ID SQL Рё ID Р”РѕРјРµРЅР° Рё Р·Р°РјРµРЅСЏРµРј ID
 	    for {
 		    set i = $order(tResult(i),1,tSrcData)
 		    quit:i=""	
@@ -421,14 +421,14 @@ ClassMethod FormQueryNew(obj) As %Status
 		   for i=1:1:cntArray {
 		   		set tempId=$Replace(tempId, array(i,0),array(i,1))   
 		   } 
-	    // Массив с ИД источников 
+	    // РњР°СЃСЃРёРІ СЃ РР” РёСЃС‚РѕС‡РЅРёРєРѕРІ 
 	    set idArr(currLink) =$LISTFROMSTRING(tempId, " ")
 	    set countSourses=countSourses+1
 		}
 		
 		znspace "DOCSEARCH"
 		set countSourses=countSourses-1
-		// Высчитываем отношение искомых слов к всем словам на найденной странице
+		// Р’С‹СЃС‡РёС‚С‹РІР°РµРј РѕС‚РЅРѕС€РµРЅРёРµ РёСЃРєРѕРјС‹С… СЃР»РѕРІ Рє РІСЃРµРј СЃР»РѕРІР°Рј РЅР° РЅР°Р№РґРµРЅРЅРѕР№ СЃС‚СЂР°РЅРёС†Рµ
 		set currPoint=0
 		set currLink=0
 		
@@ -443,7 +443,7 @@ ClassMethod FormQueryNew(obj) As %Status
 	    	}
 	    }
 	 
-	// Запись построчно в временную таблицу
+	// Р—Р°РїРёСЃСЊ РїРѕСЃС‚СЂРѕС‡РЅРѕ РІ РІСЂРµРјРµРЅРЅСѓСЋ С‚Р°Р±Р»РёС†Сѓ
 	
 	for i=0:1:count {
 		set newquery ="insert into SQLUser.temptable(idSQL,text,textKey,frequency,docKey,title,bookKey,bookTitle) VALUES(?,?,?,?,?,?,?,?)"
@@ -451,26 +451,26 @@ ClassMethod FormQueryNew(obj) As %Status
     	if rset2.%SQLCODE'=0 {write !,"2st ExecDirect SQLCODE=",rset2.%SQLCODE,!,rset2.%Message  quit}
 	}
 	
-	// Пагинация
+	// РџР°РіРёРЅР°С†РёСЏ
 	set commonCount = count
 	if commonCount<startRecord set startRecord=1
 	set offset=recordCount+startRecord-1	
 	if (offset>commonCount) set recordCount=recordCount-(offset-commonCount)
-	// Запрос к временной таблице отсортированной по частоте с учетом пагинации 
+	// Р—Р°РїСЂРѕСЃ Рє РІСЂРµРјРµРЅРЅРѕР№ С‚Р°Р±Р»РёС†Рµ РѕС‚СЃРѕСЂС‚РёСЂРѕРІР°РЅРЅРѕР№ РїРѕ С‡Р°СЃС‚РѕС‚Рµ СЃ СѓС‡РµС‚РѕРј РїР°РіРёРЅР°С†РёРё 
    	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from SQLUser.temptable order by frequency DESC) order by frequency ASC) order by frequency DESC"
-  	//Пока что без пагинации
+  	//РџРѕРєР° С‡С‚Рѕ Р±РµР· РїР°РіРёРЅР°С†РёРё
   	//set resultQuery = "select * from( select * from SQLUser.temptable group by title) order by frequency DESC"
   	set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) AS cnt, * from ( select * from SQLUser.temptable group by title)) order by frequency DESC) order by frequency ASC) order by frequency DESC"
   	set Statement = ##class(%SQL.Statement).%New()
   	set Status = Statement.%Prepare(resultQuery)
    	if Status'=1 {write "%Prepare failed:" do $System.Status.DisplayError(Status) quit}
   	set result = Statement.%Execute()
-   	// Формируем динамический обьект
+   	// Р¤РѕСЂРјРёСЂСѓРµРј РґРёРЅР°РјРёС‡РµСЃРєРёР№ РѕР±СЊРµРєС‚
     //set ResultJSON = { "sources": [] }
     set ResultJSON = { "sources": [] }
     
     while result.%Next() {
-    	// Заполняем массив данными
+    	// Р—Р°РїРѕР»РЅСЏРµРј РјР°СЃСЃРёРІ РґР°РЅРЅС‹РјРё
     	//set tJSON = { "text":(result.text), "textKey":(result.textKey), "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
 		set tJSON = {"textInfo":[], "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
 		//do ResultJSON.sources.%Push(tJSON)
@@ -497,13 +497,13 @@ ClassMethod FormQueryNew(obj) As %Status
 		
 		
     }
-    // Вывод в JSON общего количества найденных результатов
+    // Р’С‹РІРѕРґ РІ JSON РѕР±С‰РµРіРѕ РєРѕР»РёС‡РµСЃС‚РІР° РЅР°Р№РґРµРЅРЅС‹С… СЂРµР·СѓР»СЊС‚Р°С‚РѕРІ
     //set totalCountJ = {"totalCount":(+count)}
     //do ResultJSON.sources.%Push(totalCountJ)
     set totalCountJ = {"totalCount":(+totalCount)}
     do ResultJSON.sources.%Push(totalCountJ)
     
-	//Удалем временную таблицу
+	//РЈРґР°Р»РµРј РІСЂРµРјРµРЅРЅСѓСЋ С‚Р°Р±Р»РёС†Сѓ
     set dropquery = "drop table SQLUser.temptable"
   	set dropStatement = ##class(%SQL.Statement).%New()
   	set dropStatus = dropStatement.%Prepare(dropquery)
@@ -511,7 +511,7 @@ ClassMethod FormQueryNew(obj) As %Status
   	set dropRset = dropStatement.%Execute()
 	set st=$$$OK
 	
-	// Метод преобразующий динамический обьект в JSON
+	// РњРµС‚РѕРґ РїСЂРµРѕР±СЂР°Р·СѓСЋС‰РёР№ РґРёРЅР°РјРёС‡РµСЃРєРёР№ РѕР±СЊРµРєС‚ РІ JSON
 	write ResultJSON.%ToJSON()
 	
 	quit st
