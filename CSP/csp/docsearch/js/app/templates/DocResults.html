@@ -42,33 +42,25 @@
 			</div>
 			
 			<div ng-hide = "preloadToggle">
-				<div class="row MarginAdvancedMenu" ng-show="advancedMenuShow">
-					<div class="col-sm-3">
-						<div class="input-group">
-							<input type="text" ng-model="search.words" class="form-control">
-							<span class="input-group-btn">
-								<button class="btn btn-default ButtonSize" type="button" ng-click="wordsClear()"><span class="glyphicon glyphicon-remove"></span></button>
-							</span>
-						</div>
-					</div>
-					<div class="col-sm-3">
-						<div class="input-group">
+				<div class="row MarginAdvancedMenu">
+					<div class="col-sm-4">
+						<div class="input-group" ng-show="phraseShow">
 							<input type="text" ng-model="search.phrase" class="form-control">
 							<span class="input-group-btn">
 								<button class="btn btn-default ButtonSize" type="button" ng-click="phraseClear()"><span class="glyphicon glyphicon-remove"></span></button>
 							</span>
 						</div>
 					</div>
-					<div class="col-sm-3">
-						<div class="input-group">
+					<div class="col-sm-4">
+						<div class="input-group" ng-show="anyWordsShow">
 							<input type="text" ng-model="search.anyWords" class="form-control">
 							<span class="input-group-btn">
 								<button class="btn btn-default ButtonSize" type="button" ng-click="anyWordsClear()"><span class="glyphicon glyphicon-remove"></span></button>
 							</span>
 						</div>
 					</div>
-					<div class="col-sm-3">
-						<div class="input-group">
+					<div class="col-sm-4">
+						<div class="input-group" ng-show="withoutShow">
 							<input type="text" ng-model="search.without" class="form-control">
 							<span class="input-group-btn">
 								<button class="btn btn-default ButtonSize" type="button" ng-click="withoutClear()"><span class="glyphicon glyphicon-remove"></span></button>

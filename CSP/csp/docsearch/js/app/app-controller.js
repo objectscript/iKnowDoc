@@ -23,7 +23,9 @@ searchApp
 		$scope.prevToggle = false;
 		$scope.nextToggle = false;
 		$scope.checkToggle = false;
-		$scope.advancedMenuShow = false;
+		$scope.phraseShow = false;
+		$scope.anyWordsShow = false;
+		$scope.withoutShow = false;
 
 		$scope.wordsClear=function(){
 			$scope.search.words="";
@@ -95,7 +97,9 @@ searchApp
 		$scope.makeSearch = function (){
 			
 			$scope.inputToggle = false;		
-			$scope.search.phrase==''&& $scope.search.anyWords=='' && $scope.search.without=='' ? $scope.advancedMenuShow=false : $scope.advancedMenuShow=true;
+			$scope.search.phrase=='' ? $scope.phraseShow=false : $scope.phraseShow=true;
+			$scope.search.anyWords=='' ? $scope.anyWordsShow=false : $scope.anyWordsShow=true;
+			$scope.search.without=='' ? $scope.withoutShow=false : $scope.withoutShow=true;
 			
 			if ($scope.search.words != '')
 			{
