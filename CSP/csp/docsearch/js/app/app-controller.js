@@ -15,7 +15,9 @@ searchApp
 		
 		var index = - 1;
 		var prevNextCheck = 0;
+		var baseUrl = '/csp/docsearch/rest/';
 		var check = '';
+
 		$scope.mylocation = location.host;
 		$scope.inputToggle = false;
 		$scope.resultToggle = true;
@@ -23,37 +25,42 @@ searchApp
 		$scope.prevToggle = false;
 		$scope.nextToggle = false;
 		$scope.checkToggle = false;
-		$scope.phraseShow = false;
-		$scope.anyWordsShow = false;
-		$scope.withoutShow = false;
-		$scope.title="DocSearch";
+		$scope.phraseToggle = false;
+		$scope.anyWordsToggle = false;
+		$scope.withoutToggle = false;
+		$scope.title = "DocSearch";
 
-		$scope.wordsClear=function(){
-			$scope.search.words="";
+		$scope.phraseDel = function () {
+			$scope.search.phrase = '';
+			$scope.phraseToggle = false;
+			if ($scope.search.words != '')
+				$scope.showPage(0);			
 		}
 		
-		$scope.phraseClear=function(){
-			$scope.search.phrase="";
+		$scope.anyWordsDel = function () {
+			$scope.search.anyWords = '';
+			$scope.anyWordsToggle = false;
+			if ($scope.search.words != '')
+				$scope.showPage(0); 
 		}
 		
-		$scope.anyWordsClear=function(){
-			$scope.search.anyWords="";
-		}
-		
-		$scope.withoutClear=function(){
-			$scope.search.without="";
+		$scope.withoutDel = function () {
+			$scope.search.without = '';
+			$scope.withoutToggle = false;
+			if ($scope.search.words != '')
+				$scope.showPage(0); 
 		}
 		
 		$scope.clearAll=function(){
-			$scope.search.words="";
-			$scope.search.phrase="";
-			$scope.search.anyWords="";
-			$scope.search.without="";
+			$scope.search.words = "";
+			$scope.search.phrase = "";
+			$scope.search.anyWords = "";
+			$scope.search.without = "";
 		}
 		
 		$scope.change = function (){
-										
-			$http.get('http://' + location.host + '/csp/docsearch/rest/GetSimilar/' + $scope.search.words)
+								
+			$http.get(baseUrl + 'GetSimilar/' + $scope.search.words)
 				.then(function(response) {
 					$scope.searchItems = response.data.entities;
 			});	
@@ -97,11 +104,8 @@ searchApp
 
 		$scope.makeSearch = function (){
 			
-			$scope.inputToggle = false;		
-			$scope.search.phrase=='' ? $scope.phraseShow=false : $scope.phraseShow=true;
-			$scope.search.anyWords=='' ? $scope.anyWordsShow=false : $scope.anyWordsShow=true;
-			$scope.search.without=='' ? $scope.withoutShow=false : $scope.withoutShow=true;
-			$scope.title=$scope.search.words;
+			$scope.inputToggle = false;
+			$scope.title = $scope.search.words;
 			
 			if ($scope.search.words != '')
 			{
@@ -121,19 +125,43 @@ searchApp
 			{
 				$scope.checkToggle = true;
 				check = $scope.search.words;
+				$scope.search.phrase = '';
+				$scope.search.anyWords = '';
+				$scope.search.without = '';
+				$scope.phraseToggle = false;
+				$scope.anyWordsToggle = false;
+				$scope.withoutToggle = false;			
 			}
 			else 
 				$scope.checkToggle = false;
+			
+			if ($scope.search.phrase != '')
+				$scope.phraseToggle = true;
+			
+			if ($scope.search.anyWords != '')
+				$scope.anyWordsToggle = true;
+
+			if ($scope.search.without != '')
+				$scope.withoutToggle = true;
 					
 			$scope.search.startRecord = (pagination.getCurrentPageNum()) * $scope.search.recordCount + 1;
 
 			$scope.preloadToggle = true;		
-			$http.post('http://' + location.host + '/csp/docsearch/rest/Search', $scope.search)
+			$http.post(baseUrl + 'Search', $scope.search)
 				.then(function(response) {
 					$scope.results = response.data.sources;
-					$scope.totalCount = $scope.results[$scope.results.length-1].totalCount;
+					$scope.totalCount = $scope.results[$scope.results.length - 1].totalCount;
 					$scope.pagesNum = pagination.getTotalPagesNum($scope.totalCount, $scope.search.recordCount);
 					$scope.paginationList = pagination.getPaginationList($scope.currentPage, $scope.pagesNum, $scope.checkToggle);
+					
+					if (prevNextCheck != $scope.pagesNum - 1)
+						$scope.nextToggle = true;
+					else
+						$scope.nextToggle = false;
+		
+					if ($scope.pagesNum == undefined)
+						$scope.nextToggle = false;
+					
 					$scope.preloadToggle = false;
 			});
 			
@@ -158,15 +186,6 @@ searchApp
 				$scope.prevToggle = true;
 			else
 				$scope.prevToggle = false;
-			
-			if (prevNextCheck != $scope.pagesNum - 1)
-				$scope.nextToggle = true;
-			else
-				$scope.nextToggle = false;
-
-			if ($scope.pagesNum == undefined)
-				$scope.nextToggle = false;
-
 		}
 				
 		$scope.currentPageNum = function() {
