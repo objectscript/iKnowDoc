@@ -126,13 +126,13 @@ ClassMethod FormQuery(obj) As %Status
   	while rset.%Next() {
 	  	znspace "DOCSEARCH"
 	  	set tempArray(count,0)= rset.id
-	  	set tempArray(count,1) = ##class(Search.Parser).Parse(rset.text)
+	  	set tempArray(count,1) = rset.text // ##class(Search.Parser).Parse(rset.text)
     	set tempArray(count,2) = rset.textKey
     	set tempArray(count,3) = 0
     	set tempArray(count,4) = rset.docKey
-    	set tempArray(count,5) = ##class(Search.Parser).ParseTitle(rset.title)
+    	set tempArray(count,5) = rset.title // ##class(Search.Parser).ParseTitle(rset.title)
     	set tempArray(count,6) = rset.bookKey
-    	set tempArray(count,7) = ##class(Search.Parser).ParseTitle(rset.bookTitle)
+    	set tempArray(count,7) = rset.bookTitle // ##class(Search.Parser).ParseTitle(rset.bookTitle)
     	set count = count + 1
     	znspace "DOCBOOK"
        } 
@@ -241,7 +241,7 @@ ClassMethod FormQuery(obj) As %Status
     while result.%Next() {
     	// Заполняем массив данными
     	//set tJSON = { "text":(result.text), "textKey":(result.textKey), "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
-		set tJSON = {"textInfo":[], "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
+		set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (##class(Search.Parser).ParseTitle(result.title)),   "bookKey": (result.bookKey) ,"bookTitle": (##class(Search.Parser).ParseTitle(result.bookTitle)) }
 		//do ResultJSON.sources.%Push(tJSON)
 
 
@@ -252,7 +252,7 @@ ClassMethod FormQuery(obj) As %Status
 	  	set subresult = subStatement.%Execute(result.docKey)
 	  	while subresult.%Next() {
 	  		set subtextKey = result.docKey_"#"_subresult.textKey
-	  		set textInfoJSON = {"text":(subresult.text), "textKey":(subtextKey)}
+	  		set textInfoJSON = {"text":(##class(Search.Parser).Parse(subresult.text)), "textKey":(subtextKey)}
 	  		do tJSON.textInfo.%Push(textInfoJSON)
 	  	}
 	  	set totalCount=result.cnt
