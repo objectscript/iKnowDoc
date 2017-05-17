@@ -5,7 +5,7 @@ searchApp.filter('showAllResults', function(){
      return function(input, first, last, bool){
        	if (!input || !input.length) { return; }
        	if (bool == true)
-     		results = input.slice(first, last - 1);
+     		results = input.slice(first, last);
      	if(bool == false)
      		results = input;
         return results;
