@@ -26,6 +26,7 @@ searchApp
 		$scope.phraseShow = false;
 		$scope.anyWordsShow = false;
 		$scope.withoutShow = false;
+		$scope.title="DocSearch";
 
 		$scope.wordsClear=function(){
 			$scope.search.words="";
@@ -100,6 +101,7 @@ searchApp
 			$scope.search.phrase=='' ? $scope.phraseShow=false : $scope.phraseShow=true;
 			$scope.search.anyWords=='' ? $scope.anyWordsShow=false : $scope.anyWordsShow=true;
 			$scope.search.without=='' ? $scope.withoutShow=false : $scope.withoutShow=true;
+			$scope.title=$scope.search.words;
 			
 			if ($scope.search.words != '')
 			{
