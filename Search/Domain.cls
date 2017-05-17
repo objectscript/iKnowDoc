@@ -64,7 +64,7 @@ ClassMethod GetSimilar(SearchString) As %Status
 	set domoref=##class(%iKnow.Domain).Open(dname)
 	set domId=domoref.Id
 	// Используя %iKnow получаем 10 сущностей подобных входной строке.
-	set SC = ##class(%iKnow.Queries.EntityAPI).GetSimilar(.Result, domId, SearchString)
+	set SC = ##class(%iKnow.Queries.EntityAPI).GetSimilar(.Result, domId, SearchString,,11)
 	znspace "DOCSEARCH"
 	quit:$$$ISERR(SC) ""
 	// Формируем динамический обьект
