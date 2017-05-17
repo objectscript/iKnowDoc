@@ -36,7 +36,6 @@ ClassMethod FormQuery(obj) As %Status
     set startRecord=obj.startRecord
     // Число записей на странице	
 	set recordCount=obj.recordCount
-	
 	// Переменная содержащая текст для запроса iFind в соответствии с форматированием нужным iFind
 	set text=""
 	// Переменная содержащая текст запроса без форматирования. Нужна для получения id слов, используемых iKnow
@@ -237,7 +236,7 @@ ClassMethod FormQuery(obj) As %Status
   	set result = Statement.%Execute()
    	// Формируем динамический обьект
     //set ResultJSON = { "sources": [] }
-    set ResultJSON = { "sources": [] }
+    set ResultJSON = { "sources": [], "totalCount":[]}
     
     while result.%Next() {
     	// Заполняем массив данными
@@ -256,22 +255,21 @@ ClassMethod FormQuery(obj) As %Status
 	  		set textInfoJSON = {"text":(subresult.text), "textKey":(subtextKey)}
 	  		do tJSON.textInfo.%Push(textInfoJSON)
 	  	}
-	  	
+	  	set totalCount=result.cnt
 	  	
 		//set textInfoJSON = {"text":(result.text), "textKey":(result.textKey)}
 		
 		//do ResultJSON.sources.%Push(textInfoJSON)
 		//do tJSON.textInfo.%Push(textInfoJSON)
-		do ResultJSON.sources.%Push(tJSON)
-		set totalCount=result.cnt
-		
-		
+		do ResultJSON.sources.%Push(tJSON)		
     }
     // Вывод в JSON общего количества найденных результатов
     //set totalCountJ = {"totalCount":(+count)}
     //do ResultJSON.sources.%Push(totalCountJ)
-    set totalCountJ = {"totalCount":(+totalCount)}
-    do ResultJSON.sources.%Push(totalCountJ)
+    set totalCountJSON = {"total":(totalCount)}
+    
+    do ResultJSON.totalCount.%Push(totalCountJSON)
+    //do ResultJSON.sources.%Push(totalCountJ)
     
 	//Удалем временную таблицу
     set dropquery = "drop table SQLUser.temptable"
@@ -283,6 +281,7 @@ ClassMethod FormQuery(obj) As %Status
 	
 	// Метод преобразующий динамический обьект в JSON
 	write ResultJSON.%ToJSON()
+
 	
 	quit st
 }
