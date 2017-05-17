@@ -2,7 +2,7 @@ var searchApp = angular.module('searchApp');
  
 searchApp
 	
-	.controller('searchController', function ($scope, $http, pagination, $location) {
+	.controller('searchController', function ($scope, $http, pagination, $location, $sce) {
 				
 		$scope.search = {
 			words: '',
@@ -103,7 +103,7 @@ searchApp
 		}		
 
 		$scope.makeSearch = function (){
-			
+			//$scope.searchWords();
 			$scope.inputToggle = false;
 			$scope.title = $scope.search.words;
 			
@@ -191,6 +191,14 @@ searchApp
 		$scope.currentPageNum = function() {
 		
 				return pagination.getCurrentPageNum();
+		}
+		$scope.searchWords=function(){
+		$scope.sce = $sce;
+		$scope.test = "This chapter describes the iFind search facility. iFind is an SQL facility for performing text search operations. To use iFind you must define an iFind index for each column containing text that you wish to search. You can then search the text records using a standard SQL query with a WHERE clause containing iFind index syntax.";
+        $scope.ifind="ifind";
+        $scope.test=$scope.test.replace( new RegExp( $scope.ifind, "gi" ), '<span class="Illumination"><b>'+ $scope.ifind +'</b></span>' );
+        $scope.myHTML =$scope.test;
+        
 		}
 
 	})/* END of controller - searchController */
