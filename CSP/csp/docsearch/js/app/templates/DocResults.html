@@ -44,29 +44,29 @@
 			<div ng-hide = "preloadToggle">
 				<div class="row MarginAdvancedMenu">
 					<div class="col-sm-4">
-						<div class="input-group" ng-show="phraseToggle">
+						<div class="input-group" ng-show="phraseShow">
 							<span class="input-group-addon">exact:</span>
 							<input type="text" ng-model="search.phrase" class="form-control">
 							<span class="input-group-btn">
-								<button class="btn btn-default ButtonSize" type="button" ng-click="phraseDel()"><span class="glyphicon glyphicon-remove"></span></button>
+								<button class="btn btn-default ButtonSize" type="button" ng-click="phraseClear()"><span class="glyphicon glyphicon-remove"></span></button>
 							</span>
 						</div>
 					</div>
 					<div class="col-sm-4">
-						<div class="input-group" ng-show="anyWordsToggle">
+						<div class="input-group" ng-show="anyWordsShow">
 							<span class="input-group-addon">any:</span>
 							<input type="text" ng-model="search.anyWords" class="form-control">
 							<span class="input-group-btn">
-								<button class="btn btn-default ButtonSize" type="button" ng-click="anyWordsDel()"><span class="glyphicon glyphicon-remove"></span></button>
+								<button class="btn btn-default ButtonSize" type="button" ng-click="anyWordsClear()"><span class="glyphicon glyphicon-remove"></span></button>
 							</span>
 						</div>
 					</div>
 					<div class="col-sm-4">
-						<div class="input-group" ng-show="withoutToggle">
+						<div class="input-group" ng-show="withoutShow">
 							<span class="input-group-addon">none:</span>
 							<input type="text" ng-model="search.without" class="form-control">
 							<span class="input-group-btn">
-								<button class="btn btn-default ButtonSize" type="button" ng-click="withoutDel()"><span class="glyphicon glyphicon-remove"></span></button>
+								<button class="btn btn-default ButtonSize" type="button" ng-click="withoutClear()"><span class="glyphicon glyphicon-remove"></span></button>
 							</span>
 						</div>
 					</div>

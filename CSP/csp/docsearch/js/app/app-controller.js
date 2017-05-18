@@ -25,32 +25,25 @@ searchApp
 		$scope.prevToggle = false;
 		$scope.nextToggle = false;
 		$scope.checkToggle = false;
-		$scope.phraseToggle = false;
-		$scope.anyWordsToggle = false;
-		$scope.withoutToggle = false;
 		$scope.title = "DocSearch";
-
-		$scope.phraseDel = function () {
-			$scope.search.phrase = '';
-			$scope.phraseToggle = false;
-			if ($scope.search.words != '')
-				$scope.showPage(0);			
+		$scope.phraseShow = false;
+		$scope.anyWordsShow = false;
+		$scope.withoutShow = false;
+		
+		$scope.phraseClear=function(){
+			$scope.search.phrase="";
+			$scope.makeSearch();
 		}
 		
-		$scope.anyWordsDel = function () {
-			$scope.search.anyWords = '';
-			$scope.anyWordsToggle = false;
-			if ($scope.search.words != '')
-				$scope.showPage(0); 
+		$scope.anyWordsClear=function(){
+			$scope.search.anyWords="";
+			$scope.makeSearch();
 		}
 		
-		$scope.withoutDel = function () {
-			$scope.search.without = '';
-			$scope.withoutToggle = false;
-			if ($scope.search.words != '')
-				$scope.showPage(0); 
+		$scope.withoutClear=function(){
+			$scope.search.without="";
+			$scope.makeSearch();
 		}
-		
 		$scope.clearAll=function(){
 			$scope.search.words = "";
 			$scope.search.phrase = "";
@@ -103,8 +96,10 @@ searchApp
 		}		
 
 		$scope.makeSearch = function (){
-			//$scope.searchWords();
 			$scope.inputToggle = false;
+			$scope.search.phrase=='' ? $scope.phraseShow=false : $scope.phraseShow=true;
+			$scope.search.anyWords=='' ? $scope.anyWordsShow=false : $scope.anyWordsShow=true;
+			$scope.search.without=='' ? $scope.withoutShow=false : $scope.withoutShow=true;
 			$scope.title = $scope.search.words;
 			
 			if ($scope.search.words != '')
@@ -124,25 +119,10 @@ searchApp
 			if(check != $scope.search.words)
 			{
 				$scope.checkToggle = true;
-				check = $scope.search.words;
-				$scope.search.phrase = '';
-				$scope.search.anyWords = '';
-				$scope.search.without = '';
-				$scope.phraseToggle = false;
-				$scope.anyWordsToggle = false;
-				$scope.withoutToggle = false;			
+				check = $scope.search.words;		
 			}
 			else 
 				$scope.checkToggle = false;
-			
-			if ($scope.search.phrase != '')
-				$scope.phraseToggle = true;
-			
-			if ($scope.search.anyWords != '')
-				$scope.anyWordsToggle = true;
-
-			if ($scope.search.without != '')
-				$scope.withoutToggle = true;
 					
 			$scope.search.startRecord = (pagination.getCurrentPageNum()) * $scope.search.recordCount + 1;
 
@@ -153,7 +133,7 @@ searchApp
 					$scope.totalCount = response.data.totalCount[0].total;
 					$scope.pagesNum = pagination.getTotalPagesNum($scope.totalCount, $scope.search.recordCount);
 					$scope.paginationList = pagination.getPaginationList($scope.currentPage, $scope.pagesNum, $scope.checkToggle);
-					
+					//$scope.searchWords();
 					if (prevNextCheck != $scope.pagesNum - 1)
 						$scope.nextToggle = true;
 					else
@@ -196,7 +176,7 @@ searchApp
 		$scope.sce = $sce;
 		$scope.test = "This chapter describes the iFind search facility. iFind is an SQL facility for performing text search operations. To use iFind you must define an iFind index for each column containing text that you wish to search. You can then search the text records using a standard SQL query with a WHERE clause containing iFind index syntax.";
         $scope.ifind="ifind";
-        $scope.test=$scope.test.replace( new RegExp( $scope.ifind, "gi" ), '<span class="Illumination"><b>'+ $scope.ifind +'</b></span>' );
+        $scope.test=$scope.test.replace( new RegExp( $scope.ifind, "gi" ), '<span class="Illumination"><b> $&'+'</b></span>' );
         $scope.myHTML =$scope.test;
         
 		}
