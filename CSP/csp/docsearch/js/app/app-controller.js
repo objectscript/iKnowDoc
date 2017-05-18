@@ -97,9 +97,11 @@ searchApp
 
 		$scope.makeSearch = function (){
 			$scope.inputToggle = false;
+
 			$scope.search.phrase=='' ? $scope.phraseShow=false : $scope.phraseShow=true;
 			$scope.search.anyWords=='' ? $scope.anyWordsShow=false : $scope.anyWordsShow=true;
 			$scope.search.without=='' ? $scope.withoutShow=false : $scope.withoutShow=true;
+
 			$scope.title = $scope.search.words;
 			
 			if ($scope.search.words != '')
@@ -143,6 +145,10 @@ searchApp
 						$scope.nextToggle = false;
 					
 					$scope.preloadToggle = false;
+					
+					/*while($scope.results.length)
+						$scope.results.textInfo.text = $sce.trustAsHtml($scope.results.textInfo.text.replace(new RegExp($scope.search.words, "gi" ), '<span class="Illumination"><b> $&'+'</b></span>'));
+						*/
 			});
 			
 			if(!isNaN(page))
@@ -172,13 +178,13 @@ searchApp
 		
 				return pagination.getCurrentPageNum();
 		}
-		$scope.searchWords=function(){
-		$scope.sce = $sce;
-		$scope.test = "This chapter describes the iFind search facility. iFind is an SQL facility for performing text search operations. To use iFind you must define an iFind index for each column containing text that you wish to search. You can then search the text records using a standard SQL query with a WHERE clause containing iFind index syntax.";
-        $scope.ifind="ifind";
-        $scope.test=$scope.test.replace( new RegExp( $scope.ifind, "gi" ), '<span class="Illumination"><b> $&'+'</b></span>' );
-        $scope.myHTML =$scope.test;
+		/*$scope.searchWords=function(){
+			$scope.sce = $sce;
+			$scope.test = "This chapter describes the iFind search facility. iFind is an SQL facility for performing text search operations. To use iFind you must define an iFind index for each column containing text that you wish to search. You can then search the text records using a standard SQL query with a WHERE clause containing iFind index syntax.";
+	        $scope.ifind="ifind";
+	        $scope.test = $sce.trustAsHtml($scope.test.replace( new RegExp( $scope.ifind, "gi" ), '<span class="Illumination"><b> $&'+'</b></span>' ));
+	        $scope.myHTML =$scope.test;
         
-		}
+		}*/
 
 	})/* END of controller - searchController */

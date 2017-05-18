@@ -14,7 +14,7 @@ searchApp
 			
 			//
 			getPageProducts: function(num) {
-				var num = angular.isUndefined(num) ? 0 : num;
+				num = angular.isUndefined(num) ? 0 : num;
 				currentPage = num;
 			}, /* END of getPageProducts */
 			
@@ -27,7 +27,7 @@ searchApp
 			getPaginationList: function(page, pagesNum, check) {
 				var paginationList = [];
 				
-				if(check == true)
+				if(check)
 				{
 					startPage = 0;
 				}
