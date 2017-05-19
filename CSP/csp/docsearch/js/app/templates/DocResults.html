@@ -86,13 +86,12 @@
 							     </ul>
 								 <br>
 								<button class="btn" ng-class="!result.show_all ? 'btn-success' : 'btn-default'" ng-click = "result.show_all = !result.show_all;" ng-hide = "result.textInfo.length <= 5"><span ng-hide="result.show_all">Show</span><span ng-show="result.show_all">Hide</span> all results</button>
-								<!--<p ng-bind-html="myHTML"></p>-->
 						    </li>
 					   </ul>
 				  </div>
 				
 				<div style="text-center" ng-show = "!resultToggle">
-					Your search - {{Search.text}} - did not match any documents.
+					Your search - {{search.words}} - did not match any documents.
 					</br>
 					Suggestions:
 					</br>

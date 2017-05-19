@@ -2,7 +2,7 @@ var searchApp = angular.module('searchApp');
  
 searchApp
 	
-	.factory('pagination', function( $sce ) {
+	.factory('pagination', function($sce) {
 
 		var currentPage = 0;
 		var counter = 0;
@@ -69,7 +69,7 @@ searchApp
 				for (var i = startPage; i < endPage; i++) {
 					var name = i + 1;
 					paginationList.push({
-						name: $sce.trustAsHtml( String(name) ),
+						name: $sce.trustAsHtml(String(name)),
 						link: i
 					});
 				};

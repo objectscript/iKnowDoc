@@ -57,6 +57,8 @@ searchApp
 				.then(function(response) {
 					$scope.searchItems = response.data.entities;
 			});	
+			
+			return;
 	
 			if ($scope.search.words == '')
 				$scope.inputToggle = false;
@@ -133,22 +135,23 @@ searchApp
 				.then(function(response) {
 					$scope.results = response.data.sources;
 					$scope.totalCount = response.data.totalCount[0].total;
-					$scope.pagesNum = pagination.getTotalPagesNum($scope.totalCount, $scope.search.recordCount);
-					$scope.paginationList = pagination.getPaginationList($scope.currentPage, $scope.pagesNum, $scope.checkToggle);
-					//$scope.searchWords();
-					if (prevNextCheck != $scope.pagesNum - 1)
-						$scope.nextToggle = true;
+					if ($scope.totalCount != 0)
+					{					
+						$scope.pagesNum = pagination.getTotalPagesNum($scope.totalCount, $scope.search.recordCount);
+						$scope.paginationList = pagination.getPaginationList($scope.currentPage, $scope.pagesNum, $scope.checkToggle);
+						
+						if (prevNextCheck != $scope.pagesNum - 1)
+							$scope.nextToggle = true;
+						else
+							$scope.nextToggle = false;
+						
+						if ($scope.pagesNum == undefined)
+							$scope.nextToggle = false;
+					}
 					else
-						$scope.nextToggle = false;
-		
-					if ($scope.pagesNum == undefined)
-						$scope.nextToggle = false;
+						$scope.resultToggle = false;
 					
-					$scope.preloadToggle = false;
-					
-					/*while($scope.results.length)
-						$scope.results.textInfo.text = $sce.trustAsHtml($scope.results.textInfo.text.replace(new RegExp($scope.search.words, "gi" ), '<span class="Illumination"><b> $&'+'</b></span>'));
-						*/
+					$scope.preloadToggle = false;					
 			});
 			
 			if(!isNaN(page))
@@ -178,13 +181,5 @@ searchApp
 		
 				return pagination.getCurrentPageNum();
 		}
-		/*$scope.searchWords=function(){
-			$scope.sce = $sce;
-			$scope.test = "This chapter describes the iFind search facility. iFind is an SQL facility for performing text search operations. To use iFind you must define an iFind index for each column containing text that you wish to search. You can then search the text records using a standard SQL query with a WHERE clause containing iFind index syntax.";
-	        $scope.ifind="ifind";
-	        $scope.test = $sce.trustAsHtml($scope.test.replace( new RegExp( $scope.ifind, "gi" ), '<span class="Illumination"><b> $&'+'</b></span>' ));
-	        $scope.myHTML =$scope.test;
-        
-		}*/
 
 	})/* END of controller - searchController */
