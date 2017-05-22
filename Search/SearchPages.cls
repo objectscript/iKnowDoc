@@ -79,31 +79,16 @@ ClassMethod FormQuery(obj) As %Status
 	set wordList=$LISTFROMSTRING(wordText, " ")
 	
 	// Формируем список содержащий id слов запроса из списка слов запроса
-	set currPoint=0
-	set currWord=0
-	set textId=""
-	set cntList=0
+	
 	zn "DOCBOOK"
 	// Получение id домена
 	set dname="DocSearch" 
 	set domoref=##class(%iKnow.Domain).Open(dname)
 	set domId=domoref.Id
-	// Получение id первого слова запроса
-	set id = ##class(%iKnow.Queries.EntityAPI).GetId(domId,$LISTGET(wordList,1))
 	zn "DOCSEARCH"
-	set textId=textId_id
-	// Получение id остальных слов запроса
-	while $LISTNEXT(wordList,currPoint,currWord) {
-		if cntList>0{
-			zn "DOCBOOK"
-			set id = ##class(%iKnow.Queries.EntityAPI).GetId(domId,currWord)
-			zn "DOCSEARCH"
-			set textId=textId_" "_id
-		}
-		set cntList = cntList+1
-	}
+	
 	// Список содержащий id слов запроса
-	set wordIdList=$LISTFROMSTRING(textId, " ")
+	//set wordIdList=$LISTFROMSTRING(textId, " ")
 	
 	// Создаем временную таблицу в которую будем заносить то что нашли по запросу пользователя,
 	// высчитывать отношение искомых слов к всем словам на найденной странице и в зависимости от этого отношения сортировать результат запроса
@@ -116,7 +101,7 @@ ClassMethod FormQuery(obj) As %Status
 	// Выполняем поиск слова с помощью iFind в DocBook.block
 	znspace "DOCBOOK"
 	set tempArray = ##class(%ArrayOfDataTypes).%New()
-	set count = 0	
+	set count = 0
 	set myquery = "SELECT  id, content AS text, blockid AS textKey, component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)"
 	set tStatement = ##class(%SQL.Statement).%New()
   	set qStatus = tStatement.%Prepare(.myquery)
@@ -125,98 +110,94 @@ ClassMethod FormQuery(obj) As %Status
     // Заполняем массив найденными данными
   	while rset.%Next() {
 	  	znspace "DOCSEARCH"
-	  	set tempArray(count,0)= rset.id
-	  	set tempArray(count,1) = rset.text // ##class(Search.Parser).Parse(rset.text)
-    	set tempArray(count,2) = rset.textKey
-    	set tempArray(count,3) = 0
-    	set tempArray(count,4) = rset.docKey
-    	set tempArray(count,5) = rset.title // ##class(Search.Parser).ParseTitle(rset.title)
-    	set tempArray(count,6) = rset.bookKey
-    	set tempArray(count,7) = rset.bookTitle // ##class(Search.Parser).ParseTitle(rset.bookTitle)
-    	set count = count + 1
+	  	if rset.title'="" {
+		  	set tempArray(count,0)= rset.id
+		  	set tempArray(count,1) = rset.text // ##class(Search.Parser).Parse(rset.text)
+	    	set tempArray(count,2) = rset.textKey
+	    	set tempArray(count,3) = 0
+	    	set tempArray(count,4) = rset.docKey
+	    	set tempArray(count,5) = rset.title // ##class(Search.Parser).ParseTitle(rset.title)
+	    	set tempArray(count,6) = rset.bookKey
+	    	set tempArray(count,7) = rset.bookTitle // ##class(Search.Parser).ParseTitle(rset.bookTitle)
+	    	set count = count + 1
+	    }
     	znspace "DOCBOOK"
        } 
-     
+    // Обработка случая если нечего не нашли
+    if count=0{
+        set ResultJSON = { "sources": [], "totalCount":[]}
+	    set totalCountJSON = {"total":(count)}
+	    do ResultJSON.totalCount.%Push(totalCountJSON)
+        write ResultJSON.%ToJSON()
+        quit 0   
+    }
+    
     znspace "DOCSEARCH"
     // Всего получили строк в запросе
 	set count = count - 1
 	
-	// Проходим по всем разным страницам и получаем в список id источников составляющих страницу. Нужно для iKnow 
-    set textLink=tempArray(0,4)
-	for i=0:1:count-1 {
-		if (tempArray(i,4)'=tempArray(i+1,4)) && (tempArray(i+1,4)'=""){
-			set textLink = textLink_", "_tempArray(i+1,4)
-			}
-		}
-		set listLink = $LISTFROMSTRING(textLink, ", ")
-		set currPoint=0
-		set currLink=0
-		set countSourses=0
-		while $LISTNEXT(listLink,currPoint,currLink) {
-			set tempId = ""
-			znspace "DOCBOOK"
-			set queryLink = "SELECT id, component->blockid As link FROM DocBook.block WHERE component->blockid='"_currLink_"'"
-		  	set tStatement = ##class(%SQL.Statement).%New()
-		  	set qStatus = tStatement.%Prepare(queryLink)
-		   	if qStatus'=1 {write "%Prepare failed:" do $System.Status.DisplayError(qStatus) quit}
-		  	set rLink = tStatement.%Execute()
-		  	while rLink.%Next() {
-			  	znspace "DOCSEARCH"
-			  	set tempId = tempId_rLink.id_" "
-		    	znspace "DOCBOOK"
-		       }
-		zn "docbook"
-		// Получаем id источников содержащие слова из запроса
-		set tSC = ##class(%iKnow.Queries.SourceAPI).GetByEntities(.tResult,domId, wordList,1,500)
-		zn "docsearch" 
-		set array = ##class(%Library.ArrayOfObjects).%New()
-		set i = ""
-		set cntArray=0
-		// Через SQL получили ID источников, но ID SQL записей источников. Для iKnow требуются ID записей источников домена. Для этого мы получаем соотношения ID SQL и ID Домена и заменяем ID
-	    for {
-		    set i = $order(tResult(i),1,tSrcData)
-		    quit:i=""	
-			set string=$lg(tSrcData,2)
-			set nul=$FIND(string,":",1)-1 
-			set from=$FIND(string,":",nul+1)-1
-			set to=$FIND(string,":",from+1)-1
-			set substr=$EXTRACT(string,from+1,to-1)
-			set first = $lg(tSrcData,1)
-			set array(i,0)=substr
-			set array(i,1)=first
-			set cntArray=cntArray+1
-		}
-		set tempIdNew=""
-		   for i=1:1:cntArray {
-		   		set tempId=$Replace(tempId, array(i,0),array(i,1))   
-		   } 
-	    // Массив с ИД источников 
-	    set idArr(currLink) =$LISTFROMSTRING(tempId, " ")
-	    set countSourses=countSourses+1
-		}
-		
-		znspace "DOCSEARCH"
-		set countSourses=countSourses-1
-		// Высчитываем отношение искомых слов к всем словам на найденной странице
-		set currPoint=0
-		set currLink=0
-		
-		while $LISTNEXT(listLink,currPoint,currLink) {
-			set frequency(currLink)= ##class(Search.Rank).Frequency(domId,idArr(currLink),wordIdList)
-		}
-		
-		
-		for i=0:1:count {
-			if tempArray(i,4)'="" {
-				set tempArray(i,3) = frequency(tempArray(i,4))
-	    	}
-	    }
-	 
+	// Высчитываем частоту с помощью iknow
+	// Получаем в массив страницы документации
+	znspace "DOCBOOK"
+	set docKeyArray = ##class(%ArrayOfDataTypes).%New()
+	set countDocKey=0
+	set myqueryDocKey = "SELECT component->blockid AS docKey FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0) GROUP BY %EXACT(component->blockid)"
+	set StatementDocKey = ##class(%SQL.Statement).%New()
+  	set StatusDocKey = StatementDocKey.%Prepare(.myqueryDocKey)
+    IF StatusDocKey'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(StatusDocKey) QUIT}
+    set rsetDocKey = StatementDocKey.%Execute(text)
+    // Заполняем массив найденными данными
+  	while rsetDocKey.%Next() {
+  		if rsetDocKey.docKey'="" {
+  			set docKeyArray(countDocKey)=rsetDocKey.docKey
+  			set countDocKey=countDocKey+1
+  		}
+  	}
+  	
+  	//znspace "DOCSEARCH"
+  	//zw docKeyArray
+  	set frequencyArray=##class(%ArrayOfDataTypes).%New()
+  	for i=0:1:countDocKey-1{
+  		set frequencyArray(docKeyArray(i))=0
+  	}
+  	//zw wordList
+  	//zw frequencyArray
+  	//zw docKeyArray
+  	for i=0:1:countDocKey-1 {
+  		// Создаем фильтр для iknow. Благодоря этому, считать будем по каждой странице докуменнтации
+  		set filt=##class(%iKnow.Filters.SimpleMetadataFilter).%New(domId,"component_blockid","=",docKeyArray(i))      
+  		set num = ##class(%iKnow.Queries.EntityAPI).GetTopTFIDF(.result,domId,1,100,filt)
+  		set j=1
+  		//Пока заполнен глобал
+  		while $D(result(j))'=0 {
+  			// Для всех слов запроса
+  			for wordCount=1:1:$LISTLENGTH(wordList) {
+  				set word = $LISTGET(wordList,wordCount)
+  				if $FIND($ListGet(result(j),2),word)'=0 {
+  					//w $ListGet(result(j),2), "	 ", word, "	",docKeyArray(i) ,"   ",$ListGet(result(j),3),! 
+  					//w "  ",docKeyArray(i) ,"    ",$ListGet(result(j),3),!
+  					set frequencyArray(docKeyArray(i))=frequencyArray(docKeyArray(i))+$ListGet(result(j),3)
+  					//w docKeyArray(i), "    ", frequencyArray(docKeyArray(i)),!
+  				}
+  					
+  			}
+  			//w j,!
+  			set j=j+1
+  			
+  		}	
+  	}
+  	//zw frequencyArray
+  	//zw tempArray
+	znspace "DOCSEARCH"
 	// Запись построчно в временную таблицу
-	
+	//zw tempArray
 	for i=0:1:count {
+		//w frequencyArray(tempArray(i,4)),"   ",tempArray(i,4),"   ",i,!
+		if tempArray(i,4)="" {
+		 set frequencyArray(tempArray(i,4))=0
+		}
 		set newquery ="insert into SQLUser.temptable(idSQL,text,textKey,frequency,docKey,title,bookKey,bookTitle) VALUES(?,?,?,?,?,?,?,?)"
-  		set rset2 = ##class(%SQL.Statement).%ExecDirect(,.newquery,tempArray(i,0),tempArray(i,1),tempArray(i,2),tempArray(i,3),tempArray(i,4),tempArray(i,5),tempArray(i,6),tempArray(i,7))
+  		set rset2 = ##class(%SQL.Statement).%ExecDirect(,.newquery,tempArray(i,0),tempArray(i,1),tempArray(i,2), frequencyArray(tempArray(i,4)) ,tempArray(i,4),tempArray(i,5),tempArray(i,6),tempArray(i,7))
     	if rset2.%SQLCODE'=0 {write !,"2st ExecDirect SQLCODE=",rset2.%SQLCODE,!,rset2.%Message  quit}
 	}
 	
@@ -241,7 +222,7 @@ ClassMethod FormQuery(obj) As %Status
     while result.%Next() {
     	// Заполняем массив данными
     	//set tJSON = { "text":(result.text), "textKey":(result.textKey), "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
-		set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (##class(Search.Parser).ParseTitle(result.title)),   "bookKey": (result.bookKey) ,"bookTitle": (##class(Search.Parser).ParseTitle(result.bookTitle)) }
+		set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (##class(Search.Parser).ParseTitle(result.title)),   "bookKey": (result.bookKey) ,"bookTitle": (##class(Search.Parser).ParseTitle(result.bookTitle)), "frequency": (result.frequency) }
 		//do ResultJSON.sources.%Push(tJSON)
 
 
@@ -281,9 +262,9 @@ ClassMethod FormQuery(obj) As %Status
 	
 	// Метод преобразующий динамический обьект в JSON
 	write ResultJSON.%ToJSON()
-
-	
 	quit st
 }
+
+
 
 }
