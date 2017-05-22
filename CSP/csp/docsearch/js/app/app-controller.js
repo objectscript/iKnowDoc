@@ -2,7 +2,7 @@ var searchApp = angular.module('searchApp');
  
 searchApp
 	
-	.controller('searchController', function ($scope, $http, pagination, $location) {
+	.controller('searchController', function ($scope, $http, pagination, $location, $sce) {
 				
 		$scope.search = {
 			words: '',
@@ -25,32 +25,25 @@ searchApp
 		$scope.prevToggle = false;
 		$scope.nextToggle = false;
 		$scope.checkToggle = false;
-		$scope.phraseToggle = false;
-		$scope.anyWordsToggle = false;
-		$scope.withoutToggle = false;
 		$scope.title = "DocSearch";
-
-		$scope.phraseDel = function () {
-			$scope.search.phrase = '';
-			$scope.phraseToggle = false;
-			if ($scope.search.words != '')
-				$scope.showPage(0);			
+		$scope.phraseShow = false;
+		$scope.anyWordsShow = false;
+		$scope.withoutShow = false;
+		
+		$scope.phraseClear=function(){
+			$scope.search.phrase="";
+			$scope.makeSearch();
 		}
 		
-		$scope.anyWordsDel = function () {
-			$scope.search.anyWords = '';
-			$scope.anyWordsToggle = false;
-			if ($scope.search.words != '')
-				$scope.showPage(0); 
+		$scope.anyWordsClear=function(){
+			$scope.search.anyWords="";
+			$scope.makeSearch();
 		}
 		
-		$scope.withoutDel = function () {
-			$scope.search.without = '';
-			$scope.withoutToggle = false;
-			if ($scope.search.words != '')
-				$scope.showPage(0); 
+		$scope.withoutClear=function(){
+			$scope.search.without="";
+			$scope.makeSearch();
 		}
-		
 		$scope.clearAll=function(){
 			$scope.search.words = "";
 			$scope.search.phrase = "";
@@ -64,6 +57,8 @@ searchApp
 				.then(function(response) {
 					$scope.searchItems = response.data.entities;
 			});	
+			
+			return;
 	
 			if ($scope.search.words == '')
 				$scope.inputToggle = false;
@@ -103,8 +98,12 @@ searchApp
 		}		
 
 		$scope.makeSearch = function (){
-			
 			$scope.inputToggle = false;
+
+			$scope.search.phrase=='' ? $scope.phraseShow=false : $scope.phraseShow=true;
+			$scope.search.anyWords=='' ? $scope.anyWordsShow=false : $scope.anyWordsShow=true;
+			$scope.search.without=='' ? $scope.withoutShow=false : $scope.withoutShow=true;
+
 			$scope.title = $scope.search.words;
 			
 			if ($scope.search.words != '')
@@ -124,25 +123,10 @@ searchApp
 			if(check != $scope.search.words)
 			{
 				$scope.checkToggle = true;
-				check = $scope.search.words;
-				$scope.search.phrase = '';
-				$scope.search.anyWords = '';
-				$scope.search.without = '';
-				$scope.phraseToggle = false;
-				$scope.anyWordsToggle = false;
-				$scope.withoutToggle = false;			
+				check = $scope.search.words;		
 			}
 			else 
 				$scope.checkToggle = false;
-			
-			if ($scope.search.phrase != '')
-				$scope.phraseToggle = true;
-			
-			if ($scope.search.anyWords != '')
-				$scope.anyWordsToggle = true;
-
-			if ($scope.search.without != '')
-				$scope.withoutToggle = true;
 					
 			$scope.search.startRecord = (pagination.getCurrentPageNum()) * $scope.search.recordCount + 1;
 
@@ -151,18 +135,23 @@ searchApp
 				.then(function(response) {
 					$scope.results = response.data.sources;
 					$scope.totalCount = response.data.totalCount[0].total;
-					$scope.pagesNum = pagination.getTotalPagesNum($scope.totalCount, $scope.search.recordCount);
-					$scope.paginationList = pagination.getPaginationList($scope.currentPage, $scope.pagesNum, $scope.checkToggle);
-					
-					if (prevNextCheck != $scope.pagesNum - 1)
-						$scope.nextToggle = true;
+					if ($scope.totalCount != 0)
+					{					
+						$scope.pagesNum = pagination.getTotalPagesNum($scope.totalCount, $scope.search.recordCount);
+						$scope.paginationList = pagination.getPaginationList($scope.currentPage, $scope.pagesNum, $scope.checkToggle);
+						
+						if (prevNextCheck != $scope.pagesNum - 1)
+							$scope.nextToggle = true;
+						else
+							$scope.nextToggle = false;
+						
+						if ($scope.pagesNum == undefined)
+							$scope.nextToggle = false;
+					}
 					else
-						$scope.nextToggle = false;
-		
-					if ($scope.pagesNum == undefined)
-						$scope.nextToggle = false;
+						$scope.resultToggle = false;
 					
-					$scope.preloadToggle = false;
+					$scope.preloadToggle = false;					
 			});
 			
 			if(!isNaN(page))

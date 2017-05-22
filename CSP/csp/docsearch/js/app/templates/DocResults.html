@@ -44,29 +44,29 @@
 			<div ng-hide = "preloadToggle">
 				<div class="row MarginAdvancedMenu">
 					<div class="col-sm-4">
-						<div class="input-group" ng-show="phraseToggle">
+						<div class="input-group" ng-show="phraseShow">
 							<span class="input-group-addon">exact:</span>
 							<input type="text" ng-model="search.phrase" class="form-control">
 							<span class="input-group-btn">
-								<button class="btn btn-default ButtonSize" type="button" ng-click="phraseDel()"><span class="glyphicon glyphicon-remove"></span></button>
+								<button class="btn btn-default ButtonSize" type="button" ng-click="phraseClear()"><span class="glyphicon glyphicon-remove"></span></button>
 							</span>
 						</div>
 					</div>
 					<div class="col-sm-4">
-						<div class="input-group" ng-show="anyWordsToggle">
+						<div class="input-group" ng-show="anyWordsShow">
 							<span class="input-group-addon">any:</span>
 							<input type="text" ng-model="search.anyWords" class="form-control">
 							<span class="input-group-btn">
-								<button class="btn btn-default ButtonSize" type="button" ng-click="anyWordsDel()"><span class="glyphicon glyphicon-remove"></span></button>
+								<button class="btn btn-default ButtonSize" type="button" ng-click="anyWordsClear()"><span class="glyphicon glyphicon-remove"></span></button>
 							</span>
 						</div>
 					</div>
 					<div class="col-sm-4">
-						<div class="input-group" ng-show="withoutToggle">
+						<div class="input-group" ng-show="withoutShow">
 							<span class="input-group-addon">none:</span>
 							<input type="text" ng-model="search.without" class="form-control">
 							<span class="input-group-btn">
-								<button class="btn btn-default ButtonSize" type="button" ng-click="withoutDel()"><span class="glyphicon glyphicon-remove"></span></button>
+								<button class="btn btn-default ButtonSize" type="button" ng-click="withoutClear()"><span class="glyphicon glyphicon-remove"></span></button>
 							</span>
 						</div>
 					</div>
@@ -80,8 +80,9 @@
 							     <br>
 							     
 							     <ul>
-							     	<li ng-repeat = "item in result.textInfo|showAllResults:0:5:!result.show_all" style="margin-top:10px; list-style-type: none;">
-							     		{{item.text}} <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}"  class="btn btn-info btn-xs linkColor" target="_blank"> link</a>								     
+							     	<li ng-repeat = "item in result.textInfo|showAllResults:0:5:!result.show_all:search.words" style="margin-top:10px; list-style-type: none;">
+							     		<span ng-bind-html="item.text"></span>
+							     		<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}"  class="btn btn-info btn-xs linkColor" target="_blank"> link</a>								     
 							     	</li>
 							     </ul>
 								 <br>
@@ -91,7 +92,7 @@
 				  </div>
 				
 				<div style="text-center" ng-show = "!resultToggle">
-					Your search - {{Search.text}} - did not match any documents.
+					Your search - {{search.words}} - did not match any documents.
 					</br>
 					Suggestions:
 					</br>

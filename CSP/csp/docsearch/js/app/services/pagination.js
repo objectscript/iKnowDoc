@@ -2,7 +2,7 @@ var searchApp = angular.module('searchApp');
  
 searchApp
 	
-	.factory('pagination', function( $sce ) {
+	.factory('pagination', function($sce) {
 
 		var currentPage = 0;
 		var counter = 0;
@@ -14,7 +14,7 @@ searchApp
 			
 			//
 			getPageProducts: function(num) {
-				var num = angular.isUndefined(num) ? 0 : num;
+				num = angular.isUndefined(num) ? 0 : num;
 				currentPage = num;
 			}, /* END of getPageProducts */
 			
@@ -27,7 +27,7 @@ searchApp
 			getPaginationList: function(page, pagesNum, check) {
 				var paginationList = [];
 				
-				if(check == true)
+				if(check)
 				{
 					startPage = 0;
 				}
@@ -69,7 +69,7 @@ searchApp
 				for (var i = startPage; i < endPage; i++) {
 					var name = i + 1;
 					paginationList.push({
-						name: $sce.trustAsHtml( String(name) ),
+						name: $sce.trustAsHtml(String(name)),
 						link: i
 					});
 				};
