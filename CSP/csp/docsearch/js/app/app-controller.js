@@ -134,8 +134,7 @@ searchApp
 				.then(function(response) {
 					$scope.results = response.data.sources;
 					for(i=0; i<$scope.results.length; i++){
-						var tempResult=$scope.results[i];
-						for(j=0; j<tempResult.textInfo.length; j++){
+						for(j=0; j<$scope.results[i].textInfo.length; j++){
 							$scope.results[i].textInfo[j].text=$sce.trustAsHtml($scope.results[i].textInfo[j].text.replace(new RegExp($scope.search.words, "gi" ), '<span class="Illumination"><b>$&</b></span>'));
 						}
 					}
