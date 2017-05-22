@@ -58,7 +58,6 @@ searchApp
 					$scope.searchItems = response.data.entities;
 			});	
 			
-			return;
 	
 			if ($scope.search.words == '')
 				$scope.inputToggle = false;
@@ -187,12 +186,5 @@ searchApp
 		
 				return pagination.getCurrentPageNum();
 		}
-		/*for(var i = 0; i < input.length; i++){       		
-       		var content = input[i].text.replace(new RegExp(phrase, "gi" ), '<span class="Illumination"><b> $& </b></span>');
-       		tempResults.push({
-       			text: $sce.trustAsHtml(String(content)),
-       			textKey: input[i].textKey
-       		});
-       	};*/
 
 	})/* END of controller - searchController */
