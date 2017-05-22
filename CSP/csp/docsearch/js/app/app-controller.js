@@ -140,7 +140,7 @@ searchApp
 					}
 					$scope.totalCount = response.data.totalCount[0].total;
 					if ($scope.totalCount != 0)
-					{					
+					{	$scope.resultToggle = true;				
 						$scope.pagesNum = pagination.getTotalPagesNum($scope.totalCount, $scope.search.recordCount);
 						$scope.paginationList = pagination.getPaginationList($scope.currentPage, $scope.pagesNum, $scope.checkToggle);
 						

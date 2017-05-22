@@ -107,3 +107,9 @@ footer div ul li a:visited
 {
 	background-color:yellow;
 }
+.NoResult
+{
+	margin-top:100px;
+	margin-left:20%;
+	font-size:16pt;
+}
