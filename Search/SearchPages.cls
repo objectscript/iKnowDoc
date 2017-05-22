@@ -78,7 +78,6 @@ ClassMethod FormQuery(obj) As %Status
 	// Список содержащий слова запроса
 	set wordList=$LISTFROMSTRING(wordText, " ")
 	
-	// Формируем список содержащий id слов запроса из списка слов запроса
 	
 	zn "DOCBOOK"
 	// Получение id домена
@@ -86,9 +85,6 @@ ClassMethod FormQuery(obj) As %Status
 	set domoref=##class(%iKnow.Domain).Open(dname)
 	set domId=domoref.Id
 	zn "DOCSEARCH"
-	
-	// Список содержащий id слов запроса
-	//set wordIdList=$LISTFROMSTRING(textId, " ")
 	
 	// Создаем временную таблицу в которую будем заносить то что нашли по запросу пользователя,
 	// высчитывать отношение искомых слов к всем словам на найденной странице и в зависимости от этого отношения сортировать результат запроса
@@ -154,15 +150,10 @@ ClassMethod FormQuery(obj) As %Status
   		}
   	}
   	
-  	//znspace "DOCSEARCH"
-  	//zw docKeyArray
   	set frequencyArray=##class(%ArrayOfDataTypes).%New()
   	for i=0:1:countDocKey-1{
   		set frequencyArray(docKeyArray(i))=0
   	}
-  	//zw wordList
-  	//zw frequencyArray
-  	//zw docKeyArray
   	for i=0:1:countDocKey-1 {
   		// Создаем фильтр для iknow. Благодоря этому, считать будем по каждой странице докуменнтации
   		set filt=##class(%iKnow.Filters.SimpleMetadataFilter).%New(domId,"component_blockid","=",docKeyArray(i))      
@@ -174,25 +165,17 @@ ClassMethod FormQuery(obj) As %Status
   			for wordCount=1:1:$LISTLENGTH(wordList) {
   				set word = $LISTGET(wordList,wordCount)
   				if $FIND($ListGet(result(j),2),word)'=0 {
-  					//w $ListGet(result(j),2), "	 ", word, "	",docKeyArray(i) ,"   ",$ListGet(result(j),3),! 
-  					//w "  ",docKeyArray(i) ,"    ",$ListGet(result(j),3),!
   					set frequencyArray(docKeyArray(i))=frequencyArray(docKeyArray(i))+$ListGet(result(j),3)
-  					//w docKeyArray(i), "    ", frequencyArray(docKeyArray(i)),!
   				}
   					
   			}
-  			//w j,!
-  			set j=j+1
-  			
+  			set j=j+1	
   		}	
   	}
-  	//zw frequencyArray
-  	//zw tempArray
+  	
 	znspace "DOCSEARCH"
 	// Запись построчно в временную таблицу
-	//zw tempArray
 	for i=0:1:count {
-		//w frequencyArray(tempArray(i,4)),"   ",tempArray(i,4),"   ",i,!
 		if tempArray(i,4)="" {
 		 set frequencyArray(tempArray(i,4))=0
 		}
@@ -203,29 +186,23 @@ ClassMethod FormQuery(obj) As %Status
 	
 	// Пагинация
 	set commonCount = count
-	if commonCount<startRecord set startRecord=1
+	if commonCount<startRecord set startRecord=0
 	set offset=recordCount+startRecord-1	
 	if (offset>commonCount) set recordCount=recordCount-(offset-commonCount)
 	// Запрос к временной таблице отсортированной по частоте с учетом пагинации 
-   	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from SQLUser.temptable order by frequency DESC) order by frequency ASC) order by frequency DESC"
-  	//Пока что без пагинации
-  	//set resultQuery = "select * from( select * from SQLUser.temptable group by title) order by frequency DESC"
-  	set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) AS cnt, * from ( select * from SQLUser.temptable group by title)) order by frequency DESC) order by frequency ASC) order by frequency DESC"
+   	set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) AS cnt, * from ( select * from SQLUser.temptable group by title)) order by frequency DESC) order by frequency ASC) order by frequency DESC"
   	set Statement = ##class(%SQL.Statement).%New()
   	set Status = Statement.%Prepare(resultQuery)
    	if Status'=1 {write "%Prepare failed:" do $System.Status.DisplayError(Status) quit}
   	set result = Statement.%Execute()
    	// Формируем динамический обьект
-    //set ResultJSON = { "sources": [] }
     set ResultJSON = { "sources": [], "totalCount":[]}
     
     while result.%Next() {
     	// Заполняем массив данными
-    	//set tJSON = { "text":(result.text), "textKey":(result.textKey), "frequency": (result.frequency), "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
-		set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (##class(Search.Parser).ParseTitle(result.title)),   "bookKey": (result.bookKey) ,"bookTitle": (##class(Search.Parser).ParseTitle(result.bookTitle)), "frequency": (result.frequency) }
-		//do ResultJSON.sources.%Push(tJSON)
-
-
+    	set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (##class(Search.Parser).ParseTitle(result.title)),   "bookKey": (result.bookKey) ,"bookTitle": (##class(Search.Parser).ParseTitle(result.bookTitle)), "frequency": (result.frequency) }
+		
+		// Создаем запрос для получения текста для каждой страницы
 		set subresultQuery = "select * from SQLUser.temptable where docKey=?"
 	  	set subStatement = ##class(%SQL.Statement).%New()
 	  	set subStatus = subStatement.%Prepare(subresultQuery)
@@ -237,21 +214,13 @@ ClassMethod FormQuery(obj) As %Status
 	  		do tJSON.textInfo.%Push(textInfoJSON)
 	  	}
 	  	set totalCount=result.cnt
-	  	
-		//set textInfoJSON = {"text":(result.text), "textKey":(result.textKey)}
-		
-		//do ResultJSON.sources.%Push(textInfoJSON)
-		//do tJSON.textInfo.%Push(textInfoJSON)
+
 		do ResultJSON.sources.%Push(tJSON)		
     }
     // Вывод в JSON общего количества найденных результатов
-    //set totalCountJ = {"totalCount":(+count)}
-    //do ResultJSON.sources.%Push(totalCountJ)
     set totalCountJSON = {"total":(totalCount)}
-    
     do ResultJSON.totalCount.%Push(totalCountJSON)
-    //do ResultJSON.sources.%Push(totalCountJ)
-    
+
 	//Удалем временную таблицу
     set dropquery = "drop table SQLUser.temptable"
   	set dropStatement = ##class(%SQL.Statement).%New()
