@@ -58,11 +58,9 @@ ClassMethod %Build() As %Status
 /// Метод поиска подобных сущностей. Возвращает JSON содержащий 10 сущностей подобных входной строке.
 ClassMethod GetSimilar(SearchString) As %Status
 {
-	znspace "DOCBOOK"
 	// Открываем домен и получаем его Id
-	set dname="DocSearch" 
-	set domoref=##class(%iKnow.Domain).Open(dname)
-	set domId=domoref.Id
+	set domId= ##class(Search.Domain).GetIdDomain()
+	znspace "DOCBOOK"
 	// Используя %iKnow получаем 10 сущностей подобных входной строке.
 	set SC = ##class(%iKnow.Queries.EntityAPI).GetSimilar(.Result, domId, SearchString,,11)
 	znspace "DOCSEARCH"
@@ -125,6 +123,18 @@ ClassMethod GetCountWordsBySource(domainid As %Integer, sourceidlist As %List, w
 	quit:$$$ISERR(sc) -1
 	
 	quit total
+}
+
+// Метод получения id Домена
+ClassMethod GetIdDomain() As %Integer
+{
+	zn "DOCBOOK"
+	// Получение id домена
+	set dname="DocSearch" 
+	set domoref=##class(%iKnow.Domain).Open(dname)
+	//set domId=domoref.Id
+	zn "DOCSEARCH"
+    quit domoref.Id	
 }
 
 Storage Default

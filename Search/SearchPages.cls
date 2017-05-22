@@ -78,13 +78,8 @@ ClassMethod FormQuery(obj) As %Status
 	// Список содержащий слова запроса
 	set wordList=$LISTFROMSTRING(wordText, " ")
 	
-	
-	zn "DOCBOOK"
 	// Получение id домена
-	set dname="DocSearch" 
-	set domoref=##class(%iKnow.Domain).Open(dname)
-	set domId=domoref.Id
-	zn "DOCSEARCH"
+	set domId= ##class(Search.Domain).GetIdDomain()
 	
 	// Создаем временную таблицу в которую будем заносить то что нашли по запросу пользователя,
 	// высчитывать отношение искомых слов к всем словам на найденной странице и в зависимости от этого отношения сортировать результат запроса
