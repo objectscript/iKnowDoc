@@ -81,8 +81,7 @@
 							     
 							     <ul>
 							     	<li ng-repeat = "item in result.textInfo|showAllResults:0:5:!result.show_all:search.words" style="margin-top:10px; list-style-type: none;">
-							     		<span ng-bind-html="item.text"></span>
-							     		<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}"  class="btn btn-info btn-xs linkColor" target="_blank"> link</a>								     
+							     		<span ng-bind-html="item.text"></span> <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}"  class="btn btn-info btn-xs linkColor" target="_blank"> link</a>			     
 							     	</li>
 							     </ul>
 								 <br>

@@ -1,6 +1,6 @@
 var searchApp = angular.module('searchApp');
  
-searchApp.filter('showAllResults', function( $sce ){
+searchApp.filter('showAllResults', function($sce){
      
      var tempResults = [];
      var results = [];
@@ -9,25 +9,17 @@ searchApp.filter('showAllResults', function( $sce ){
        	
        	if (!input || !input.length) return;
        	
-       	for(var i = 0; i < input.length; i++){       		
-       		var content = input[i].text.replace(new RegExp(phrase, "gi" ), '<span class="Illumination"><b> $& </b></span>');
-       		tempResults.push({
-       			text: $sce.trustAsHtml(String(content)),
-       			textKey: input[i].textKey
-       		});
-       	};
+       	/*while(input.length)
+       	{
+       		tempResults.text += input.text.replace(new RegExp(phrase, "gi" ), '<span class="Illumination"><b> $&'+'</b></span>' );
+       		tempResults.textKey += input.textKey;
+       	}*/
        	
        	if (hideToggle)
-       	{
-     		results = tempResults.slice(first, last);
-     		//tempResults.length = 0;
-     	}
+     		results = input.slice(first, last);
      	if(!hideToggle)
-     	{
-     		results = tempResults;
-     		//tempResults.length = 0;
-     	}
-     	
+     		results = input;
+        
         return results;
     }
 })

@@ -134,6 +134,12 @@ searchApp
 			$http.post(baseUrl + 'Search', $scope.search)
 				.then(function(response) {
 					$scope.results = response.data.sources;
+					for(i=0; i<$scope.results.length; i++){
+						var tempResult=$scope.results[i];
+						for(j=0; j<tempResult.textInfo.length; j++){
+							$scope.results[i].textInfo[j].text=$sce.trustAsHtml($scope.results[i].textInfo[j].text.replace(new RegExp($scope.search.words, "gi" ), '<span class="Illumination"><b>$&</b></span>'));
+						}
+					}
 					$scope.totalCount = response.data.totalCount[0].total;
 					if ($scope.totalCount != 0)
 					{					
@@ -181,5 +187,12 @@ searchApp
 		
 				return pagination.getCurrentPageNum();
 		}
+		/*for(var i = 0; i < input.length; i++){       		
+       		var content = input[i].text.replace(new RegExp(phrase, "gi" ), '<span class="Illumination"><b> $& </b></span>');
+       		tempResults.push({
+       			text: $sce.trustAsHtml(String(content)),
+       			textKey: input[i].textKey
+       		});
+       	};*/
 
 	})/* END of controller - searchController */
