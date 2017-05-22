@@ -5,7 +5,7 @@ Class Search.Parser {
 ClassMethod Parse(textTag) As %String
 { 
 		set i =1
-		set empty=" "
+		set empty=""
 		set subtext=""
 		set condition = 0
 		set text = textTag
@@ -63,22 +63,18 @@ link	for i=1:1:$LENGTH(text)
   		set text = $REPLACE(text,"\a"," ")
  		set text = $REPLACE(text,"  "," ")
  		//убирает лишние пробелы после парсинга
-  		set text = $REPLACE(text,"       "," ")
+  		/*set text = $REPLACE(text,"       "," ")
   		set text = $REPLACE(text,"      "," ")
   		set text = $REPLACE(text,"     "," ")
   		set text = $REPLACE(text,"    "," ")
   		set text = $REPLACE(text,"   "," ")
-  		set text = $REPLACE(text,"  "," ")  
+  		set text = $REPLACE(text,"  "," ")  */
 		quit text
 }
 
 /// Корректирует нестандартные символы в заголовках результатов поиска
 ClassMethod ParseTitle(textTag) As %String
 {
-		set i =1
-		set empty=" "
-		set subtext=""
-		set condition = 0
 		set text = textTag
 		set text = $REPLACE(text,"&reg;","®")
 		set text = $REPLACE(text,"&ntilde;","ñ")
