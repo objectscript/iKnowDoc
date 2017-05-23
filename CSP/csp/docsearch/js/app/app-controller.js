@@ -104,7 +104,7 @@ searchApp
 
 			$scope.title = $scope.search.words;
 			
-			if ($scope.search.words != '' || $scope.search.phrase != '')
+			if ($scope.search.words != '' || $scope.search.phrase != '' || $scope.search.anyWords != '')
 			{
 				$scope.showPage(0); 
 				$location.path("/DocResults");				
@@ -115,6 +115,8 @@ searchApp
 		}
 
 		$scope.showPage = function (page) {		
+			
+			$scope.resultToggle = true;	
 			
 			$scope.currentPage = page;			
 			
@@ -153,7 +155,7 @@ searchApp
 
 					for(var i = 0; i < $scope.results.length; i++){
 						for(var j = 0; j < $scope.results[i].textInfo.length; j++){
-							$scope.results[i].textInfo[j].text = $sce.trustAsHtml($scope.results[i].textInfo[j].text.replace(new RegExp($scope.search.words, "gi" ), '<span class="Illumination"><b>$&</b></span>'));
+							$scope.results[i].textInfo[j].text = $sce.trustAsHtml($scope.results[i].textInfo[j].text.replace(new RegExp($scope.search.words || $scope.search.phrase || $scope.search.anyWords, "gi" ), '<span class="Illumination"><b>$&</b></span>'));
 						}
 					}
 					
