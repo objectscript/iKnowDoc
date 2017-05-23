@@ -31,17 +31,17 @@ searchApp
 		$scope.withoutShow = false;
 		
 		$scope.phraseClear=function(){
-			$scope.search.phrase="";
+			$scope.search.phrase = "";
 			$scope.makeSearch();
 		}
 		
 		$scope.anyWordsClear=function(){
-			$scope.search.anyWords="";
+			$scope.search.anyWords = "";
 			$scope.makeSearch();
 		}
 		
 		$scope.withoutClear=function(){
-			$scope.search.without="";
+			$scope.search.without = "";
 			$scope.makeSearch();
 		}
 		$scope.clearAll=function(){
@@ -57,8 +57,7 @@ searchApp
 				.then(function(response) {
 					$scope.searchItems = response.data.entities;
 			});	
-			
-	
+
 			if ($scope.search.words == '')
 				$scope.inputToggle = false;
 			else 
@@ -105,7 +104,7 @@ searchApp
 
 			$scope.title = $scope.search.words;
 			
-			if ($scope.search.words != '')
+			if ($scope.search.words != '' || $scope.search.phrase != '')
 			{
 				$scope.showPage(0); 
 				$location.path("/DocResults");				
@@ -126,19 +125,40 @@ searchApp
 			}
 			else 
 				$scope.checkToggle = false;
-					
-			$scope.search.startRecord = (pagination.getCurrentPageNum()) * $scope.search.recordCount + 1;
 
-			$scope.preloadToggle = true;		
+			$scope.preloadToggle = true;
+
+			if(!isNaN(page))
+					prevNextCheck = page;
+			
+			if (page == 'prev') {
+					$scope.results = pagination.getPrevPageProducts();
+					prevNextCheck -= 1;
+					if (prevNextCheck < 0)
+						prevNextCheck = 0;
+			} else if (page == 'next') {
+					$scope.results = pagination.getNextPageProducts($scope.totalCount, $scope.search.recordCount);
+					prevNextCheck += 1;
+					if (prevNextCheck > $scope.pagesNum - 1)
+						prevNextCheck = $scope.pagesNum;
+			} else {
+				$scope.results = pagination.getPageProducts(page);
+			}
+			
+			$scope.search.startRecord = (pagination.getCurrentPageNum()) * $scope.search.recordCount + 1;
+	
 			$http.post(baseUrl + 'Search', $scope.search)
 				.then(function(response) {
 					$scope.results = response.data.sources;
-					for(i=0; i<$scope.results.length; i++){
-						for(j=0; j<$scope.results[i].textInfo.length; j++){
-							$scope.results[i].textInfo[j].text=$sce.trustAsHtml($scope.results[i].textInfo[j].text.replace(new RegExp($scope.search.words, "gi" ), '<span class="Illumination"><b>$&</b></span>'));
+
+					for(var i = 0; i < $scope.results.length; i++){
+						for(var j = 0; j < $scope.results[i].textInfo.length; j++){
+							$scope.results[i].textInfo[j].text = $sce.trustAsHtml($scope.results[i].textInfo[j].text.replace(new RegExp($scope.search.words, "gi" ), '<span class="Illumination"><b>$&</b></span>'));
 						}
 					}
+					
 					$scope.totalCount = response.data.totalCount[0].total;
+
 					if ($scope.totalCount != 0)
 					{	$scope.resultToggle = true;				
 						$scope.pagesNum = pagination.getTotalPagesNum($scope.totalCount, $scope.search.recordCount);
@@ -157,23 +177,6 @@ searchApp
 					
 					$scope.preloadToggle = false;					
 			});
-			
-			if(!isNaN(page))
-					prevNextCheck = page;
-			
-			if (page == 'prev') {
-					$scope.results = pagination.getPrevPageProducts();
-					prevNextCheck -= 1;
-					if (prevNextCheck < 0)
-						prevNextCheck = 0;
-			} else if (page == 'next') {
-					$scope.results = pagination.getNextPageProducts($scope.totalCount, $scope.search.recordCount);
-					prevNextCheck += 1;
-					if (prevNextCheck > $scope.pagesNum - 1)
-						prevNextCheck = $scope.pagesNum;
-			} else {
-				$scope.results = pagination.getPageProducts(page);
-			}
 	
 			if (prevNextCheck != 0)
 				$scope.prevToggle = true;

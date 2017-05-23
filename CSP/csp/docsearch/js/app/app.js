@@ -19,6 +19,3 @@ var searchApp = angular.module('searchApp', ["ngRoute"])
         	redirectTo: '/DocSearch'
         });
 });
-
-//routes
-//config

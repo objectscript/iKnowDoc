@@ -72,6 +72,7 @@
 					</div>
 				</div>
 				<div ng-show = "resultToggle"> <!-- Результаты поиска -->
+					   <p>About {{totalCount}} results on {{pagesNum}} pages</p>
 					   <ul>
 						    <li ng-repeat = "result in results" style="margin-top:10px; list-style-type: none;">
 							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.bookKey}}" target="_blank"><b>{{result.bookTitle}}</b></a>
@@ -80,7 +81,7 @@
 							     <br>
 							     
 							     <ul>
-							     	<li ng-repeat = "item in result.textInfo|showAllResults:0:5:!result.show_all:search.words" style="margin-top:10px; list-style-type: none;">
+							     	<li ng-repeat = "item in result.textInfo|showAllResults:0:5:!result.show_all" style="margin-top:10px; list-style-type: none;">
 							     		<span ng-bind-html="item.text"></span> <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}"  class="btn btn-info btn-xs linkColor" target="_blank"> link</a>			     
 							     	</li>
 							     </ul>
@@ -88,6 +89,15 @@
 								<button class="btn" ng-class="!result.show_all ? 'btn-success' : 'btn-default'" ng-click = "result.show_all = !result.show_all;" ng-hide = "result.textInfo.length <= 5"><span ng-hide="result.show_all">Show</span><span ng-show="result.show_all">Hide</span> all results</button>
 						    </li>
 					   </ul>
+					   
+					   <div class="pagination-wrap text-center"> <!-- Пагинация -->
+								<ul class="pagination">
+									<li ng-click="showPage('prev')" ng-class="{'active': currentPageNum() == page.link}" ng-show = "prevToggle"><a >&laquo;</a></li>
+									<li ng-repeat="page in paginationList" ng-click="showPage(page.link)" ng-class="{'active': currentPageNum() == page.link}"><a ng-bind-html="page.name"></a></li>
+									<li ng-click="showPage('next')" ng-class="{'active': currentPageNum() == page.link}" ng-show = "nextToggle"><a >&raquo;</a></li>
+								</ul>
+							</div>
+						</div>
 				  </div>
 				
 				<div class="NoResult" ng-show = "!resultToggle">
@@ -100,14 +110,5 @@
 						<li>Try more general keywords.</li>
 					</ul>
 				</div>
-				
-				<div class="pagination-wrap text-center"> <!-- Пагинация -->
-					<ul class="pagination">
-						<li ng-click="showPage('prev')" ng-class="{'active': currentPageNum() == page.link}" ng-show = "prevToggle"><a >&laquo;</a></li>
-						<li ng-repeat="page in paginationList" ng-click="showPage(page.link)" ng-class="{'active': currentPageNum() == page.link}"><a ng-bind-html="page.name"></a></li>
-						<li ng-click="showPage('next')" ng-class="{'active': currentPageNum() == page.link}" ng-show = "nextToggle"><a >&raquo;</a></li>
-					</ul>
-				</div>
-			</div>
 </div>
 
