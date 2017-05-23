@@ -58,24 +58,28 @@ ClassMethod %Build() As %Status
 /// Метод поиска подобных сущностей. Возвращает JSON содержащий 10 сущностей подобных входной строке.
 ClassMethod GetSimilar(SearchString) As %Status
 {
-	// Открываем домен и получаем его Id
-	set domId= ##class(Search.Domain).GetIdDomain()
-	znspace "DOCBOOK"
-	// Используя %iKnow получаем 10 сущностей подобных входной строке.
-	set SC = ##class(%iKnow.Queries.EntityAPI).GetSimilar(.Result, domId, SearchString,,11)
-	znspace "DOCSEARCH"
-	quit:$$$ISERR(SC) ""
-	// Формируем динамический обьект
-	set ResultJSON = { "entities": [] }
-	// Получаем данные из Result и заполняем динамический обьект 
-    for i=1:1:10 {
-    	set оrd = $order(Result(i),1,Data)
-    	set tJSON = { "value":(##class(Search.Parser).Parse($li(Data,2))) }
-		do ResultJSON.entities.%Push(tJSON)
-    }   
-    // Преобразуем динамический обьект в JSON
-    write ResultJSON.%ToJSON()
-    quit SC	
+	try {
+		// Открываем домен и получаем его Id
+		set domId= ##class(Search.Domain).GetIdDomain()
+		znspace "DOCBOOK"
+		// Используя %iKnow получаем 10 сущностей подобных входной строке.
+		set SC = ##class(%iKnow.Queries.EntityAPI).GetSimilar(.Result, domId, SearchString,,11)
+		znspace "DOCSEARCH"
+		// Формируем динамический обьект
+		set ResultJSON = { "entities": [] }
+		// Получаем данные из Result и заполняем динамический обьект 
+	    for i=1:1:10 {
+	    	set оrd = $order(Result(i),1,Data)
+	    	set tJSON = { "value":(##class(Search.Parser).Parse($li(Data,2))) }
+			do ResultJSON.entities.%Push(tJSON)
+	    }    
+	    // Преобразуем динамический обьект в JSON
+	    write ResultJSON.%ToJSON()	
+	} catch ex {
+		set ResultJSON = { "entities": [] }
+		write ResultJSON.%ToJSON()
+	} 
+	quit $$$OK
 }
 
 /* 
