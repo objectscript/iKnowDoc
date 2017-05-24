@@ -70,7 +70,11 @@ ClassMethod GetSimilar(SearchString) As %Status
 		// Получаем данные из Result и заполняем динамический обьект 
 	    for i=1:1:10 {
 	    	set оrd = $order(Result(i),1,Data)
-	    	set tJSON = { "value":(##class(Search.Parser).Parse($li(Data,2))) }
+	    	set string = ##class(Search.Parser).Parse($li(Data,2))
+	    	if $EXTRACT(string,$LENGTH(string))=";"{
+	    		set string=$EXTRACT(string,1,($LENGTH(string)-1))
+	    	}
+	    	set tJSON = { "value":(string) }
 			do ResultJSON.entities.%Push(tJSON)
 	    }    
 	    // Преобразуем динамический обьект в JSON
