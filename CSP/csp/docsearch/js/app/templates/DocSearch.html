@@ -15,7 +15,7 @@
 							<div ng-show = "inputToggle" class = "toggler">
 								<ul class = "listStyle">
 									<li class = "hint" ng-repeat = "item in searchItems" ng-class="{'activeToggle': item.value == currrentSearchItem.value}" ng-click = "handleClick(item)">
-										{{item.value}}
+										<span ng-bind-html = "sce.trustAsHtml(item.value)"></span>
 									</li>
 								</ul>
 							</div>

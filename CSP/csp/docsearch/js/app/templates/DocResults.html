@@ -10,7 +10,7 @@
 							<div ng-show = "inputToggle" class = "toggler">
 								<ul class = "listStyle">
 									<li class = "hint" ng-repeat = "item in searchItems" ng-class="{'activeToggle': item.value == currrentSearchItem.value}" ng-click = "handleClick(item)">
-										{{item.value}}
+										<span ng-bind-html = "sce.trustAsHtml(item.value)"></span>
 									</li>
 								</ul>
 							</div>
@@ -75,14 +75,16 @@
 					   <p>About {{totalCount}} results on {{pagesNum}} pages</p>
 					   <ul>
 						    <li ng-repeat = "result in results" style="margin-top:10px; list-style-type: none;">
-							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.bookKey}}" target="_blank"><b>{{result.bookTitle}}</b></a>
+							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.bookKey}}" target="_blank"><b><span ng-bind-html = "sce.trustAsHtml(result.bookTitle)"></span></b></a>
 							     <span class="glyphicon glyphicon-arrow-right"></span>
-							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.docKey}}" target="_blank"><b>{{result.title}}</b></a>
+							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.docKey}}" target="_blank"><b><span ng-bind-html = "sce.trustAsHtml(result.title)"></span></b></a>
 							     <br>
 							     
 							     <ul>
-							     	<li ng-repeat = "item in result.textInfo|showAllResults:0:5:!result.show_all" style="margin-top:10px; list-style-type: none;">
-							     		<span ng-bind-html="item.text"></span> <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}"  class="btn btn-info btn-xs linkColor" target="_blank"> link</a>			     
+							     	<li ng-repeat = "item in result.textInfo | showAllResults:0:5:!result.show_all" style="margin-top:10px; list-style-type: none;">
+							     		<span ng-bind-html="sce.trustAsHtml(item.text | showAllResults:0:180:!item.more)"></span>
+							     		<button class="btn btn-xs" ng-click = "item.more = !item.more" ng-hide = "item.text.length <= 180">...</button>
+							     		<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}"  class="btn btn-info btn-xs linkColor" target="_blank"> link </a>			     
 							     	</li>
 							     </ul>
 								 <br>
