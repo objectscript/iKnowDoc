@@ -152,12 +152,6 @@ searchApp
 			$http.post(baseUrl + 'Search', $scope.search)
 				.then(function(response) {
 					$scope.results = response.data.sources;
-
-					for(var i = 0; i < $scope.results.length; i++){
-						for(var j = 0; j < $scope.results[i].textInfo.length; j++){
-							$scope.results[i].textInfo[j].text = $scope.results[i].textInfo[j].text.replace(new RegExp($scope.search.words || $scope.search.phrase || $scope.search.anyWords, "gi" ), '<span class="Illumination"><b>$&</b></span>');
-						}
-					}
 					
 					$scope.totalCount = response.data.totalCount[0].total;
 

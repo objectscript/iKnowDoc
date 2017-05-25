@@ -21,7 +21,6 @@
 		<script type="text/javascript" src = "js/app/app.js"></script>
 		<script type="text/javascript" src = "js/app/services/pagination.js"></script>
 		<script type="text/javascript" src = "js/app/filters/showAllResults.js"></script>
-		<script type="text/javascript" src = "js/app/filters/itemsLength.js"></script>
 		<script type="text/javascript" src = "js/app/app-controller.js"></script>
 	
 	</body>
