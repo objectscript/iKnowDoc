@@ -17,7 +17,8 @@ searchApp
 		var prevNextCheck = 0;
 		var baseUrl = '/csp/docsearch/rest/';
 		var check = '';
-
+		
+		$scope.sce = $sce;
 		$scope.mylocation = location.host;
 		$scope.inputToggle = false;
 		$scope.resultToggle = true;
@@ -91,8 +92,7 @@ searchApp
 			}
 			
 			if (event.keyCode === 13)
-					$scope.inputToggle = false;
-			
+					$scope.inputToggle = false;			
 		}		
 
 		$scope.makeSearch = function (){
@@ -155,7 +155,7 @@ searchApp
 
 					for(var i = 0; i < $scope.results.length; i++){
 						for(var j = 0; j < $scope.results[i].textInfo.length; j++){
-							$scope.results[i].textInfo[j].text = $sce.trustAsHtml($scope.results[i].textInfo[j].text.replace(new RegExp($scope.search.words || $scope.search.phrase || $scope.search.anyWords, "gi" ), '<span class="Illumination"><b>$&</b></span>'));
+							$scope.results[i].textInfo[j].text = $scope.results[i].textInfo[j].text.replace(new RegExp($scope.search.words || $scope.search.phrase || $scope.search.anyWords, "gi" ), '<span class="Illumination"><b>$&</b></span>');
 						}
 					}
 					
