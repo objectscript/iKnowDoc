@@ -48,7 +48,12 @@ ClassMethod FormQuery(obj) As %Status
 	}
 	if phrase'="" {
 		set text = text_" ("_phrase_")"
-		set wordText=wordText_" "_phrase
+		if words="" {
+			set wordText=phrase
+		}
+		else {
+			set wordText=wordText_" "_phrase
+		}	
 	}
 	if anyWords'="" {
 		//Удаляем пробелы
@@ -61,6 +66,8 @@ ClassMethod FormQuery(obj) As %Status
 			set strAny = strAny_" OR "_$LIST(listAny,i)
 			}
 		set text = text_strAny_")"
+	} else {
+		set listAny = $Listfromstring("")
 	}
 	if without'="" {
 		set text = text_")"
@@ -149,6 +156,7 @@ ClassMethod FormQuery(obj) As %Status
   	for i=0:1:countDocKey-1{
   		set frequencyArray(docKeyArray(i))=0
   	}
+  	
   	for i=0:1:countDocKey-1 {
   		// Создаем фильтр для iknow. Благодоря этому, считать будем по каждой странице докуменнтации
   		set filt=##class(%iKnow.Filters.SimpleMetadataFilter).%New(domId,"component_blockid","=",docKeyArray(i))      
@@ -161,8 +169,16 @@ ClassMethod FormQuery(obj) As %Status
   				set word = $LISTGET(wordList,wordCount)
   				if $FIND($ListGet(result(j),2),word)'=0 {
   					set frequencyArray(docKeyArray(i))=frequencyArray(docKeyArray(i))+$ListGet(result(j),3)
-  				}
-  					
+  				}		
+  			}
+  			// Для поля - любое из этих слов
+  			if $LISTLENGTH(listAny)'=0 {
+  				for wordCount2=1:1:$LISTLENGTH(listAny) {
+	  				set word2 = $LISTGET(listAny,wordCount2)
+	  				if $FIND($ListGet(result(j),2),word2)'=0 {
+	  					set frequencyArray(docKeyArray(i))=frequencyArray(docKeyArray(i))+$ListGet(result(j),3)
+	  				}		
+	  			}
   			}
   			set j=j+1	
   		}	
