@@ -72,7 +72,9 @@
 					</div>
 				</div>
 				<div ng-show = "resultToggle"> <!-- Результаты поиска -->
-					   <p>About {{totalCount}} results on {{pagesNum}} pages</p>
+					   <ul>
+					   		<p>About <b> {{totalCount}} </b> results on <b> {{pagesNum}} </b> pages</p>
+					   </ul>
 					   <ul>
 						    <li ng-repeat = "result in results" style="margin-top:10px; list-style-type: none;">
 							     <a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{result.bookKey}}" target="_blank"><b><span ng-bind-html = "sce.trustAsHtml(result.bookTitle)"></span></b></a>
@@ -82,7 +84,8 @@
 							     
 							     <ul>
 							     	<li ng-repeat = "item in result.textInfo | showAllResults:0:5:!result.show_all" style="margin-top:10px; list-style-type: none;">
-							     		<span ng-bind-html="sce.trustAsHtml(item.text)"></span>
+							     		<span ng-bind-html="sce.trustAsHtml(item.text | showAllResults:0:180:!item.more)"></span>
+							     		<button class="btn btn-xs" ng-click = "item.more = !item.more" ng-hide = "item.text.length <= 180">...</button>
 							     		<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}"  class="btn btn-info btn-xs linkColor" target="_blank"> link </a>			     
 							     	</li>
 							     </ul>
