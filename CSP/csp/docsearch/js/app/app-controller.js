@@ -30,6 +30,7 @@ searchApp
 		$scope.phraseShow = false;
 		$scope.anyWordsShow = false;
 		$scope.withoutShow = false;
+		$scope.errorToggle = false;
 		
 		$scope.phraseClear=function(){
 			$scope.search.phrase = "";
@@ -53,12 +54,11 @@ searchApp
 		}
 		
 		$scope.change = function (){
-			
-			if($scope.search.words != 0)					
-				$http.get(baseUrl + 'GetSimilar/' + $scope.search.words)
-					.then(function(response) {
-						$scope.searchItems = response.data.entities;
-				});	
+								
+			$http.get(baseUrl + 'GetSimilar/' + $scope.search.words)
+				.then(function(response) {
+					$scope.searchItems = response.data.entities;
+			});	
 
 			if ($scope.search.words == '')
 				$scope.inputToggle = false;
@@ -98,6 +98,7 @@ searchApp
 
 		$scope.makeSearch = function (){
 			$scope.inputToggle = false;
+			$scope.errorToggle = false;
 
 			$scope.search.phrase=='' ? $scope.phraseShow=false : $scope.phraseShow=true;
 			$scope.search.anyWords=='' ? $scope.anyWordsShow=false : $scope.anyWordsShow=true;
@@ -113,7 +114,7 @@ searchApp
 			} 
 			else
 				if ( $scope.search.without != '')
-					alert( "Please fill out other field(s)!" );
+					$scope.errorToggle=true;
 				else
 					if ( $scope.search.without == '')	
 						$location.path("/DocSearch");	

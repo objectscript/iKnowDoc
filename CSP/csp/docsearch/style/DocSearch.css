@@ -114,3 +114,8 @@ footer div ul li a:visited
 	margin-left:20%;
 	font-size:16pt;
 }
+.Error
+{
+	color:red;
+	font-size:14pt;
+}
