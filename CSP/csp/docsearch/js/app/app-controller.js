@@ -53,11 +53,12 @@ searchApp
 		}
 		
 		$scope.change = function (){
-								
-			$http.get(baseUrl + 'GetSimilar/' + $scope.search.words)
-				.then(function(response) {
-					$scope.searchItems = response.data.entities;
-			});	
+			
+			if($scope.search.words != 0)					
+				$http.get(baseUrl + 'GetSimilar/' + $scope.search.words)
+					.then(function(response) {
+						$scope.searchItems = response.data.entities;
+				});	
 
 			if ($scope.search.words == '')
 				$scope.inputToggle = false;
