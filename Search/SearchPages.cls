@@ -96,6 +96,15 @@ ClassMethod FormQuery(obj) As %Status
     while rset.%Next() {
     	set count=rset.CountText
     }
+    
+    // Обработка случая если нечего не нашли
+     if count=0{
+     	set ResultJSON = { "sources": [], "totalCount":[]}
+    	set totalCountJSON = {"total":(count)}
+ 	    do ResultJSON.totalCount.%Push(totalCountJSON)
+ 	    write ResultJSON.%ToJSON()
+ 	    quit 0 
+ 	}
 
 	set commonCount = count
 	if commonCount<startRecord set startRecord=0
