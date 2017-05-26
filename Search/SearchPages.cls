@@ -102,19 +102,18 @@ ClassMethod FormQuery(obj) As %Status
 	set offset=recordCount+startRecord-1	
 	if (offset>commonCount) set recordCount=recordCount-(offset-commonCount)
   	// Запрос к таблице с данными
-   	set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, sum(RankOne) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle, DocBook.block_contentIndRank(%ID, ?, '0') RankOne FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)) group by title))order by RANK DESC) order by RANK ASC) order by RANK DESC"  	
+  	// TODO частота через ifind Работает недостаточно быстро из-за того что в БД храняться абзацы текста, а не текст всей страницы целиком
+  	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, sum(RankOne) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle, DocBook.block_contentIndRank(%ID, ?, '0') RankOne FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)) group by title))order by RANK DESC) order by RANK ASC) order by RANK DESC"  	
+  	set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, count(*) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)) group by title))order by RANK DESC) order by RANK ASC) order by RANK DESC"  	
 	set Statement = ##class(%SQL.Statement).%New()
   	set Status = Statement.%Prepare(resultQuery)
-  	//set Status = Statement.%Prepare(text)
    	if Status'=1 {write "%Prepare failed 1:" do $System.Status.DisplayError(Status) quit}
-  	set result = Statement.%Execute(text,text)
+  	set result = Statement.%Execute(text)
    	// Формируем динамический обьект
     set ResultJSON = { "sources": [], "totalCount":[]}
     while result.%Next() {
-    
     	// Заполняем массив данными
     	set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
-		
 		// Создаем запрос для получения текста для каждой страницы
 		set subresultQuery = "select DocBook.block_contentIndHighlight(%ID, ?, '0', '<span class=""Illumination"">', 0) text,blockid AS textKey,component->blockid AS docKey from DocBook.block where %ID %FIND search_index(contentInd,?,0) and component->blockid=?"
 	  	set subStatement = ##class(%SQL.Statement).%New()
@@ -129,17 +128,16 @@ ClassMethod FormQuery(obj) As %Status
 		  	}
 	  	}
 	  	set totalCount=result.cnt
-
 		do ResultJSON.sources.%Push(tJSON)		
     }
     // Вывод в JSON общего количества найденных результатов
     set totalCountJSON = {"total":(totalCount)}
     do ResultJSON.totalCount.%Push(totalCountJSON)
-
 	set st=$$$OK
 	
 	// Метод преобразующий динамический обьект в JSON
 	write ResultJSON.%ToJSON()
+	zn "docsearch"
 	quit st
 }
 
