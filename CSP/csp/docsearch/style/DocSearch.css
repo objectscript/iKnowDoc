@@ -68,6 +68,7 @@ footer div ul li a:visited
 	padding-left:0px; 
 	padding-bottom:0px; 
 	font-size:12pt;
+	cursor: pointer;
 }
 
 .activeToggle, .hint:hover
@@ -118,4 +119,8 @@ footer div ul li a:visited
 {
 	color:red;
 	font-size:14pt;
+}
+.Cursor
+{
+	cursor: pointer;
 }
