@@ -9,7 +9,6 @@ Class Search.Domain extends %Persistent {
 ClassMethod %Build() As %Status
 {
 	#Include %IKPublic
-	znspace "DOCBOOK"
 	// Создание домена или открытие если он существует
 	set dname="DocSearch"  
    	if (##class(%iKnow.Domain).Exists(dname)){
@@ -51,7 +50,6 @@ ClassMethod %Build() As %Status
     set numSrcD=##class(%iKnow.Queries.SourceQAPI).GetCountByDomain(domId)
   	write "Домен создан",!
   	write "Домен содержит ",numSrcD," источников",! 
-    znspace "DOCSEARCH" 
   	quit stat
 }
 
@@ -61,10 +59,8 @@ ClassMethod GetSimilar(SearchString) As %Status
 	try {
 		// Открываем домен и получаем его Id
 		set domId= ##class(Search.Domain).GetIdDomain()
-		znspace "DOCBOOK"
 		// Используя %iKnow получаем 10 сущностей подобных входной строке.
 		set SC = ##class(%iKnow.Queries.EntityAPI).GetSimilar(.Result, domId, SearchString,,11)
-		znspace "DOCSEARCH"
 		// Формируем динамический обьект
 		set ResultJSON = { "entities": [] }
 		// Получаем данные из Result и заполняем динамический обьект 

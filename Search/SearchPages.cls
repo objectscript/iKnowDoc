@@ -85,7 +85,6 @@ ClassMethod FormQuery(obj) As %Status
 	// Список содержащий слова запроса
 	set wordList=$LISTFROMSTRING(wordText, " ")
 	
-	znspace "DOCBOOK"
 	// Пагинация
 	// Получим количество всех элементов
 	set myquery = "SELECT COUNT(*) AS CountText FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)"
@@ -146,7 +145,6 @@ ClassMethod FormQuery(obj) As %Status
 	
 	// Метод преобразующий динамический обьект в JSON
 	write ResultJSON.%ToJSON()
-	zn "docsearch"
 	quit st
 }
 

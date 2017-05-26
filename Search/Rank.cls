@@ -7,9 +7,7 @@ ClassMethod Frequency(domainid As %Integer, sourceidlist As %List, wordidlist As
 	// Получаем количество искомых слов(id искомых слов содержаться в wordidlist) в найденных страницах(которые состоят из источников, id источников содержаться в sourceidlist) 
 	set numerator = ##class(Search.Domain).GetCountWordsBySource(domainid,sourceidlist,wordidlist)
 	// Получаем количество всех слов в найденных страницах(которые состоят из источников, id источников содержаться в sourceidlist) 
-	zn "docbook"
 	set denominator = ##class(%iKnow.Queries.EntityAPI).GetOccurrenceCountBySource(domainid,sourceidlist)
-	zn "docsearch"
 	// Высчитываем и возвращаем отношение искомых слов к всем словам на найденной странице
 	set frequency=numerator/denominator
 	quit frequency
