@@ -84,8 +84,11 @@
 							     
 							     <ul>
 							     	<li ng-repeat = "item in result.textInfo | showAllResults:0:5:!result.show_all" style="margin-top:10px; list-style-type: none;">
-							     		<span ng-bind-html="sce.trustAsHtml(item.text | itemsLength:0:180:!item.more)"></span>
-							     		<button class="btn btn-xs" ng-click = "item.more = !item.more" ng-hide = "item.text.length <= 180">...</button>
+							     		<span ng-bind-html="sce.trustAsHtml(item.text | itemsLength:0:400:!item.more)"></span>
+							     		<button class="btn btn-xs" ng-click = "item.more = !item.more" ng-hide = "item.text.length <= 180">
+								     		<span ng-show="item.more" class = "glyphicon glyphicon-resize-small"></span>
+								     		<span ng-hide="item.more" class = "glyphicon glyphicon-option-horizontal"></span>
+							     		</button>
 							     		<a href="http://{{mylocation}}/csp/docbook/DocBook.UI.Page.cls?KEY={{item.textKey}}"  class="btn btn-info btn-xs linkColor" target="_blank"> link </a>			     
 							     	</li>
 							     </ul>

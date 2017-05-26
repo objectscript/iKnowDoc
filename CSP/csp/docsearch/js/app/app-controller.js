@@ -103,15 +103,19 @@ searchApp
 			$scope.search.without=='' ? $scope.withoutShow=false : $scope.withoutShow=true;
 
 			$scope.title = $scope.search.words;
-			
+
 			if ($scope.search.words != '' || $scope.search.phrase != '' || $scope.search.anyWords != '')
 			{
 				$scope.showPage(0); 
 				$location.path("/DocResults");				
 
-			} else			
-				$location.path("/DocSearch");
-	
+			} 
+			else
+				if ( $scope.search.without != '')
+					alert( "Please fill out other field(s)!" );
+				else
+					if ( $scope.search.without == '')	
+						$location.path("/DocSearch");	
 		}
 
 		$scope.showPage = function (page) {		

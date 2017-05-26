@@ -27,7 +27,7 @@ searchApp
 			getPaginationList: function(page, pagesNum, check) {
 				var paginationList = [];
 				
-				if(check)
+				if(check || (page == 0) )
 				{
 					startPage = 0;
 				}
