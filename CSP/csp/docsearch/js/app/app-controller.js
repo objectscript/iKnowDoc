@@ -30,6 +30,7 @@ searchApp
 		$scope.phraseShow = false;
 		$scope.anyWordsShow = false;
 		$scope.withoutShow = false;
+		$scope.errorToggle = false;
 		
 		$scope.phraseClear=function(){
 			$scope.search.phrase = "";
@@ -97,6 +98,7 @@ searchApp
 
 		$scope.makeSearch = function (){
 			$scope.inputToggle = false;
+			$scope.errorToggle = false;
 
 			$scope.search.phrase=='' ? $scope.phraseShow=false : $scope.phraseShow=true;
 			$scope.search.anyWords=='' ? $scope.anyWordsShow=false : $scope.anyWordsShow=true;
@@ -112,7 +114,7 @@ searchApp
 			} 
 			else
 				if ( $scope.search.without != '')
-					alert( "Please fill out other field(s)!" );
+					$scope.errorToggle=true;
 				else
 					if ( $scope.search.without == '')	
 						$location.path("/DocSearch");	
