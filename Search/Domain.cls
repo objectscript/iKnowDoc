@@ -86,51 +86,6 @@ ClassMethod GetSimilar(SearchString) As %Status
 	quit $$$OK
 }
 
-/* 
-	iKnow позволяет подсчитать количество всех сущностей в списке источников
-	Но не позволяет подсчитать количество определенных сущностей в списке источников. 
-	Для этих целей был написан метод на основе метода 
-	%iKnow.Queries.EntityAPI.GetOccurrenceCountBySource(domainid,sourceidlist)
-*/
-/// Метод возвращающий количество искомых слов(id искомых слов содержаться в wordidlist) в найденных страницах(которые состоят из источников, id источников содержаться в sourceidlist)
-ClassMethod GetCountWordsBySource(domainid As %Integer, sourceidlist As %List, wordidlist As %List, Output sc As %Status = {$$$OK}, enttype As %Integer = {$$$ENTTYPEANY}) As %Integer
-{
-	$$$IKQBEGINR("",sc,-1)
-	if (domainid'=0) { $$$CHECKDOMAINEXISTSR(domainid,sc,-1) }
-	quit:sourceidlist="" 0
-	set tVersionTables = $$$IKVERSIONATLEAST(domainid,$$$IKVERSIONTABLES)
-	// accepting single source IDs (non-list) as well
-	$$$IKENSURELISTNUM(sourceidlist)
-	set total = 0, ptr = 0
-	while $listnext(sourceidlist, ptr, srcId) {
-		continue:'+srcId
-		$$$CHECKASRCIDEXISTSX(domainid,srcId,srcDetails,vSrcId,sc)
-		if (enttype = $$$ENTTYPEANY) && 'tVersionTables {
-			set total = total + $lg(srcDetails,4)
-		} else {
-			set gEntOccId = $$$IKVGLOBNAME(domainid,"EntOccId",vSrcId)
-			set tFrom = $lg(srcDetails,3)+1, tTo = tFrom+$lg(srcDetails,4)-1
-			for tPartId = tFrom:1:tTo {
-				// tEntOcc содержит id сущностей источника.
-				set tEntOcc = @gEntOccId@(tPartId)
-				set pointer = 0
-				set value = 0
-				// С помощью $listnext проходим по списку id тех сущностей что ищем и сравниваем их с теми что в источнике
-				while $listnext(wordidlist, pointer, value)
-				{
-					if value=$lg(tEntOcc,1)
-					{
-						s x = $i(total)
-					}	
-				}
-			}
-		}
-	}
-	quit:$$$ISERR(sc) -1
-	
-	quit total
-}
-
 // Метод получения id Домена
 ClassMethod GetIdDomain() As %Integer
 {

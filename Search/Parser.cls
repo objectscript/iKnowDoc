@@ -62,13 +62,6 @@ link	for i=1:1:$LENGTH(text)
   		set text = $REPLACE(text,"\d"," ")
   		set text = $REPLACE(text,"\a"," ")
  		set text = $REPLACE(text,"  "," ")
- 		//убирает лишние пробелы после парсинга
-  		/*set text = $REPLACE(text,"       "," ")
-  		set text = $REPLACE(text,"      "," ")
-  		set text = $REPLACE(text,"     "," ")
-  		set text = $REPLACE(text,"    "," ")
-  		set text = $REPLACE(text,"   "," ")
-  		set text = $REPLACE(text,"  "," ")  */
 		quit text
 }
 
