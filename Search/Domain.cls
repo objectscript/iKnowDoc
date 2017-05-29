@@ -91,7 +91,6 @@ ClassMethod GetSimilar(SearchString) As %Status
 /// Метод возвращающий количество искомых слов(id искомых слов содержаться в wordidlist) в найденных страницах(которые состоят из источников, id источников содержаться в sourceidlist)
 ClassMethod GetCountWordsBySource(domainid As %Integer, sourceidlist As %List, wordidlist As %List, Output sc As %Status = {$$$OK}, enttype As %Integer = {$$$ENTTYPEANY}) As %Integer
 {
-	zn "docbook"
 	$$$IKQBEGINR("",sc,-1)
 	if (domainid'=0) { $$$CHECKDOMAINEXISTSR(domainid,sc,-1) }
 	quit:sourceidlist="" 0
@@ -123,7 +122,6 @@ ClassMethod GetCountWordsBySource(domainid As %Integer, sourceidlist As %List, w
 			}
 		}
 	}
-	zn "docsearch"
 	quit:$$$ISERR(sc) -1
 	
 	quit total
@@ -132,12 +130,10 @@ ClassMethod GetCountWordsBySource(domainid As %Integer, sourceidlist As %List, w
 // Метод получения id Домена
 ClassMethod GetIdDomain() As %Integer
 {
-	zn "DOCBOOK"
+	
 	// Получение id домена
 	set dname="DocSearch" 
 	set domoref=##class(%iKnow.Domain).Open(dname)
-	//set domId=domoref.Id
-	zn "DOCSEARCH"
     quit domoref.Id	
 }
 

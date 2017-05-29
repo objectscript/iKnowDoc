@@ -16,9 +16,7 @@ ClassMethod Frequency(domainid As %Integer, sourceidlist As %List, wordidlist As
 // Помоему не где не используется
 ClassMethod Replace(domainid As %Integer, entitylist As %List, pagesize As %Integer) As %Library.ArrayOfObjects
 {
-	zn "docbook"
-	set tSC = ##class(%iKnow.Queries.SourceAPI).GetByEntities(.tResult,domainid, entitylist,1,pagesize)
-	zn "docsearch"  
+	set tSC = ##class(%iKnow.Queries.SourceAPI).GetByEntities(.tResult,domainid, entitylist,1,pagesize) 
 	set array = ##class(%Library.ArrayOfObjects).%New()
 	set i = ""
     for {
