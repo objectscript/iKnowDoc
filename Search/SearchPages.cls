@@ -10,10 +10,11 @@ ClassMethod Search(obj) As %Status
 		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(str,,.obj,1))
 		do ##class(Search.SearchPages).FormQuery(obj)
     } catch ex {
-       	set err = "Ошибка разбора JSON запроса "_$system.Status.GetErrorText(ex.AsStatus(),"ru")
-       	set error = ##class(%DynamicObject).%New()
-       	set error.ErrorCode = err    
-       	write " Ошибка: "_error.%ToJSON()    
+       	set count=0
+       	set ResultJSON = { "sources": [], "totalCount":[]}
+    	set totalCountJSON = {"total":(count)}
+ 	    do ResultJSON.totalCount.%Push(totalCountJSON)
+ 	    write ResultJSON.%ToJSON()  
     } 
  quit $$$OK
 }
