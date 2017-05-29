@@ -121,7 +121,7 @@ ClassMethod FormQuery(obj) As %Status
     set ResultJSON = { "sources": [], "totalCount":[]}
     while result.%Next() {
     	// Заполняем массив данными
-    	set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (result.title),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
+    	set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (##class(Search.Parser).ParseTitle(result.title)),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
 		// Создаем запрос для получения текста для каждой страницы
 		set subresultQuery = "select DocBook.block_contentIndHighlight(%ID, ?, '0', '<span class=""Illumination"">', 0) text,blockid AS textKey,component->blockid AS docKey from DocBook.block where %ID %FIND search_index(contentInd,?,0) and component->blockid=?"
 	  	set subStatement = ##class(%SQL.Statement).%New()
