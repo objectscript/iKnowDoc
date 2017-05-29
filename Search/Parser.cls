@@ -92,4 +92,16 @@ ClassMethod ParseTitle(textTag) As %String
 		set text = $REPLACE(text,"&EACUTE;","É")
 		quit text
 }
+
+ClassMethod ParseHints(textTag) As %String
+{
+		set text = textTag
+		set empty = ""
+		set x = $LOCATE(text,"<.*>",,,substr)
+		if x'=0 {
+			set text = $REPLACE(text,substr,empty)
+		}
+		quit text
+}
+
 }

@@ -64,9 +64,13 @@ ClassMethod GetSimilar(SearchString) As %Status
 		// Формируем динамический обьект
 		set ResultJSON = { "entities": [] }
 		// Получаем данные из Result и заполняем динамический обьект 
+	    //zw Result
 	    for i=1:1:10 {
 	    	set оrd = $order(Result(i),1,Data)
-	    	set string = $li(Data,2)
+	    	//w "до ",$li(Data,2),!
+	    	set string = ##class(Search.Parser).ParseHints($li(Data,2))
+	    	//w "string ",string,!
+	    	//set string =$li(Data,2)
 	    	if $EXTRACT(string,$LENGTH(string))=";"{
 	    		set string=$EXTRACT(string,1,($LENGTH(string)-1))
 	    	}
