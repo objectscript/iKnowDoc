@@ -61,7 +61,7 @@ ClassMethod FormQuery(obj) As %Status
 		set anyWords = $REPLACE(anyWords," ","") 
 		//Извлекаем до ,
 		set listAny=$LISTFROMSTRING(anyWords,",")
-		set strAny=" OR ("_$LIST(listAny,1)
+		set strAny=" AND ("_$LIST(listAny,1)
 		set strAnyWord=$LIST(listAny,1)
 		for i=2:1:$LISTLENGTH(listAny) {
 			set strAny = strAny_" OR "_$LIST(listAny,i)
@@ -86,6 +86,7 @@ ClassMethod FormQuery(obj) As %Status
 	// Список содержащий слова запроса
 	set wordList=$LISTFROMSTRING(wordText, " ")
 	
+	//w text
 	// Пагинация
 	// Получим количество всех элементов
 	//set myquery = "SELECT COUNT(*) AS CountText FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)"
