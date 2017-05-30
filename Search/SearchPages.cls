@@ -71,17 +71,29 @@ ClassMethod FormQuery(obj) As %Status
 		set listAny = $Listfromstring("")
 	}
 	if without'="" {
-		set text = text_")"
-		//Удаляем пробелы
-		set without = $REPLACE(without," ","")  
-		//Извлекаем до ,
-		set listOut=$LISTFROMSTRING(without,",")
-		set strOut=" NOT ("_$LIST(listOut,1)
-		for i=2:1:$LISTLENGTH(listOut) {
-			set strOut = strOut_" OR "_$LIST(listOut,i) 
-			}
-		set text = "("_text
-		set text = text_strOut_")"
+		if anyWords'="" {
+			set text = text_")"
+			//Удаляем пробелы
+			set without = $REPLACE(without," ","")  
+			//Извлекаем до ,
+			set listOut=$LISTFROMSTRING(without,",")
+			set strOut=" NOT ("_$LIST(listOut,1)
+			for i=2:1:$LISTLENGTH(listOut) {
+				set strOut = strOut_" OR "_$LIST(listOut,i) 
+				}
+			set text = "("_text
+			set text = text_strOut_")"
+		} else {
+			//Удаляем пробелы
+			set without = $REPLACE(without," ","")  
+			//Извлекаем до ,
+			set listOut=$LISTFROMSTRING(without,",")
+			set strOut=" NOT ("_$LIST(listOut,1)
+			for i=2:1:$LISTLENGTH(listOut) {
+				set strOut = strOut_" OR "_$LIST(listOut,i) 
+				}
+			set text = text_strOut_")"
+		}
 	}
 	// Список содержащий слова запроса
 	set wordList=$LISTFROMSTRING(wordText, " ")
