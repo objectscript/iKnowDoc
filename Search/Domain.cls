@@ -65,6 +65,7 @@ ClassMethod GetSimilar(SearchString) As %Status
 		set ResultJSON = { "entities": [] }
 		// Получаем данные из Result и заполняем динамический обьект 
 	    //zw Result
+  	 	set Result(12) = $lb(999999," ",0,0)
 	    for i=1:1:10 {
 	    	set оrd = $order(Result(i),1,Data)
 	    	//w "до ",$li(Data,2),!
