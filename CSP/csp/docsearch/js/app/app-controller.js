@@ -31,6 +31,7 @@ searchApp
 		$scope.anyWordsShow = false;
 		$scope.withoutShow = false;
 		$scope.errorToggle = false;
+		$scope.hintToggle = false;
 		
 		$scope.phraseClear=function(){
 			$scope.search.phrase = "";
@@ -60,10 +61,15 @@ searchApp
 					$scope.searchItems = response.data.entities;
 			});	
 
-			if ($scope.search.words == '')
+			if ($scope.search.words == ''){
 				$scope.inputToggle = false;
-			else 
+				$scope.hintToggle = false;
+				}
+			else {
 				$scope.inputToggle = true;
+				if ($scope.searchItems.length == 0) $scope.hintToggle = false;
+				else $scope.hintToggle = true;
+				}
 		}
 		
 		$scope.handleClick = function (item) {
