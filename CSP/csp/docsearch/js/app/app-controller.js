@@ -59,16 +59,15 @@ searchApp
 			$http.get(baseUrl + 'GetSimilar/' + $scope.search.words)
 				.then(function(response) {
 					$scope.searchItems = response.data.entities;
+					if ($scope.searchItems.length == 0) $scope.hintToggle = false;
+					else $scope.hintToggle = true;
 			});	
 
 			if ($scope.search.words == ''){
 				$scope.inputToggle = false;
-				$scope.hintToggle = false;
 				}
 			else {
 				$scope.inputToggle = true;
-				if ($scope.searchItems.length == 0) $scope.hintToggle = false;
-				else $scope.hintToggle = true;
 				}
 		}
 		
