@@ -88,7 +88,8 @@ ClassMethod FormQuery(obj) As %Status
 	
 	// Пагинация
 	// Получим количество всех элементов
-	set myquery = "SELECT COUNT(*) AS CountText FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)"
+	//set myquery = "SELECT COUNT(*) AS CountText FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)"
+	set myquery = "select count(*) as CountText from (select * from 	(select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0))group by title)"
 	set tStatement = ##class(%SQL.Statement).%New()
   	set qStatus = tStatement.%Prepare(.myquery)
     IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
@@ -106,14 +107,16 @@ ClassMethod FormQuery(obj) As %Status
  	    quit 0 
  	}
 
+ 	
 	set commonCount = count
-	if commonCount<startRecord set startRecord=0
+	if commonCount<startRecord set startRecord=1
 	set offset=recordCount+startRecord-1	
 	if (offset>commonCount) set recordCount=recordCount-(offset-commonCount)
+
   	// Запрос к таблице с данными
   	// TODO частота через ifind Работает недостаточно быстро из-за того что в БД храняться абзацы текста, а не текст всей страницы целиком
   	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, sum(RankOne) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle, DocBook.block_contentIndRank(%ID, ?, '0') RankOne FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)) group by title))order by RANK DESC) order by RANK ASC) order by RANK DESC"  	
-  	set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, count(*) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)) group by title))order by RANK DESC) order by RANK ASC) order by RANK DESC"  	
+  	set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, count(*) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)) group by title))order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
 	set Statement = ##class(%SQL.Statement).%New()
   	set Status = Statement.%Prepare(resultQuery)
    	if Status'=1 {write "%Prepare failed 1:" do $System.Status.DisplayError(Status) quit}
