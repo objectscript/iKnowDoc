@@ -99,7 +99,8 @@ searchApp
 			}
 			
 			if (event.keyCode === 13)
-					$scope.inputToggle = false;			
+					$scope.inputToggle = false;
+					$scope.hintToggle = false;
 		}		
 
 		$scope.makeSearch = function (){
