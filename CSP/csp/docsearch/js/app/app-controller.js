@@ -78,6 +78,7 @@ searchApp
 			$scope.makeSearch();
 			
 			$scope.inputToggle = false;
+			$scope.hintToggle = false;
 		}
 		
 		$scope.handleArrows = function (event) {
@@ -103,6 +104,7 @@ searchApp
 
 		$scope.makeSearch = function (){
 			$scope.inputToggle = false;
+			$scope.hintToggle = false;
 			$scope.errorToggle = false;
 
 			$scope.search.phrase=='' ? $scope.phraseShow=false : $scope.phraseShow=true;
