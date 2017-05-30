@@ -44,7 +44,18 @@ ClassMethod FormQuery(obj) As %Status
 	
 	// Заполняем переменнные в зависимости от тех данных что ввели на фронте
 	if words'="" {
-		set text = text_words
+		if $LENGTH(words," ")>1 {
+			set listW=$LISTFROMSTRING(words," ")
+			for i=1:1:$LISTLENGTH(listW) {
+				if $LIST(listW,i)="not" || $LIST(listW,i)'="and" || $LIST(listW,i)'="or" {
+					set text=text_" \"_$LIST(listW,i)
+				} else {
+					set text=text_" "_$LIST(listW,i)
+				}
+			}
+		} else {
+			set text = text_words
+		}
 		set wordText=wordText_words
 	}
 	if phrase'="" {
@@ -70,6 +81,7 @@ ClassMethod FormQuery(obj) As %Status
 	} else {
 		set listAny = $Listfromstring("")
 	}
+	
 	if without'="" {
 		if anyWords'="" {
 			set text = text_")"
@@ -78,8 +90,10 @@ ClassMethod FormQuery(obj) As %Status
 			//Извлекаем до ,
 			set listOut=$LISTFROMSTRING(without,",")
 			set strOut=" NOT ("_$LIST(listOut,1)
+			set strOrOut=$LIST(listOut,1)
 			for i=2:1:$LISTLENGTH(listOut) {
 				set strOut = strOut_" OR "_$LIST(listOut,i) 
+				set strOrOut=strOrOut_" OR "_$LIST(listOut,i)
 				}
 			set text = "("_text
 			set text = text_strOut_")"
@@ -89,8 +103,10 @@ ClassMethod FormQuery(obj) As %Status
 			//Извлекаем до ,
 			set listOut=$LISTFROMSTRING(without,",")
 			set strOut=" NOT ("_$LIST(listOut,1)
+			set strOrOut=$LIST(listOut,1)
 			for i=2:1:$LISTLENGTH(listOut) {
 				set strOut = strOut_" OR "_$LIST(listOut,i) 
+				set strOrOut=strOrOut_" OR "_$LIST(listOut,i)
 				}
 			set text = text_strOut_")"
 		}
@@ -98,11 +114,11 @@ ClassMethod FormQuery(obj) As %Status
 	// Список содержащий слова запроса
 	set wordList=$LISTFROMSTRING(wordText, " ")
 	
-	//w text
+	//w strOrOut
 	// Пагинация
 	// Получим количество всех элементов
 	//set myquery = "SELECT COUNT(*) AS CountText FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)"
-	set myquery = "select count(*) as CountText from (select * from 	(select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0))group by title)"
+	set myquery = "select count(*) as CountText from (select * from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0))group by title)"
 	set tStatement = ##class(%SQL.Statement).%New()
   	set qStatus = tStatement.%Prepare(.myquery)
     IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
@@ -120,7 +136,6 @@ ClassMethod FormQuery(obj) As %Status
  	    quit 0 
  	}
 
- 	
 	set commonCount = count
 	if commonCount<startRecord set startRecord=1
 	set offset=recordCount+startRecord-1	
