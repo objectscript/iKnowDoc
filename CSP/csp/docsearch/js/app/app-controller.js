@@ -31,7 +31,6 @@ searchApp
 		$scope.anyWordsShow = false;
 		$scope.withoutShow = false;
 		$scope.errorToggle = false;
-		$scope.hintToggle = false;
 		
 		$scope.phraseClear=function(){
 			$scope.search.phrase = "";
@@ -55,20 +54,17 @@ searchApp
 		}
 		
 		$scope.change = function (){
-								
-			$http.get(baseUrl + 'GetSimilar/' + $scope.search.words)
-				.then(function(response) {
-					$scope.searchItems = response.data.entities;
-					if ($scope.searchItems.length == 0) $scope.hintToggle = false;
-					else $scope.hintToggle = true;
-			});	
+			
+			if ($scope.search.words != "")			
+				$http.get(baseUrl + 'GetSimilar/' + $scope.search.words)
+					.then(function(response) {
+						$scope.searchItems = response.data.entities;
+				});	
 
-			if ($scope.search.words == ''){
+			if ($scope.searchItems.length == 0)
 				$scope.inputToggle = false;
-				}
-			else {
+			else 
 				$scope.inputToggle = true;
-				}
 		}
 		
 		$scope.handleClick = function (item) {
@@ -78,7 +74,6 @@ searchApp
 			$scope.makeSearch();
 			
 			$scope.inputToggle = false;
-			$scope.hintToggle = false;
 		}
 		
 		$scope.handleArrows = function (event) {
@@ -99,13 +94,11 @@ searchApp
 			}
 			
 			if (event.keyCode === 13)
-					$scope.inputToggle = false;
-					$scope.hintToggle = false;
+					$scope.inputToggle = false;			
 		}		
 
 		$scope.makeSearch = function (){
 			$scope.inputToggle = false;
-			$scope.hintToggle = false;
 			$scope.errorToggle = false;
 
 			$scope.search.phrase=='' ? $scope.phraseShow=false : $scope.phraseShow=true;
