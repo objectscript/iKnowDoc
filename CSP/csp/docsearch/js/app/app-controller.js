@@ -55,13 +55,16 @@ searchApp
 		
 		$scope.change = function (){
 			
-			if ($scope.search.words != "")			
+			if ($scope.search.words != "")
+			{			
 				$http.get(baseUrl + 'GetSimilar/' + $scope.search.words)
 					.then(function(response) {
 						$scope.searchItems = response.data.entities;
-				});	
+				});
+				$scope.inputToggle = false;
+			}
 
-			if ($scope.searchItems.length == 0)
+			if ($scope.searchItems[0].value == " ")
 				$scope.inputToggle = false;
 			else 
 				$scope.inputToggle = true;
