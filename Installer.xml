@@ -1,0 +1,266 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Export generator="Cache" version="25">
+<Class name="Docsearch.Installer">
+<Description>
+ В терминале
+ZN "%SYS"
+Set pVars("Namespace")="DOCSEARCH"
+Set pVars("SourceDir")="C:\install\"  - папка с .xml и csp
+do ##class(Docsearch.Installer).setup(.pVars)</Description>
+<IncludeCode>%occInclude</IncludeCode>
+<TimeCreated>64422,53111.376132</TimeCreated>
+
+<XData name="Install">
+<XMLNamespace>INSTALLER</XMLNamespace>
+<Data><![CDATA[
+<Manifest>
+<IfNotDef Var="Namespace">
+<Var Name="Namespace" Value="DOCSEARCH"/>
+<Log Text="Set namespace to ${Namespace}" Level="0"/>
+</IfNotDef>
+
+
+<If Condition='(##class(Config.Namespaces).Exists("${Namespace}")=1)'>
+<Log Text="Creating namespace ${Namespace}" Level="0"/>
+
+<Namespace Name="${Namespace}" Create="overwrite" Code="${Namespace}" Ensemble="" Data="${Namespace}">
+<Log Text="Creating database ${Namespace}" Level="0"/>
+
+<Configuration>
+<Database Name="${Namespace}" Dir="${MGRDIR}/${Namespace}" Create="overwrite" MountRequired="false" Resource="%DB_${Namespace}" PublicPermissions="RW" MountAtStartup="false"/>
+<Log Text="Mapping DOCBOOK to ${Namespace}" Level="0"/> 
+<GlobalMapping Global="Cache*" From="DOCBOOK" Collation="5"/>
+<GlobalMapping Global="D*" From="DOCBOOK" Collation="5"/> 
+<GlobalMapping Global="XML*" From="DOCBOOK" Collation="5"/>
+<ClassMapping Package="DocBook" From="DOCBOOK"/>
+<ClassMapping Package="DocBook.UI" From="DOCBOOK"/>
+<ClassMapping Package="csp" From="DOCBOOK"/>
+
+</Configuration>
+
+<Log Text="End creating database ${Namespace}" Level="0"/>
+</Namespace>
+
+ <Log Text="End creating namespace ${Namespace}" Level="0"/>
+</If>
+
+
+<If Condition='(##class(Config.Namespaces).Exists("${Namespace}")=0)'>
+<Log Text="Creating namespace ${Namespace}" Level="0"/>
+
+<Namespace Name="${Namespace}" Create="yes" Code="${Namespace}" Ensemble="" Data="${Namespace}">
+<Log Text="Creating database ${Namespace}" Level="0"/>
+
+<Configuration>
+<Database Name="${Namespace}" Dir="${MGRDIR}/${Namespace}" Create="yes" MountRequired="false" Resource="%DB_${Namespace}" PublicPermissions="RW" MountAtStartup="false"/>
+<Log Text="Mapping DOCBOOK to ${Namespace}" Level="0"/> 
+<GlobalMapping Global="Cache*" From="DOCBOOK" Collation="5"/>
+<GlobalMapping Global="D*" From="DOCBOOK" Collation="5"/> 
+<GlobalMapping Global="XML*" From="DOCBOOK" Collation="5"/>
+<ClassMapping Package="DocBook" From="DOCBOOK"/>
+<ClassMapping Package="DocBook.UI" From="DOCBOOK"/>
+<ClassMapping Package="csp" From="DOCBOOK"/>
+</Configuration>
+
+<Log Text="End creating database ${Namespace}" Level="0"/>
+</Namespace>
+
+ <Log Text="End creating namespace ${Namespace}" Level="0"/>
+</If>
+
+<Namespace Name="${Namespace}" Create="no">
+<Log Text="Docsearch configuration is running" Level="0"/>
+<RunInstall Class="Docsearch.Installer" Method="CSPConfiguration"/>
+<Log Text="Docsearch configuration has been finished" Level="0"/>
+</Namespace>
+
+<Namespace Name="${Namespace}" Create="no">
+<Log Text="SourceDir defined - offline install from ${SourceDir}" Level="0"/>
+<Log Text="Copying files..." Level="0"/>
+<RunInstall Class="Docsearch.Installer" Method="CopyFiles"/>
+</Namespace> 
+
+<Namespace Name="${Namespace}" Create="no">
+<IfDef Var="SourceDir">
+<Log Text="Importing .CSP and .CLS" Level="0"/>
+<RunInstall Class="Docsearch.Installer" Method="OfflineInstall"/>
+<Import File="${SourceDir}"/>
+</IfDef>
+</Namespace>
+
+<Namespace Name="${Namespace}" Create="no">
+<Log Text="Creating iKnow domain, please wait..." Level="0"/>
+<RunInstall Class="Docsearch.Installer" Method="Domain"/>
+<Log Text="iKnow domain has been created." Level="0"/>
+</Namespace> 
+
+</Manifest>
+]]></Data>
+</XData>
+
+<Method name="setup">
+<Internal>1</Internal>
+<ClassMethod>1</ClassMethod>
+<CodeMode>objectgenerator</CodeMode>
+<FormalSpec><![CDATA[&pVars,pLogLevel:%Integer=0,pInstaller:%Installer.Installer]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[ 	Quit ##class(%Installer.Manifest).%Generate(%compiledclass, %code, "Install")
+]]></Implementation>
+</Method>
+
+<Method name="OfflineInstall">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVars,pLogLevel:%Integer=0,tInstaller:%Installer.Installer]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set ns = $Namespace
+	set namespace = tInstaller.Evaluate("${Namespace}")
+	
+	zn namespace
+	do $system.OBJ.ImportDir(tInstaller.Evaluate("${SourceDir}"),"*.*","dckb",.st,1)
+	
+	zn ns
+	quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="CSPConfiguration">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVars,pLogLevel:%String,tInstaller:%Installer.Installer]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	Set Namespace = tInstaller.Evaluate("${Namespace}")
+	
+	Do tInstaller.PushNS("%SYS")
+	///Веб-приложение
+	//Do:'##class(Security.SSLConfigs).Exists("DOCSEARCH") ##class(Security.SSLConfigs).Create("DOCSEARCH")
+	Write $zdt($h,3), " 0 : " ,"Creating web application /"_$ZCONVERT(Namespace, "l"), !
+	Set cspProperties("AutheEnabled") = $$$AutheUnauthenticated
+	Set cspProperties("NameSpace") = Namespace
+	Set cspProperties("IsNameSpaceDefault") = $$$NO
+	Set cspProperties("iKnow") = $$$YES
+	Set cspProperties("GroupById") = "%ISCMgtPortal"
+	Set cspProperties("CookiePath") = "/csp/"_$ZCONVERT(Namespace, "l")_"/"
+	Set tSC = ##class(Security.Applications).Create("/csp/"_$ZCONVERT(Namespace, "l"), .cspProperties)
+	//If $$$ISERR(tSC) Throw ##class(%Installer.Exception).CreateFromStatus(tSC)
+	kill cspProperties
+	
+	If (##class(Security.Applications).%ExistsId("/csp/"_$ZCONVERT(Namespace, "l")))
+	{
+		set CSPApplication = ##class(Security.Applications).%OpenId("/csp/"_$ZCONVERT(Namespace, "l"))
+		set CSPApplication.NameSpace = Namespace
+		set CSPApplication.IsNameSpaceDefault = $$$NO
+		set CSPApplication.GroupById = "%ISCMgtPortal"
+		set CSPApplication.CookiePath = "/csp/"_$ZCONVERT(Namespace, "l")_"/"
+		//set CSPApplication.MatchRoles = ":%All"
+		set CSPApplication.iKnowEnabled = 1
+		set CSPApplication.Path = $system.Util.InstallDirectory()_"CSP\"_$ZCONVERT(Namespace, "l")
+		set CSPApplication.AutheEnabled = $$$AutheUnauthenticated
+		do CSPApplication.%Save()
+	}
+	kill CSPApplication
+	W $zdt($h,3), " 0 : " , "Web application /csp/"_$ZCONVERT(Namespace, "l")_" created",!
+	
+	///REST-приложение
+	//Do:'##class(Security.SSLConfigs).Exists("DOCSEARCH") ##class(Security.SSLConfigs).Create("DOCSEARCH")
+	Write $zdt($h,3), " 0 : " ,"Creating web application /"_$ZCONVERT(Namespace, "l")_"/rest", !
+	Set cspProperties("NameSpace") = Namespace
+	Set cspProperties("IsNameSpaceDefault") = $$$NO
+	Set cspProperties("CookiePath") = "/csp/"_$ZCONVERT(Namespace, "l")_"/"
+	Set tSC = ##class(Security.Applications).Create("/csp/"_$ZCONVERT(Namespace, "l")_"/rest/", .cspProperties)
+	//If $$$ISERR(tSC) Throw ##class(%Installer.Exception).CreateFromStatus(tSC)
+	kill cspProperties
+	If (##class(Security.Applications).%ExistsId("/csp/"_$ZCONVERT(Namespace, "l")_"/rest"))
+	{
+		set CSPApplication = ##class(Security.Applications).%OpenId("/csp/"_$ZCONVERT(Namespace, "l")_"/rest")
+		set CSPApplication.NameSpace = Namespace
+		set CSPApplication.IsNameSpaceDefault = $$$NO
+		//set CSPApplication.GroupById = "%ISCMgtPortal"
+		//set CSPApplication.CookiePath = "/csp/"_$ZCONVERT(Namespace, "l")_"/"
+		set CSPApplication.DispatchClass = "REST.Router"
+		set CSPApplication.iKnowEnabled = 1
+		//set CSPApplication.MatchRoles = ":%All"
+		set CSPApplication.AutheEnabled = $$$AutheUnauthenticated
+		do CSPApplication.%Save()
+	}
+	
+	W $zdt($h,3), " 0 : " , "Web application /csp/"_$ZCONVERT(Namespace, "l")_"/rest/ created",!
+	Do tInstaller.PopNS()
+	
+	Quit $$$OK
+]]></Implementation>
+</Method>
+
+<Method name="CopyFiles">
+<ClassMethod>1</ClassMethod>
+<FormalSpec>pVars,pLogLevel,tInstaller</FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	set inst = pVars("SourceDir")_"CSP\csp\docsearch\" 
+	s path = ##class(%File).NormalizeDirectory("")
+	w path,!
+	set path = $REPLACE(path,"mgr\","csp\docsearch\")
+	w path,!
+	do ##class(%Library.File).CopyDir(inst,path,1)
+	W "Done",!
+]]></Implementation>
+</Method>
+
+<Method name="Domain">
+<ClassMethod>1</ClassMethod>
+<FormalSpec><![CDATA[&pVars,pLogLevel:%String,tInstaller:%Installer.Installer]]></FormalSpec>
+<ReturnType>%Status</ReturnType>
+<Implementation><![CDATA[
+	#Include %IKInclude
+	#Include %IKPublic
+	set ns = $Namespace
+	znspace "DOCSEARCH"
+	// Создание домена или открытие если он существует
+	set dname="DocSearch"  
+   	if (##class(%iKnow.Domain).Exists(dname)){
+	   	write "The ",dname," domain already exists",!
+		GOTO Finish
+    }
+  	else {	 
+  		write "The ",dname," domain does not exist",!
+       	set domoref=##class(%iKnow.Domain).%New(dname)
+       	do domoref.%Save()
+    }
+   	set domId=domoref.Id
+   	// Lister используется для поиска источников, соответствующих записям в результатах запроса
+  	set flister=##class(%iKnow.Source.SQL.Lister).%New(domId)
+  	//Loader координирует процесс загрузки.
+  	set myloader=##class(%iKnow.Source.Loader).%New(domId)
+  	// Построение запроса
+	set myquery="SELECT id,content, blockid, component->blockid As component_blockid, component->title As component_title, book->blockid As book_blockid, book->title As book_title FROM DocBook.block"
+ 	set idfld="id"
+ 	set grpfld="id"
+ 	// Указываем поля данных и метаданных
+  	set dataflds=$LB("content")
+  	set metaflds=$LB("id","blockid","component_blockid","component_title","book_blockid","book_title")
+  	//Метаданные
+	set val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"id",$LB("="),$$$MDDTNUMBER)
+	set val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"blockid",$LB("="),$$$MDDTSTRING)
+	set val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"component_blockid",$LB("="),$$$MDDTSTRING)
+	set val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"component_title",$LB("="),$$$MDDTSTRING)
+	set val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"book_blockid",$LB("="),$$$MDDTSTRING)
+	set val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"book_title",$LB("="),$$$MDDTSTRING)
+  	//Занесем все данные в Lister
+  	set stat=flister.AddListToBatch(myquery,idfld,grpfld,dataflds,metaflds)
+      if stat '= 1 {write "The lister failed: ",$System.Status.DisplayError(stat) quit }
+    //Запускаем процесс анализа
+    set stat=myloader.ProcessBatch()
+      if stat '= 1 {
+	      quit 
+	       }
+   //Функционал
+    set numSrcD=##class(%iKnow.Queries.SourceQAPI).GetCountByDomain(domId)
+  	write "Done",!
+  	write "Domain cointains ",numSrcD," source(s)",! 
+Finish
+    zn ns
+  	quit stat
+]]></Implementation>
+</Method>
+</Class>
+</Export>
