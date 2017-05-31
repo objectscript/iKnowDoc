@@ -259,7 +259,6 @@ do ##class(Docsearch.Installer).setup(.pVars)</Description>
   	write "Domain cointains ",numSrcD," source(s)",! 
 Finish
     zn ns
-  	quit stat
 ]]></Implementation>
 </Method>
 </Class>
