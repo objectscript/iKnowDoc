@@ -63,13 +63,13 @@ searchApp
 				});
 				$scope.inputToggle = false;
 			}
-
-			if ($scope.searchItems[0].value == " ")
-				$scope.inputToggle = false;
-			else 
-				$scope.inputToggle = true;
+			if(angular.isDefined($scope.searchItems)){
+				if ($scope.searchItems[0].value == " ")
+					$scope.inputToggle = false;
+				else 
+					$scope.inputToggle = true;
+			}
 		}
-		
 		$scope.handleClick = function (item) {
 		
 			$scope.currrentSearchItem = item;
