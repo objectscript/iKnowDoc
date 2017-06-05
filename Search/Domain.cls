@@ -1,57 +1,5 @@
 Include %IKInclude
 Class Search.Domain extends %Persistent {
-// Неоходимо запустить следующей командой на выполнение(сильно грузит комьютер, рекомендуется закрыть остальные программы)
-// do ##class(Search.Domain).%Build()
-// Выполняется минут 5-10
-// После создания домена, проверить командой в области DOCBOOK и найти название домена в выведенном списке
-// do $system.iKnow.ListDomains()
-/// Метод создания домена, построения структуры домена и заполнения его данными
-ClassMethod %Build() As %Status
-{
-	#Include %IKPublic
-	// Создание домена или открытие если он существует
-	set dname="DocSearch"  
-   	if (##class(%iKnow.Domain).Exists(dname)){
-	   	set domoref=##class(%iKnow.Domain).Open(dname)
-    }
-  	else {	 
-  		write "The ",dname," domain does not exist",!
-       	set domoref=##class(%iKnow.Domain).%New(dname)
-       	do domoref.%Save()
-    }	
-   	set domId=domoref.Id
-   	// Lister используется для поиска источников, соответствующих записям в результатах запроса
-  	set flister=##class(%iKnow.Source.SQL.Lister).%New(domId)
-  	//Loader координирует процесс загрузки.
-  	set myloader=##class(%iKnow.Source.Loader).%New(domId)
-  	// Построение запроса
-	set myquery="SELECT id,content, blockid, component->blockid As component_blockid, component->title As component_title, book->blockid As book_blockid, book->title As book_title FROM DocBook.block"
- 	set idfld="id"
- 	set grpfld="id"
- 	// Указываем поля данных и метаданных
-  	set dataflds=$LB("content")
-  	set metaflds=$LB("id","blockid","component_blockid","component_title","book_blockid","book_title")
-  	//Метаданные
-	set val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"id",$LB("="),$$$MDDTNUMBER)
-	set val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"blockid",$LB("="),$$$MDDTSTRING)
-	set val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"component_blockid",$LB("="),$$$MDDTSTRING)
-	set val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"component_title",$LB("="),$$$MDDTSTRING)
-	set val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"book_blockid",$LB("="),$$$MDDTSTRING)
-	set val=##class(%iKnow.Queries.MetadataAPI).AddField(domId,"book_title",$LB("="),$$$MDDTSTRING)
-  	//Занесем все данные в Lister
-  	set stat=flister.AddListToBatch(myquery,idfld,grpfld,dataflds,metaflds)
-      if stat '= 1 {write "The lister failed: ",$System.Status.DisplayError(stat) quit }
-    //Запускаем процесс анализа
-    set stat=myloader.ProcessBatch()
-      if stat '= 1 {
-	      quit 
-	       }
-   //Функционал
-    set numSrcD=##class(%iKnow.Queries.SourceQAPI).GetCountByDomain(domId)
-  	write "Домен создан",!
-  	write "Домен содержит ",numSrcD," источников",! 
-  	quit stat
-}
 
 /// Метод поиска подобных сущностей. Возвращает JSON содержащий 10 сущностей подобных входной строке.
 ClassMethod GetSimilar(SearchString) As %Status
