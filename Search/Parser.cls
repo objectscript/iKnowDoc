@@ -48,9 +48,10 @@ link	for i=1:1:$LENGTH(text)
 		set text = $REPLACE(text,"&eacute;","é")
 		*/
 		set text = $REPLACE(text,"&EACUTE;","É")
-		set text = $REPLACE(text,"\"," ")
-		set text = $REPLACE(text,"/"," ")
-		set text = $REPLACE(text,""""," ")
+		set text = $REPLACE(text,"&NTILDE;","Ñ")
+		//set text = $REPLACE(text,"\"," ")
+		//set text = $REPLACE(text,"/"," ")
+		//set text = $REPLACE(text,""""," ")
 		//убирает скобки чтоб предотвратить конфликты с JSON
 		set text = $REPLACE(text,"{"," ")
 		set text = $REPLACE(text,"}"," ")
@@ -85,6 +86,7 @@ ClassMethod ParseTitle(textTag) As %String
 		set text = $REPLACE(text,"&ndash;","-")
 		set text = $REPLACE(text,"&eacute;","é")
 		*/
+		set text = $REPLACE(text,"&NTILDE;","Ñ")
 		set text = $REPLACE(text,"&EACUTE;","É")
 		quit text
 }

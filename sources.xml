@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.1 (Build 792U)" ts="2017-06-05 16:52:08">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.1 (Build 792U)" ts="2017-06-06 16:53:04">
 <CSP name="index.CSP" application="/csp/docsearch/" default="1"><![CDATA[
 <html lang="en" ng-app="searchApp" ng-controller="searchController">
 	<head>
@@ -48761,13 +48761,13 @@ wM9rejd/qfgxS6/3Mn7de2TGf/QelZnYOzYztc/o9C+84rKzbGNzs71iszNxhDeiugv7jMoc9fio
 }]]></CSP>
 
 
-<Project name="124" LastModified="2017-06-05 16:52:08.805517">
+<Project name="124" LastModified="2017-06-06 16:05:36.583656">
   <Items>
+    <ProjectItem name="DocBookMac.INC" type="MAC"></ProjectItem>
     <ProjectItem name="REST" type="PKG"></ProjectItem>
     <ProjectItem name="Search" type="PKG"></ProjectItem>
     <ProjectItem name="csp/docsearch" type="DIR"></ProjectItem>
     <ProjectItem name="csp/docsearch/rest" type="DIR"></ProjectItem>
-    <ProjectItem name="DocBookMac.INC" type="MAC"></ProjectItem>
   </Items>
 </Project>
 
@@ -48910,7 +48910,7 @@ wM9rejd/qfgxS6/3Mn7de2TGf/QelZnYOzYztc/o9C+84rKzbGNzs71iszNxhDeiugv7jMoc9fio
 
 
 <Class name="Search.Parser">
-<TimeChanged>64439,60253.932255</TimeChanged>
+<TimeChanged>64440,59862.474974</TimeChanged>
 <TimeCreated>64439,60210.861255</TimeCreated>
 
 <UDLText name="T">
@@ -48972,9 +48972,10 @@ link	for i=1:1:$LENGTH(text)
 		set text = $REPLACE(text,"&eacute;","é")
 		*/
 		set text = $REPLACE(text,"&EACUTE;","É")
-		set text = $REPLACE(text,"\"," ")
-		set text = $REPLACE(text,"/"," ")
-		set text = $REPLACE(text,""""," ")
+		set text = $REPLACE(text,"&NTILDE;","Ñ")
+		//set text = $REPLACE(text,"\"," ")
+		//set text = $REPLACE(text,"/"," ")
+		//set text = $REPLACE(text,""""," ")
 		//убирает скобки чтоб предотвратить конфликты с JSON
 		set text = $REPLACE(text,"{"," ")
 		set text = $REPLACE(text,"}"," ")
@@ -49014,6 +49015,7 @@ link	for i=1:1:$LENGTH(text)
 		set text = $REPLACE(text,"&ndash;","-")
 		set text = $REPLACE(text,"&eacute;","é")
 		*/
+		set text = $REPLACE(text,"&NTILDE;","Ñ")
 		set text = $REPLACE(text,"&EACUTE;","É")
 		quit text
 ]]></Implementation>
