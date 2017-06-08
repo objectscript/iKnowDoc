@@ -63,13 +63,15 @@ searchApp
 				});
 				$scope.inputToggle = false;
 			}
+
 			if(angular.isDefined($scope.searchItems)){
-				if ($scope.searchItems[0].value == " ")
+				if (($scope.searchItems[0].value == " ") || ($scope.search.words == ""))
 					$scope.inputToggle = false;
 				else 
 					$scope.inputToggle = true;
 			}
 		}
+		
 		$scope.handleClick = function (item) {
 		
 			$scope.currrentSearchItem = item;
