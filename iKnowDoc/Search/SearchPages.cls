@@ -1,14 +1,17 @@
-Class Search.SearchPages {
+Class iKnowDoc.Search.SearchPages
+{
+
+// Пример POST запроса {"words":"iknow","phrase":"rest api","anyWords":"json, sql","without":"class, you, ifind, Enhancements", startRecord:1, recordCount:20}
 
 /// POST метод поиска по документации
-// Пример POST запроса {"words":"iknow","phrase":"rest api","anyWords":"json, sql","without":"class, you, ifind, Enhancements", startRecord:1, recordCount:20}
 ClassMethod Search(obj) As %Status
-{ 
+{
+ 
 	try {
 		set %request.Content.Attributes("CharEncoding")="UTF8"
 		set str = $ZCVT(%request.Content.Read(),"I","UTF8")
 		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(str,,.obj,1))
-		do ##class(Search.SearchPages).FormQuery(obj)
+		do ##class(iKnowDoc.Search.SearchPages).FormQuery(obj)
     } catch ex {
        	set count=0
        	set ResultJSON = { "sources": [], "totalCount":[]}
@@ -153,7 +156,7 @@ ClassMethod FormQuery(obj) As %Status
     set ResultJSON = { "sources": [], "totalCount":[]}
     while result.%Next() {
     	// Заполняем массив данными
-    	set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (##class(Search.Parser).ParseTitle(result.title)),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
+    	set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (##class(iKnowDoc.Search.Parser).ParseTitle(result.title)),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
 		// Создаем запрос для получения текста для каждой страницы
 		set subresultQuery = "select DocBook.block_contentIndHighlight(%ID, ?, '0', '<span class=""Illumination"">', 0) text,blockid AS textKey,component->blockid AS docKey from DocBook.block where %ID %FIND search_index(contentInd,?,0) and component->blockid=?"
 	  	set subStatement = ##class(%SQL.Statement).%New()
@@ -179,7 +182,5 @@ ClassMethod FormQuery(obj) As %Status
 	write ResultJSON.%ToJSON()
 	quit st
 }
-
-
 
 }

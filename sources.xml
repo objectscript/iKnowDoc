@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.1 (Build 792U)" ts="2017-06-06 16:53:04">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.1 (Build 792U)" ts="2017-06-08 15:24:23">
 <CSP name="index.CSP" application="/csp/docsearch/" default="1"><![CDATA[
 <html lang="en" ng-app="searchApp" ng-controller="searchController">
 	<head>
@@ -48761,13 +48761,15 @@ wM9rejd/qfgxS6/3Mn7de2TGf/QelZnYOzYztc/o9C+84rKzbGNzs71iszNxhDeiugv7jMoc9fio
 }]]></CSP>
 
 
-<Project name="124" LastModified="2017-06-06 16:05:36.583656">
+<Project name="124" LastModified="2017-06-08 15:23:42.934548">
   <Items>
     <ProjectItem name="DocBookMac.INC" type="MAC"></ProjectItem>
-    <ProjectItem name="REST" type="PKG"></ProjectItem>
-    <ProjectItem name="Search" type="PKG"></ProjectItem>
     <ProjectItem name="csp/docsearch" type="DIR"></ProjectItem>
     <ProjectItem name="csp/docsearch/rest" type="DIR"></ProjectItem>
+    <ProjectItem name="iKnowDoc.Search.Domain" type="CLS"></ProjectItem>
+    <ProjectItem name="iKnowDoc.Search.Parser" type="CLS"></ProjectItem>
+    <ProjectItem name="iKnowDoc.Search.SearchPages" type="CLS"></ProjectItem>
+    <ProjectItem name="iKnowDoc.REST.Router" type="CLS"></ProjectItem>
   </Items>
 </Project>
 
@@ -48802,12 +48804,10 @@ wM9rejd/qfgxS6/3Mn7de2TGf/QelZnYOzYztc/o9C+84rKzbGNzs71iszNxhDeiugv7jMoc9fio
 ]]></Routine>
 
 
-
-
-<Class name="REST.Router">
+<Class name="iKnowDoc.REST.Router">
 <Super>%CSP.REST</Super>
-<TimeChanged>64439,60332.961811</TimeChanged>
-<TimeCreated>64439,60332.961811</TimeCreated>
+<TimeChanged>64442,55422.041619</TimeChanged>
+<TimeCreated>64442,54504.919035</TimeCreated>
 
 <Parameter name="UseSession">
 <Type>Integer</Type>
@@ -48816,22 +48816,22 @@ wM9rejd/qfgxS6/3Mn7de2TGf/QelZnYOzYztc/o9C+84rKzbGNzs71iszNxhDeiugv7jMoc9fio
 
 <XData name="UrlMap">
 <Description>
-����� ����� REST web API</Description>
+Карта методов REST web API</Description>
 <Data><![CDATA[
 <Routes>	
-	<Route Url="/GetSimilar/:text" Method="GET" Call="Search.Domain:GetSimilar"/>
-	<Route Url="/Search" Method="POST" Call="Search.SearchPages:Search"/>
+	<Route Url="/GetSimilar/:text" Method="GET" Call="iKnowDoc.Search.Domain:GetSimilar"/>
+	<Route Url="/Search" Method="POST" Call="iKnowDoc.Search.SearchPages:Search"/>
 </Routes>
 ]]></Data>
 </XData>
 </Class>
 
 
-<Class name="Search.Domain">
+<Class name="iKnowDoc.Search.Domain">
 <IncludeCode>%IKInclude</IncludeCode>
 <Super>%Persistent</Super>
-<TimeChanged>64439,60455.313398</TimeChanged>
-<TimeCreated>64439,60331.186717</TimeCreated>
+<TimeChanged>64442,54905.98862</TimeChanged>
+<TimeCreated>64442,54514.051032</TimeCreated>
 
 <Method name="GetSimilar">
 <Description>
@@ -48842,7 +48842,7 @@ wM9rejd/qfgxS6/3Mn7de2TGf/QelZnYOzYztc/o9C+84rKzbGNzs71iszNxhDeiugv7jMoc9fio
 <Implementation><![CDATA[
 	try {
 		// Открываем домен и получаем его Id
-		set domId= ##class(Search.Domain).GetIdDomain()
+		set domId= ##class(iKnowDoc.Search.Domain).GetIdDomain()
 		// Используя %iKnow получаем 10 сущностей подобных входной строке.
 		set SC = ##class(%iKnow.Queries.EntityAPI).GetSimilar(.Result, domId, SearchString,,11)
 		// Формируем динамический обьект
@@ -48853,7 +48853,7 @@ wM9rejd/qfgxS6/3Mn7de2TGf/QelZnYOzYztc/o9C+84rKzbGNzs71iszNxhDeiugv7jMoc9fio
 	    for i=1:1:10 {
 	    	set оrd = $order(Result(i),1,Data)
 	    	//w "до ",$li(Data,2),!
-	    	set string = ##class(Search.Parser).ParseHints($li(Data,2))
+	    	set string = ##class(iKnowDoc.Search.Parser).ParseHints($li(Data,2))
 	    	//w "string ",string,!
 	    	//set string =$li(Data,2)
 	    	if $EXTRACT(string,$LENGTH(string))=";"{
@@ -48893,11 +48893,11 @@ wM9rejd/qfgxS6/3Mn7de2TGf/QelZnYOzYztc/o9C+84rKzbGNzs71iszNxhDeiugv7jMoc9fio
 
 <Storage name="Default">
 <Type>%Library.CacheStorage</Type>
-<DataLocation>^Search.DomainD</DataLocation>
+<DataLocation>^iKnowDoc.Search.DomainD</DataLocation>
 <DefaultData>DomainDefaultData</DefaultData>
-<IdLocation>^Search.DomainD</IdLocation>
-<IndexLocation>^Search.DomainI</IndexLocation>
-<StreamLocation>^Search.DomainS</StreamLocation>
+<IdLocation>^iKnowDoc.Search.DomainD</IdLocation>
+<IndexLocation>^iKnowDoc.Search.DomainI</IndexLocation>
+<StreamLocation>^iKnowDoc.Search.DomainS</StreamLocation>
 <Data name="DomainDefaultData">
 <Value name="1">
 <Value>%%CLASSNAME</Value>
@@ -48907,11 +48907,9 @@ wM9rejd/qfgxS6/3Mn7de2TGf/QelZnYOzYztc/o9C+84rKzbGNzs71iszNxhDeiugv7jMoc9fio
 </Class>
 
 
-
-
-<Class name="Search.Parser">
-<TimeChanged>64440,59862.474974</TimeChanged>
-<TimeCreated>64439,60210.861255</TimeCreated>
+<Class name="iKnowDoc.Search.Parser">
+<TimeChanged>64442,54695.990584</TimeChanged>
+<TimeCreated>64442,54514.24264</TimeCreated>
 
 <UDLText name="T">
 <Content><![CDATA[
@@ -49038,9 +49036,9 @@ link	for i=1:1:$LENGTH(text)
 </Class>
 
 
-<Class name="Search.SearchPages">
-<TimeChanged>64439,60331.479853</TimeChanged>
-<TimeCreated>64439,60331.479853</TimeCreated>
+<Class name="iKnowDoc.Search.SearchPages">
+<TimeChanged>64442,54883.98724</TimeChanged>
+<TimeCreated>64442,54514.45952</TimeCreated>
 
 <UDLText name="T">
 <Content><![CDATA[
@@ -49061,7 +49059,7 @@ POST метод поиска по документации</Description>
 		set %request.Content.Attributes("CharEncoding")="UTF8"
 		set str = $ZCVT(%request.Content.Read(),"I","UTF8")
 		$$$THROWONERROR(st,##class(%ZEN.Auxiliary.jsonProvider).%ConvertJSONToObject(str,,.obj,1))
-		do ##class(Search.SearchPages).FormQuery(obj)
+		do ##class(iKnowDoc.Search.SearchPages).FormQuery(obj)
     } catch ex {
        	set count=0
        	set ResultJSON = { "sources": [], "totalCount":[]}
@@ -49211,7 +49209,7 @@ POST метод поиска по документации</Description>
     set ResultJSON = { "sources": [], "totalCount":[]}
     while result.%Next() {
     	// Заполняем массив данными
-    	set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (##class(Search.Parser).ParseTitle(result.title)),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
+    	set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (##class(iKnowDoc.Search.Parser).ParseTitle(result.title)),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
 		// Создаем запрос для получения текста для каждой страницы
 		set subresultQuery = "select DocBook.block_contentIndHighlight(%ID, ?, '0', '<span class=""Illumination"">', 0) text,blockid AS textKey,component->blockid AS docKey from DocBook.block where %ID %FIND search_index(contentInd,?,0) and component->blockid=?"
 	  	set subStatement = ##class(%SQL.Statement).%New()
