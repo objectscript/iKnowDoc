@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.1 (Build 792U)" ts="2017-06-08 15:24:23">
+<Export generator="Cache" version="25" zv="Cache for Windows (x86-64) 2017.1 (Build 792U)" ts="2017-06-08 16:29:45">
 <CSP name="index.CSP" application="/csp/docsearch/" default="1"><![CDATA[
 <html lang="en" ng-app="searchApp" ng-controller="searchController">
 	<head>
@@ -646,7 +646,7 @@ searchApp
 
 			<header> <!-- ���� -->
 				<p class="text-center MarginHeader">
-					<img ng-src = "style/images/Logo.png" width ="40%" title ="InterSystems"  onclick = "logoClick()"/>
+					<img ng-src = "style/images/Logo.png" width ="40%" title ="InterSystems"/>
 				</p>
 			</header>
 			
@@ -48761,15 +48761,15 @@ wM9rejd/qfgxS6/3Mn7de2TGf/QelZnYOzYztc/o9C+84rKzbGNzs71iszNxhDeiugv7jMoc9fio
 }]]></CSP>
 
 
-<Project name="124" LastModified="2017-06-08 15:23:42.934548">
+<Project name="124" LastModified="2017-06-08 15:39:52.092273">
   <Items>
     <ProjectItem name="DocBookMac.INC" type="MAC"></ProjectItem>
     <ProjectItem name="csp/docsearch" type="DIR"></ProjectItem>
     <ProjectItem name="csp/docsearch/rest" type="DIR"></ProjectItem>
+    <ProjectItem name="iKnowDoc.REST.Router" type="CLS"></ProjectItem>
     <ProjectItem name="iKnowDoc.Search.Domain" type="CLS"></ProjectItem>
     <ProjectItem name="iKnowDoc.Search.Parser" type="CLS"></ProjectItem>
     <ProjectItem name="iKnowDoc.Search.SearchPages" type="CLS"></ProjectItem>
-    <ProjectItem name="iKnowDoc.REST.Router" type="CLS"></ProjectItem>
   </Items>
 </Project>
 
