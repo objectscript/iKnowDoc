@@ -27,21 +27,10 @@ App database            -   Intersystems Ensemble 2017.1
 ### Подготовка окружения
 
 1. Убедиться, что стоит Intersystems Cache, Ensemble или Healthshare версии 2017.1 или позднее и есть лицензия (необходимо для работы iKnow).
-2. Распаковать архив install.zip в папку.
-3. Импортировать Installer.xml в область %SYS через студию, скомпилировать. В терминале в области %SYS ввести следующие строки:
-	Set pVars("Namespace")="DOCSEARCH"
-	Set pVars("SourceDir")="..." - где … путь папки с распакованным архивом install.zip
-	К примеру: “C:\install”
+2. Загрузить Installer.xml из релиза
+3. Импортировать Installer.xml в область %SYS через Студию, скомпилировать. В терминале в области %SYS ввести следующую команду:
 	do ##class(Docsearch.Installer).setup(.pVars)
- Процесс занимает около 10-15 минут.
-4. Для осуществления поиска по документации с помощью iFind, необходимо создать индекс iFind:
- - Вставить следующие строки в область DOCSEARCH, в класс DocBook.block в конец:
- 	// Создание индекса iFind
- 	Index contentInd On (content) As %iFind.Index.Analytic(INDEXOPTION = 0, LANGUAGE = "en", LOWER = 1, RANKERCLASS = "%iFind.Rank.Analytic");
- - Затем перестроить всё с параметром “компилировать зависимые классы и сохранять сгенерированный код” (флаги dckb).
- - После этого необходимо построить индекс. Для этого выполним команду через терминал в области DOCSEARCH:
-	do ##class(DocBook.block).%BuildIndices($lb(“contentInd”))
- Процесс занимает около 10-15 минут.
-5. Скомпилировать всю область DOCSEARCH командой в терминале:
-	do $system.OBJ.CompileAll("dckb")
+ Процесс занимает около 30 минут.
+ Поиск доступен по адресу http://localhost:[порт]/csp/docsearch/index.csp
+
 
