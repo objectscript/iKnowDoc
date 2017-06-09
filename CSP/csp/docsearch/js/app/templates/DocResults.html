@@ -1,13 +1,13 @@
 <div>
-	 		<header class="ResultHeader"> <!-- Шапка -->
+	 		<header class="ResultHeader"> <!-- Header -->
 				<form class="form-horizontal"  autocomplete="off">
-					<div class="col-md-3 col-sm-3 col-xs-3 Logo"> <!-- Лого -->
+					<div class="col-md-3 col-sm-3 col-xs-3 Logo"> <!-- Logo -->
 						<a href="#!DocSearch" ng-click="clearAll()"><img ng-src = "style/images/Logo.png" width ="100%" title ="InterSystems"/></a>
 					</div>
-					<div class="input-groop col-lg-6 col-md-5 col-sm-5 col-xs-5 MarginHeader"> <!-- Строка поиска -->
+					<div class="input-groop col-lg-6 col-md-5 col-sm-5 col-xs-5 MarginHeader"> <!-- Search input -->
 							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
 							
-							<div ng-show = "inputToggle" class = "toggler">
+							<div ng-show = "inputToggle" class = "toggler"> <!-- Hint -->
 								<ul class = "listStyle">
 									<li class = "hint" ng-repeat = "item in searchItems" ng-class="{'activeToggle': item.value == currrentSearchItem.value}" ng-click = "handleClick(item)">
 										<span ng-bind-html = "sce.trustAsHtml(item.value)"></span>
@@ -15,7 +15,7 @@
 								</ul>
 							</div>
 					</div>
-					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-4 MarginHeader btn-group"> <!-- Кнопки поиска для разных размеров окна браузера -->
+					<div class="col-lg-3 col-md-4 col-sm-4 col-xs-4 MarginHeader btn-group"> <!-- buttons for search and advanced search-->
 						<button type="submit" class="btn btn-primary" ng-click = "makeSearch()">
 							<span class="glyphicon glyphicon-search"></span><span class="hidden-sm hidden-xs"> Search</span>
 						</button>
@@ -24,7 +24,7 @@
 				</form>
 			</header>
 			
-			<div ng-show = "preloadToggle">
+			<div ng-show = "preloadToggle"> <!-- preloader -->
 				<div class="cssload-container">
 					<div class="cssload-cube">
 						<div class="cssload-half1">
@@ -42,7 +42,7 @@
 			</div>
 			
 			<div ng-hide = "preloadToggle">
-				<div class="row MarginAdvancedMenu">
+				<div class="row MarginAdvancedMenu"> <!-- advanced search tags -->
 					<div class="col-sm-4">
 						<div class="input-group" ng-show="phraseShow">
 							<span class="input-group-addon">exact:</span>
@@ -71,7 +71,7 @@
 						</div>
 					</div>
 				</div>
-				<div ng-show = "resultToggle"> <!-- Результаты поиска -->
+				<div ng-show = "resultToggle"> <!-- search results -->
 					   <ul>
 					   		<p>About <b> {{totalCount}} </b> results on <b> {{pagesNum}} </b> pages</p>
 					   </ul>
@@ -97,7 +97,7 @@
 						    </li>
 					   </ul>
 					   
-					   <div class="pagination-wrap text-center"> <!-- Пагинация -->
+					   <div class="pagination-wrap text-center"> <!-- pagination -->
 								<ul class="pagination Cursor">
 									<li ng-click="showPage('prev')" ng-class="{'active': currentPageNum() == page.link}" ng-show = "prevToggle"><a >&laquo;</a></li>
 									<li ng-repeat="page in paginationList" ng-click="showPage(page.link)" ng-class="{'active': currentPageNum() == page.link}"><a ng-bind-html="page.name"></a></li>
@@ -107,7 +107,7 @@
 						</div>
 				  </div>
 				
-				<div class="NoResult" ng-show = "!resultToggle">
+				<div class="NoResult" ng-show = "!resultToggle"> <!-- no results -->
 					Your search - <b>{{search.words}}</b> - did not match any documents.
 					</br>
 					Suggestions:
