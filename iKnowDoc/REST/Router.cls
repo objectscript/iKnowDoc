@@ -3,7 +3,7 @@ Class iKnowDoc.REST.Router Extends %CSP.REST
 
 Parameter UseSession As Integer = 1;
 
-/// Карта методов REST web API
+/// RESTful web API mapping
 XData UrlMap
 {
 <Routes>	

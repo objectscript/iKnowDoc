@@ -1,12 +1,10 @@
 Class iKnowDoc.Search.Parser
 {
 
-// Данные документации в БД храняться со всеми тегами, для дальнейшей вставки на страницу. Нам же теги не нужны,из-за этого из убираем
-
-/// Парсер, заменяющий XML-теги в источниках на пробел:
+// Documentation data in database is stored with all XML-tags for further web page display. We don't need these tags, hence parsing.
+/// Parser that replaces XML-tags with space characters:
 ClassMethod Parse(textTag) As %String
 {
- 
 		set i =1
 		set empty=""
 		set subtext=""
@@ -35,7 +33,7 @@ link	for i=1:1:$LENGTH(text)
 			 }
 			
 		}
-		//замена html символов
+		//html escape characters replacement
 		/*set text = $REPLACE(text,"&reg;","®")
 		set text = $REPLACE(text,"&ntilde;","ñ")
 		set text = $REPLACE(text,"&NTILDE;","Ñ")
@@ -55,7 +53,8 @@ link	for i=1:1:$LENGTH(text)
 		//set text = $REPLACE(text,"\"," ")
 		//set text = $REPLACE(text,"/"," ")
 		//set text = $REPLACE(text,""""," ")
-		//убирает скобки чтоб предотвратить конфликты с JSON
+
+		//removing other characters to prevent JSON conflicts
 		set text = $REPLACE(text,"{"," ")
 		set text = $REPLACE(text,"}"," ")
 		set text = $REPLACE(text,"["," ")
@@ -70,7 +69,7 @@ link	for i=1:1:$LENGTH(text)
 		quit text
 }
 
-/// Корректирует нестандартные символы в заголовках результатов поиска
+/// Converts html-characters to proper letters in search result headers
 ClassMethod ParseTitle(textTag) As %String
 {
 		set text = textTag
@@ -94,6 +93,7 @@ ClassMethod ParseTitle(textTag) As %String
 		quit text
 }
 
+/// Removes tags in entity hints (GetSimilar method)
 ClassMethod ParseHints(textTag) As %String
 {
 		set text = textTag
@@ -101,6 +101,10 @@ ClassMethod ParseHints(textTag) As %String
 		set x = $LOCATE(text,"<.*>",,,substr)
 		if x'=0 {
 			set text = $REPLACE(text,substr,empty)
+		}
+		set x = $LOCATE(text,"&mdash",,,substr)
+		if x'=0 {
+		set text = $REPLACE(text,substr,empty)
 		}
 		quit text
 }

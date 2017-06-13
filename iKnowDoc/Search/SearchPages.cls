@@ -1,9 +1,8 @@
 Class iKnowDoc.Search.SearchPages
 {
 
-// Пример POST запроса {"words":"iknow","phrase":"rest api","anyWords":"json, sql","without":"class, you, ifind, Enhancements", startRecord:1, recordCount:20}
-
-/// POST метод поиска по документации
+// POST request example  {"words":"iknow","phrase":"rest api","anyWords":"json, sql","without":"class, you, ifind, Enhancements", startRecord:1, recordCount:20}
+/// POST-type method for documentation search
 ClassMethod Search(obj) As %Status
 {
  
@@ -22,30 +21,29 @@ ClassMethod Search(obj) As %Status
  quit $$$OK
 }
 
-/// Метод формирования запроса к БД
+/// Method of forming a database request
 ClassMethod FormQuery(obj) As %Status
 {
-	// Получаем параметры поиска:
-	// Поиск со словами:
+	// Getting the search options:
+	// all these words:
 	set words=obj.words
-	// Поиск с словосочетанием: 
+	// this exact word or phrase:
 	set phrase=obj.phrase
-	// Поиск с любым из этих слов:
+	// any of these words:
 	set anyWords=obj.anyWords
-	// Поиск без следующих слов:
+	// none of these words:
 	set without=obj.without
-	
-	// Параметры нужные для пагинации
-	// Начальная запись
+	// Parameters required for pagination
+	// Record start
     set startRecord=obj.startRecord
     // Число записей на странице	
+    // Number of records per page
 	set recordCount=obj.recordCount
-	// Переменная содержащая текст для запроса iFind в соответствии с форматированием нужным iFind
+	// Variable containing text for iFind query according to formatting required for iFind
 	set text=""
-	// Переменная содержащая текст запроса без форматирования. Нужна для получения id слов, используемых iKnow
+	// Variable containing query text without formatting. Required for getting Id of words, used by iKnow
 	set wordText=""
-	
-	// Заполняем переменнные в зависимости от тех данных что ввели на фронте
+	// Assigning variables depending on data that was received by front-end
 	if words'="" {
 		if $LENGTH(words," ")>1 {
 			set listW=$LISTFROMSTRING(words," ")
@@ -71,9 +69,9 @@ ClassMethod FormQuery(obj) As %Status
 		}	
 	}
 	if anyWords'="" {
-		//Удаляем пробелы
+		// removing spaces
 		set anyWords = $REPLACE(anyWords," ","") 
-		//Извлекаем до ,
+		// Extracting up to ,
 		set listAny=$LISTFROMSTRING(anyWords,",")
 		set strAny=" AND ("_$LIST(listAny,1)
 		set strAnyWord=$LIST(listAny,1)
@@ -88,9 +86,9 @@ ClassMethod FormQuery(obj) As %Status
 	if without'="" {
 		if anyWords'="" {
 			set text = text_")"
-			//Удаляем пробелы
+			// Removing spaces
 			set without = $REPLACE(without," ","")  
-			//Извлекаем до ,
+			// Extracting up to ,
 			set listOut=$LISTFROMSTRING(without,",")
 			set strOut=" NOT ("_$LIST(listOut,1)
 			set strOrOut=$LIST(listOut,1)
@@ -101,9 +99,9 @@ ClassMethod FormQuery(obj) As %Status
 			set text = "("_text
 			set text = text_strOut_")"
 		} else {
-			//Удаляем пробелы
+			// Removing spaces
 			set without = $REPLACE(without," ","")  
-			//Извлекаем до ,
+			// Extracting up to ,
 			set listOut=$LISTFROMSTRING(without,",")
 			set strOut=" NOT ("_$LIST(listOut,1)
 			set strOrOut=$LIST(listOut,1)
@@ -114,12 +112,12 @@ ClassMethod FormQuery(obj) As %Status
 			set text = text_strOut_")"
 		}
 	}
-	// Список содержащий слова запроса
+	// List of words in query
 	set wordList=$LISTFROMSTRING(wordText, " ")
 	
 	//w strOrOut
-	// Пагинация
-	// Получим количество всех элементов
+	// Pagination
+	// Getting number of all elements
 	//set myquery = "SELECT COUNT(*) AS CountText FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)"
 	set myquery = "select count(*) as CountText from (select * from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0))group by title)"
 	set tStatement = ##class(%SQL.Statement).%New()
@@ -129,8 +127,8 @@ ClassMethod FormQuery(obj) As %Status
     while rset.%Next() {
     	set count=rset.CountText
     }
-    
-    // Обработка случая если нечего не нашли
+
+    // "No results found" exception handler
      if count=0{
      	set ResultJSON = { "sources": [], "totalCount":[]}
     	set totalCountJSON = {"total":(count)}
@@ -144,20 +142,20 @@ ClassMethod FormQuery(obj) As %Status
 	set offset=recordCount+startRecord-1	
 	if (offset>commonCount) set recordCount=recordCount-(offset-commonCount)
 
-  	// Запрос к таблице с данными
-  	// TODO частота через ifind Работает недостаточно быстро из-за того что в БД храняться абзацы текста, а не текст всей страницы целиком
+  	// Data table query
+  	// TODO frequency sorting in iFind doesn't work fast enough due to DB containg text paragraphs, not text of a whole page.
   	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, sum(RankOne) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle, DocBook.block_contentIndRank(%ID, ?, '0') RankOne FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)) group by title))order by RANK DESC) order by RANK ASC) order by RANK DESC"  	
   	set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, count(*) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)) group by title))order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
 	set Statement = ##class(%SQL.Statement).%New()
   	set Status = Statement.%Prepare(resultQuery)
    	if Status'=1 {write "%Prepare failed 1:" do $System.Status.DisplayError(Status) quit}
   	set result = Statement.%Execute(text)
-   	// Формируем динамический обьект
+   	// Forming a dynamic object
     set ResultJSON = { "sources": [], "totalCount":[]}
     while result.%Next() {
-    	// Заполняем массив данными
+    	// Assigning array with data
     	set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (##class(iKnowDoc.Search.Parser).ParseTitle(result.title)),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
-		// Создаем запрос для получения текста для каждой страницы
+		// Forming a query for receiving text for every page
 		set subresultQuery = "select DocBook.block_contentIndHighlight(%ID, ?, '0', '<span class=""Illumination"">', 0) text,blockid AS textKey,component->blockid AS docKey from DocBook.block where %ID %FIND search_index(contentInd,?,0) and component->blockid=?"
 	  	set subStatement = ##class(%SQL.Statement).%New()
 	  	set subStatus = subStatement.%Prepare(subresultQuery)
@@ -173,12 +171,11 @@ ClassMethod FormQuery(obj) As %Status
 	  	set totalCount=result.cnt
 		do ResultJSON.sources.%Push(tJSON)		
     }
-    // Вывод в JSON общего количества найденных результатов
+    // Setting JSON with total number of found results
     set totalCountJSON = {"total":(totalCount)}
     do ResultJSON.totalCount.%Push(totalCountJSON)
 	set st=$$$OK
-	
-	// Метод преобразующий динамический обьект в JSON
+	// Converting dynamic object into JSON
 	write ResultJSON.%ToJSON()
 	quit st
 }

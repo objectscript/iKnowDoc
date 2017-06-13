@@ -1,18 +1,18 @@
-<!-- start page -->
+<!-- Start page -->
 <div>
 
-			<header> <!-- logo -->
+			<header> <!-- Logo -->
 				<p class="text-center MarginHeader">
 					<img ng-src = "style/images/Logo.png" width ="40%" title ="InterSystems"/>
 				</p>
 			</header>
 			
-			<div> <!-- search input -->
+			<div> <!-- Search input -->
 				<form class="form-horizontal container-fluid MarginSearchLine ui-widgetui-widget"  autocomplete="off">
 					<div class="input-groop col-md-offset-3 col-md-6 col-sm-offset-3 col-sm-6 col-xs-offset-2 col-xs-8">
 							<input type="text" ng-model="search.words" ng-change = "change()" class="form-control" id="Search" placeholder="Search" ng-keydown="handleArrows($event)">
 							
-							<div ng-show = "inputToggle" class = "toggler"> <!--hint -->
+							<div ng-show = "inputToggle" class = "toggler"> <!--Hint -->
 								<ul class = "listStyle">
 									<li class = "hint" ng-repeat = "item in searchItems" ng-class="{'activeToggle': item.value == currrentSearchItem.value}" ng-click = "handleClick(item)">
 										<span ng-bind-html = "sce.trustAsHtml(item.value)"></span>
@@ -20,13 +20,13 @@
 								</ul>
 							</div>
 					</div>
-					<button type="submit" class="btn btn-primary" ng-click = "makeSearch()"> <!-- button search -->
+					<button type="submit" class="btn btn-primary" ng-click = "makeSearch()"> <!-- Button search -->
 						<span class="glyphicon glyphicon-search"></span><span class="hidden-xs"> Search</span>
 					</button>
 				</form><br>
 			</div>
 			
-			<footer class="footer"> <!-- footer -->
+			<footer class="footer"> <!-- Footer -->
 				<div  class="hidden-xs FloatLeft">
 					<ul class="list-inline">
 						<li><a href="http://www.intersystems.com/" target="_blank">InterSystems</a></li>
