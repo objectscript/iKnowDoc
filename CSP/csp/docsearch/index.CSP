@@ -2,10 +2,10 @@
 	<head>
 		<title ng-bind-html = "sce.trustAsHtml(title)"></title>
 		<meta charset="utf-8">
-		<link href = "style/frameworks/bootstrap.min.css" rel="stylesheet"> <!-- bootstrap -->
-		<link href = "style/DocSearch.css" rel="stylesheet"> <!-- Стили CSS -->
-		<link href = "style/preloader.css" rel="stylesheet"> <!-- Стили CSS -->
-		<link href="style/images/icon.png" rel="icon" type="image/x-icon"/> <!-- Иконка -->
+		<link href = "style/frameworks/bootstrap.min.css" rel="stylesheet">
+		<link href = "style/DocSearch.css" rel="stylesheet">
+		<link href = "style/preloader.css" rel="stylesheet">
+		<link href="style/images/icon.png" rel="icon" type="image/x-icon"/>
 	</head>
 
 	<body>

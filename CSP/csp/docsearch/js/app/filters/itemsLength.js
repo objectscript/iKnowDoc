@@ -9,6 +9,7 @@ var searchApp = angular.module('searchApp');
 	     	if (!input || !input.length) return;
 	       	
 	       	if (hideToggle){
+	       		if(last+200>input.length) return input;
 	       		 var temp;
 	       		 while (((temp = template.exec(input)) != null) || ((temp = pattern.exec(input)) != null)) {
 	       		 	if((temp.index < last) && (last < template.lastIndex)){
