@@ -87,7 +87,7 @@ ClassMethod FormQuery(obj) As %Status
 		if anyWords'="" {
 			set text = text_")"
 			// Removing spaces
-			set without = $REPLACE(without," ","")  
+			//set without = $REPLACE(without," ","")  
 			// Extracting up to ,
 			set listOut=$LISTFROMSTRING(without,",")
 			set strOut=" NOT ("_$LIST(listOut,1)
@@ -100,7 +100,7 @@ ClassMethod FormQuery(obj) As %Status
 			set text = text_strOut_")"
 		} else {
 			// Removing spaces
-			set without = $REPLACE(without," ","")  
+			//set without = $REPLACE(without," ","")  
 			// Extracting up to ,
 			set listOut=$LISTFROMSTRING(without,",")
 			set strOut=" NOT ("_$LIST(listOut,1)
