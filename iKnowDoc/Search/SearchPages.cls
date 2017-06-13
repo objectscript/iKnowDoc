@@ -165,7 +165,7 @@ ClassMethod FormQuery(obj) As %Status
 	  	while subresult.%Next() {
 	  		if subresult.text'="" {
 		  		set subtextKey = result.docKey_"#"_subresult.textKey
-		  		set textInfoJSON = {"text":(subresult.text), "textKey":(subtextKey)}
+		  		set textInfoJSON = {"text":($ZCONVERT(subresult.text,"I","HTML")), "textKey":(subtextKey)}
 		  		do tJSON.textInfo.%Push(textInfoJSON)
 		  	}
 	  	}
