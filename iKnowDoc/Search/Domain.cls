@@ -25,7 +25,8 @@ ClassMethod GetSimilar(SearchString) As %Status
 	    	if $EXTRACT(string,$LENGTH(string))=";"{
 	    		set string=$EXTRACT(string,1,($LENGTH(string)-1))
 	    	}
-	    	set tJSON = { "value":(string) }
+	    	//set tJSON = { "value":(string) }
+	    	set tJSON = { "value":($ZCONVERT(string,"I","HTML")) }
 			do ResultJSON.entities.%Push(tJSON)
 	    }    
 	    // Converting dynamic object into JSON

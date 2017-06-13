@@ -26,7 +26,8 @@ ClassMethod FormQuery(obj) As %Status
 {
 	// Getting the search options:
 	// all these words:
-	set words=obj.words
+	//set words=obj.words
+	set words= $ZCONVERT(obj.words,"O","HTML")
 	// this exact word or phrase:
 	set phrase=obj.phrase
 	// any of these words:
@@ -150,7 +151,7 @@ ClassMethod FormQuery(obj) As %Status
   	set Status = Statement.%Prepare(resultQuery)
    	if Status'=1 {write "%Prepare failed 1:" do $System.Status.DisplayError(Status) quit}
   	set result = Statement.%Execute(text)
-   	// Forming a dynamic object
+   	// Forming a dynamic object 
     set ResultJSON = { "sources": [], "totalCount":[]}
     while result.%Next() {
     	// Assigning array with data
