@@ -99,9 +99,11 @@
 					   
 					   <div class="pagination-wrap text-center"> <!-- Пагинация -->
 								<ul class="pagination Cursor">
-									<li ng-click="showPage('prev')" ng-class="{'active': currentPageNum() == page.link}" ng-show = "prevToggle"><a >&laquo;</a></li>
+									<li ng-click="showPage(0)" ng-class="{'active': currentPageNum() == page.link}" ng-show = "prevToggle"><a>&laquo;</a></li>
+									<li ng-click="showPage('prev')" ng-class="{'active': currentPageNum() == page.link}" ng-show = "prevToggle"><a >&lsaquo;</a></li>
 									<li ng-repeat="page in paginationList" ng-click="showPage(page.link)" ng-class="{'active': currentPageNum() == page.link}"><a ng-bind-html="page.name"></a></li>
-									<li ng-click="showPage('next')" ng-class="{'active': currentPageNum() == page.link}" ng-show = "nextToggle"><a >&raquo;</a></li>
+									<li ng-click="showPage('next')" ng-class="{'active': currentPageNum() == page.link}" ng-show = "nextToggle"><a >&rsaquo;</a></li>
+									<li ng-click="showPage(pagesNum - 1)" ng-class="{'active': currentPageNum() == page.link}" ng-show = "nextToggle" ><a>&raquo;</a></li>
 								</ul>
 							</div>
 						</div>

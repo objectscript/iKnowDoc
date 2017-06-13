@@ -27,12 +27,17 @@ searchApp
 			getPaginationList: function(page, pagesNum, check) {
 				var paginationList = [];
 				
-				if(check || (page == 0) )
-				{
+				if (check || (page == 0))
 					startPage = 0;
-				}
 				
 				var endPage = startPage + 10;				
+				
+				if (page == (pagesNum - 1))
+				{
+					endPage = pagesNum;
+					startPage = endPage - (pagesNum % 10);
+					
+				}
 				
 				if(!isNaN(page))
 					counter = page;
@@ -43,12 +48,15 @@ searchApp
 				if (page == 'prev')
 				{
 					page = counter - 1;
+					
 					counter = page;
+
 					if (page % 10 == 9)
 						endPage = page + 1;
-					
-					startPage = endPage - 10;
-					
+
+					if (startPage != endPage - (pagesNum % 10))
+						startPage = endPage - 10;
+
 					if(startPage < 0)
 						startPage = 0;
 				}
