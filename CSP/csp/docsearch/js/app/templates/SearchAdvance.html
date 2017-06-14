@@ -33,6 +33,19 @@
 					<input type="text" ng-model="search.without" class="form-control" id="Search4" placeholder="Use comma between all the words you want"/>
 				</div>
 			</div>
+			<div class="form-group">
+				<div class="col-sm-12">
+			        <div class="checkbox">
+			            <label style="font-size: 2.5em col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label">                
+			                fuzzy search:
+			            </label>
+			            <label style="font-size: 2.5em col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label">
+			                <input type="checkbox" ng-model="search.fuzzy">
+			                <span class="cr"><i class="cr-icon fa fa-check"></i></span>
+			            </label>
+			        </div>
+		        </div>	
+			</div>
 			<div class="form-group" >
 				<div class="col-md-offset-2 col-md-6 col-sm-offset-2 col-sm-5 col-xs-offset-2 col-xs-4">
 					<span class="Error" ng-show="errorToggle">Please fill out at least one of the fields: all these words, this exact word or phrase, any of these words!</span>
