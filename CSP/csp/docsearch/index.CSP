@@ -6,6 +6,7 @@
 		<link href = "style/DocSearch.css" rel="stylesheet">
 		<link href = "style/preloader.css" rel="stylesheet">
 		<link href="style/images/icon.png" rel="icon" type="image/x-icon"/>
+		<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 	</head>
 
 	<body>

@@ -9,6 +9,7 @@ searchApp
 			phrase: '',
 			anyWords:'',
 			without:'',
+			fuzzy: 'false',
 			startRecord:'1',
 			recordCount: '10'	
 		};
