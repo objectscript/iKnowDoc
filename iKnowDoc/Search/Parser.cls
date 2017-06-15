@@ -98,14 +98,23 @@ ClassMethod ParseHints(textTag) As %String
 {
 		set text = textTag
 		set empty = ""
-		set x = $LOCATE(text,"<.*>",,,substr)
-		if x'=0 {
-			set text = $REPLACE(text,substr,empty)
+		set y = $LOCATE(text,"<.*>",,,substr1)
+		set z = $LOCATE(text,">.*<",,,substr2)
+		if y'=0 && z'=0 {
+		set substr2 = $REPLACE(substr2,"<",empty)
+		set substr2 = $REPLACE(substr2,">",empty)
+		set text = $REPLACE(text,substr1,substr2)
 		}
-		set x = $LOCATE(text,"&mdash",,,substr)
+		set x = $LOCATE(text,"<.*>",,,substr)
 		if x'=0 {
 		set text = $REPLACE(text,substr,empty)
 		}
+		set x = $LOCATE(text,"&mdash",,,substr)
+		if x'=0 {
+		set text = $REPLACE(text,text,empty)
+		}
+		if (text="")
+			{set text=" "}
 		quit text
 }
 
