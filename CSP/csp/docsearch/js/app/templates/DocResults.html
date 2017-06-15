@@ -20,7 +20,10 @@
 						<button type="submit" class="btn btn-primary" ng-click = "makeSearch()">
 							<span class="glyphicon glyphicon-search"></span><span class="hidden-sm hidden-xs"> Search</span>
 						</button>
-							<a href="#!SearchAdvance" class="btn btn-default"><span class="glyphicon glyphicon-wrench"></span><span class="hidden-sm hidden-xs"> Advanced Search</span></a>
+							<a href="#!SearchAdvance" class="btn btn-default">
+								<span class="glyphicon glyphicon-wrench"></span>
+								<span class="hidden-sm hidden-xs"> Advanced Search</span>
+							</a>
 					</div>	
 				</form>
 			</header>
@@ -44,33 +47,57 @@
 			
 			<div ng-hide = "preloadToggle">
 				<div class="row MarginAdvancedMenu"> <!-- Advanced search tags -->
+					
 					<div class="col-sm-4">
-						<div class="input-group" ng-show="phraseShow">
+						<div class="input-group" ng-show = "phraseShow">
 							<span class="input-group-addon">exact:</span>
-							<input type="text" ng-model="search.phrase" class="form-control">
+							<input type="text" ng-model = "search.phrase" class="form-control">
 							<span class="input-group-btn">
-								<button class="btn btn-default ButtonSize" type="button" ng-click="phraseClear()"><span class="glyphicon glyphicon-remove"></span></button>
+								<button class="btn btn-default ButtonSize" type="button" ng-click="phraseClear()">
+									<span class="glyphicon glyphicon-remove"></span>
+								</button>
 							</span>
 						</div>
 					</div>
+					
 					<div class="col-sm-4">
-						<div class="input-group" ng-show="anyWordsShow">
+						<div class="input-group" ng-show = "anyWordsShow">
 							<span class="input-group-addon">any:</span>
-							<input type="text" ng-model="search.anyWords" class="form-control">
+							<input type="text" ng-model = "search.anyWords" class="form-control">
 							<span class="input-group-btn">
-								<button class="btn btn-default ButtonSize" type="button" ng-click="anyWordsClear()"><span class="glyphicon glyphicon-remove"></span></button>
+								<button class="btn btn-default ButtonSize" type="button" ng-click="anyWordsClear()">
+									<span class="glyphicon glyphicon-remove"></span>
+								</button>
 							</span>
 						</div>
 					</div>
+					
 					<div class="col-sm-4">
-						<div class="input-group" ng-show="withoutShow">
+						<div class="input-group" ng-show = "withoutShow">
 							<span class="input-group-addon">none:</span>
 							<input type="text" ng-model="search.without" class="form-control">
 							<span class="input-group-btn">
-								<button class="btn btn-default ButtonSize" type="button" ng-click="withoutClear()"><span class="glyphicon glyphicon-remove"></span></button>
+								<button class="btn btn-default ButtonSize" type="button" ng-click="withoutClear()">
+									<span class="glyphicon glyphicon-remove"></span>
+								</button>
 							</span>
 						</div>
 					</div>
+					
+					<div class="col-sm-4">
+						<div ng-show = "search.fuzzy">
+							<span>fuzzy search: </span>
+							<input type="checkbox" ng-model="search.fuzzy" ng-click="makeSearch()">
+						</div>
+					</div>
+					
+					<div class="col-sm-4">
+						<div ng-show = "search.rank">
+							<span>use TFIDF Rank algorithm: </span>
+							<input type="checkbox" ng-model="search.rank" ng-click="makeSearch()">
+						</div>
+					</div>
+					
 				</div>
 				<div ng-show = "resultToggle"> <!-- Search results -->
 					   <ul>

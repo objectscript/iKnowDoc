@@ -10,6 +10,7 @@ searchApp
 			anyWords:'',
 			without:'',
 			fuzzy: 'false',
+			rank: 'false',
 			startRecord:'1',
 			recordCount: '10'	
 		};
@@ -47,6 +48,7 @@ searchApp
 			$scope.search.without = "";
 			$scope.makeSearch();
 		}
+		
 		$scope.clearAll=function(){
 			$scope.search.words = "";
 			$scope.search.phrase = "";
