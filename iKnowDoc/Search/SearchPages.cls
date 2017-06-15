@@ -41,6 +41,8 @@ ClassMethod FormQuery(obj) As %Status
 	set recordCount=obj.recordCount
 	// Fuzzy Search
 	set fuzzy = obj.fuzzy
+	// Use TFIDF Rank algorithm
+	set rank = obj.rank
 	// Variable containing text for iFind query according to formatting required for iFind
 	set text=""
 	// Variable containing query text without formatting. Required for getting Id of words, used by iKnow
@@ -150,6 +152,9 @@ ClassMethod FormQuery(obj) As %Status
 
   	// Data table query
   	// TODO frequency sorting in iFind doesn't work fast enough due to DB containg text paragraphs, not text of a whole page.
+  	if rank = 1 {
+  		set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, sum(RankOne) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle, DocBook.block_contentIndRank(%ID, ?, '0') RankOne FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)) group by title))order by RANK DESC) order by RANK ASC) order by RANK DESC"  	
+  	}
   	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, sum(RankOne) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle, DocBook.block_contentIndRank(%ID, ?, '0') RankOne FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)) group by title))order by RANK DESC) order by RANK ASC) order by RANK DESC"  	
   	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, count(*) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,0)) group by title))order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
 	if fuzzy = 1 {
@@ -160,7 +165,11 @@ ClassMethod FormQuery(obj) As %Status
 	set Statement = ##class(%SQL.Statement).%New()
   	set Status = Statement.%Prepare(resultQuery)
    	if Status'=1 {write "%Prepare failed 1:" do $System.Status.DisplayError(Status) quit}
-  	set result = Statement.%Execute(text)
+   	if rank = 1 {
+   		set result = Statement.%Execute(text,text)
+   	} else {
+   		set result = Statement.%Execute(text)
+  	}
    	// Forming a dynamic object 
     set ResultJSON = { "sources": [], "totalCount":[]}
     while result.%Next() {
