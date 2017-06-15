@@ -9,8 +9,8 @@ searchApp
 			phrase: '',
 			anyWords:'',
 			without:'',
-			fuzzy: 'false',
-			rank: 'false',
+			fuzzy: false,
+			rank: false,
 			startRecord:'1',
 			recordCount: '10'	
 		};
@@ -34,29 +34,29 @@ searchApp
 		$scope.withoutShow = false;
 		$scope.errorToggle = false;
 		
-		$scope.phraseClear=function(){
+		$scope.phraseClear = function() {
 			$scope.search.phrase = "";
 			$scope.makeSearch();
 		}
 		
-		$scope.anyWordsClear=function(){
+		$scope.anyWordsClear = function() {
 			$scope.search.anyWords = "";
 			$scope.makeSearch();
 		}
 		
-		$scope.withoutClear=function(){
+		$scope.withoutClear = function() {
 			$scope.search.without = "";
 			$scope.makeSearch();
 		}
 		
-		$scope.clearAll=function(){
+		$scope.clearAll = function() {
 			$scope.search.words = "";
 			$scope.search.phrase = "";
 			$scope.search.anyWords = "";
 			$scope.search.without = "";
 		}
 		
-		$scope.change = function (){
+		$scope.change = function () {
 			
 			if ($scope.search.words != "")
 			{			
@@ -105,13 +105,13 @@ searchApp
 					$scope.inputToggle = false;			
 		}		
 
-		$scope.makeSearch = function (){
+		$scope.makeSearch = function () {
 			$scope.inputToggle = false;
 			$scope.errorToggle = false;
 
-			$scope.search.phrase=='' ? $scope.phraseShow=false : $scope.phraseShow=true;
-			$scope.search.anyWords=='' ? $scope.anyWordsShow=false : $scope.anyWordsShow=true;
-			$scope.search.without=='' ? $scope.withoutShow=false : $scope.withoutShow=true;
+			$scope.search.phrase == '' ? $scope.phraseShow = false : $scope.phraseShow = true;
+			$scope.search.anyWords == '' ? $scope.anyWordsShow = false : $scope.anyWordsShow = true;
+			$scope.search.without == '' ? $scope.withoutShow = false : $scope.withoutShow = true;
 
 			$scope.title = $scope.search.words;
 
@@ -123,7 +123,7 @@ searchApp
 			} 
 			else
 				if ( $scope.search.without != '')
-					$scope.errorToggle=true;
+					$scope.errorToggle = true;
 				else
 					if ( $scope.search.without == '')	
 						$location.path("/DocSearch");	

@@ -49,7 +49,7 @@
 				<div class="row MarginAdvancedMenu"> <!-- Advanced search tags -->
 					
 					<div class="col-sm-4">
-						<div class="input-group" ng-show = "phraseShow">
+						<div class="input-group check" ng-show = "phraseShow">
 							<span class="input-group-addon">exact:</span>
 							<input type="text" ng-model = "search.phrase" class="form-control">
 							<span class="input-group-btn">
@@ -61,7 +61,7 @@
 					</div>
 					
 					<div class="col-sm-4">
-						<div class="input-group" ng-show = "anyWordsShow">
+						<div class="input-group check" ng-show = "anyWordsShow">
 							<span class="input-group-addon">any:</span>
 							<input type="text" ng-model = "search.anyWords" class="form-control">
 							<span class="input-group-btn">
@@ -73,7 +73,7 @@
 					</div>
 					
 					<div class="col-sm-4">
-						<div class="input-group" ng-show = "withoutShow">
+						<div class="input-group check" ng-show = "withoutShow" >
 							<span class="input-group-addon">none:</span>
 							<input type="text" ng-model="search.without" class="form-control">
 							<span class="input-group-btn">
@@ -84,19 +84,27 @@
 						</div>
 					</div>
 					
-					<div class="col-sm-4">
-						<div ng-show = "search.fuzzy">
-							<span>fuzzy search: </span>
-							<input type="checkbox" ng-model="search.fuzzy" ng-click="makeSearch()">
-						</div>
-					</div>
-					
-					<div class="col-sm-4">
-						<div ng-show = "search.rank">
-							<span>use TFIDF Rank algorithm: </span>
-							<input type="checkbox" ng-model="search.rank" ng-click="makeSearch()">
-						</div>
-					</div>
+					<div class="form-group checkbox">
+				            <label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label check" ng-show = "search.fuzzy">                
+				                <b>fuzzy search:</b>
+				            </label>
+				            <label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label check" ng-show = "search.fuzzy">
+				            	<input id="check" type="checkbox" ng-model="search.fuzzy" ng-click="makeSearch()">
+				            	<span class="cr">
+				            		<i class="cr-icon fa fa-check" title = "Tick this box if you are not sure about word spelling"></i>
+				            	</span>
+				            </label>
+			            
+				            <label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label check" ng-show = "search.rank">                
+				                <b>use TFIDF Rank algorithm:</b>
+				            </label>
+				            <label class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label check" ng-show = "search.rank">
+				            	<input id="check" type="checkbox" ng-model="search.rank" ng-click="makeSearch()">
+				            	<span class="cr">
+				            		<i class="cr-icon fa fa-check" title = "Tick this box if you want to use TFIDF Rank algorithm"></i>
+				            	</span>
+				            </label>
+			       </div>
 					
 				</div>
 				<div ng-show = "resultToggle"> <!-- Search results -->
