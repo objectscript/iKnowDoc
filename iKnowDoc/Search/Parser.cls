@@ -113,6 +113,11 @@ ClassMethod ParseHints(textTag) As %String
 		if x'=0 {
 		set text = $REPLACE(text,text,empty)
 		}
+		//set x = $LOCATE(text,"cach&eacute",,,substr)
+		//if x'=0 {
+		//set corr ="cach&eacute"_";"
+		//set text = $REPLACE(text,substr,corr)
+		//}
 		if (text="")
 			{set text=" "}
 		quit text
