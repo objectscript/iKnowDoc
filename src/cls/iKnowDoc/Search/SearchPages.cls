@@ -154,9 +154,9 @@ ClassMethod FormQuery(obj) As %Status
   	// Data table query
   	// TODO frequency sorting in iFind doesn't work fast enough due to DB containg text paragraphs, not text of a whole page.
   	if rank = 1 {
-  		set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, sum(RankOne) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle, DocBook.block_contentIndRank(%ID, ?, ?) RankOne FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,?)) group by title)) order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
+  		set resultQuery = "select * from (select TOP ? * from (select TOP ? * from(select count(*) as cnt,* from(select *, sum(RankOne) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle, DocBook.block_contentIndRank(%ID, ?, ?) RankOne FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,?)) group by title)) order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
   	} else {
-  		set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, count(*) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,?)) group by title))order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
+  		set resultQuery = "select * from (select TOP ? * from (select TOP ? * from(select count(*) as cnt,* from(select *, count(*) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,?)) group by title))order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
   	}
   	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, sum(RankOne) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle, DocBook.block_contentIndRank(%ID, ?, '0') RankOne FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,?))order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
 	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, count(*) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,?)) group by title))order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
@@ -165,9 +165,9 @@ ClassMethod FormQuery(obj) As %Status
   	set Status = Statement.%Prepare(resultQuery)
    	if Status'=1 {write "%Prepare failed 1:" do $System.Status.DisplayError(Status) quit}
   	if rank = 1{
-  		set result = Statement.%Execute(text,fuzzy,text,fuzzy)
+  		set result = Statement.%Execute(recordCount,offset,text,fuzzy,text,fuzzy)
   	} else {
-  		set result = Statement.%Execute(text,fuzzy)
+  		set result = Statement.%Execute(recordCount,offset,text,fuzzy)
   	}
    	// Forming a dynamic object 
     set ResultJSON = { "sources": [], "totalCount":[]}
