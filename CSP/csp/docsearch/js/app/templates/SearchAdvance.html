@@ -38,7 +38,7 @@
 				<label style="font-size: 11pt" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label">                
 					<b>fuzzy search:</b>
 			    </label>
-			    <label style="font-size: 16pt" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label">
+			    <label style="font-size: 16pt" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 control-label">
 			    	<input id="check" type="checkbox" ng-model="search.fuzzy">
 			    	<span class="cr">
 			    		<i class="cr-icon fa fa-check" title = "Tick this box if you are not sure about word spelling"></i>
@@ -48,18 +48,18 @@
 			    <label style="font-size: 11pt" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label">                
 			    	<b>use TFIDF Rank algorithm:</b>
 			    </label>
-			    <label style="font-size: 16pt" class="col-lg-2 col-md-2 col-sm-2 col-xs-2 control-label">
+			    <label style="font-size: 16pt" class="col-lg-1 col-md-1 col-sm-1 col-xs-1 control-label">
 			    	<input id="check" type="checkbox" ng-model="search.rank">
 			    	<span class="cr">
 			    		<i class="cr-icon fa fa-check" title = "Tick this box if you want to use TFIDF Rank algorithm (longer time, but more precise ranking)"></i>
 			    	</span>
 			    </label>
+			    <div class="col-md-4 col-sm-4 col-xs-4 text-right">
+			    	<button type="submit" class="btn btn-primary" ng-click = "makeSearch()">
+			    		<span class="glyphicon glyphicon-search"></span> Advanced Search
+			    	</button>
+				</div>
 			</div>
-			<div class="col-md-offset-6 col-md-4 col-sm-offset-4 col-sm-4 col-xs-offset-4 col-xs-6 text-right">
-				<button type="submit" class="btn btn-primary" ng-click = "makeSearch()">
-					<span class="glyphicon glyphicon-search"></span> Advanced Search
-				</button>
-		  	</div>
 			<div class="form-group" >
   				<div class="col-md-offset-2 col-md-6 col-sm-offset-2 col-sm-5 col-xs-offset-2 col-xs-4">
 					<span class="Error" ng-show="errorToggle">Please fill out at least one of the fields: all these words, this exact word or phrase, any of these words!</span>
