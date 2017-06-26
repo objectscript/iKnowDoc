@@ -65,8 +65,17 @@
 				</div>
 			</div>
 			<div class="form-group" >
-  				<div class="col-md-offset-2 col-md-6 col-sm-offset-2 col-sm-5 col-xs-offset-2 col-xs-4">
+  				<div class="col-md-offset-2 col-md-5 col-sm-offset-2 col-sm-4 col-xs-offset-2 col-xs-3">
 					<span class="Error" ng-show="errorToggle">Please fill out at least one of the fields: all these words, this exact word or phrase, any of these words!</span>
+				</div>
+				<div class="col-md-3 col-sm-3 col-xs-3 text-right">
+					<label style="font-size: 11pt" class="control-label">                
+				    		<b>Link to InterSystems documentation</b>
+				    </label>
+					<label class="switch">
+						<input type="checkbox" ng-model="frankenshtein" ng-click = "SwitchClick()" >
+						<div class="slider round"></div>
+					</label>
 				</div>
  			</div>
 		</form>
