@@ -46,7 +46,7 @@ searchApp
 			}
 		
 		angular.element(document).ready(function(){
-			if ( (input != "#!/DocSearch") || (input != "#!/DocResults") || (input != "#!/SearchAdvance"))
+			if ( (input != "#!/DocSearch") && (input != "#!/DocResults") && (input != "#!/SearchAdvance"))
 			{		
 				var linkStr = input.split('#');
 				$scope.search.words = linkStr[2];

@@ -101,6 +101,17 @@
 					            		<i class="cr-icon fa fa-check" title = "Tick this box if you want to use TFIDF Rank algorithm"></i>
 					            	</span>
 					            </label>
+					            <div class="col-md-1 col-sm-2 col-xs-2 text-right" ng-show = "frankenshtein">
+									<label class="switch">
+										<input type="checkbox" ng-model="frankenshtein" ng-click = "SwitchClick()" >
+										<div class="slider round"></div>
+									</label>
+								</div>
+								<div class="col-md-3 col-sm-2 col-xs-2" ng-show = "frankenshtein">
+					            	<label style="font-size: 11pt" class="control-label">                
+								    		<b>Link to InterSystems documentation</b>
+								    </label>
+					            </div>
 				       </div>
 					
 				</div>
