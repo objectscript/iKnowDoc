@@ -19,7 +19,7 @@ searchApp
 		var prevNextCheck = 0;
 		var baseUrl = '/csp/docsearch/rest/';
 		var check = '';
-		var input = location.hash;
+		var input = decodeURI(location.hash);
 		
 		$scope.sce = $sce;
 		$scope.mylocation = location.host;
