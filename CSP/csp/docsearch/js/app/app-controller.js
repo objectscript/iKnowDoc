@@ -19,6 +19,7 @@ searchApp
 		var prevNextCheck = 0;
 		var baseUrl = '/csp/docsearch/rest/';
 		var check = '';
+		var input = location.hash;
 		
 		$scope.sce = $sce;
 		$scope.mylocation = location.host;
@@ -33,6 +34,15 @@ searchApp
 		$scope.anyWordsShow = false;
 		$scope.withoutShow = false;
 		$scope.errorToggle = false;
+		
+		angular.element(document).ready(function(){
+			if ( (input != "#!/DocSearch") || (input != "#!/DocResults") || (input != "#!/SearchAdvance"))
+			{		
+				var linkStr = input.split('#');
+				$scope.search.words = linkStr[2];
+				$scope.makeSearch();
+			}
+		});	
 		
 		$scope.phraseClear = function() {
 			$scope.search.phrase = "";
