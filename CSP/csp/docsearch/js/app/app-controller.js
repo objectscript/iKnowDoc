@@ -36,13 +36,13 @@ searchApp
 		$scope.errorToggle = false;
 		
 		angular.element(document).ready(function(){
-			if ( (input != "#!/DocSearch") || (input != "#!/DocResults") || (input != "#!/SearchAdvance"))
+			if ((input != "#!/DocSearch") && (input != "#!/DocResults") && (input != "#!/SearchAdvance"))
 			{		
 				var linkStr = input.split('#');
 				$scope.search.words = linkStr[2];
 				$scope.makeSearch();
 			}
-		});	
+		});
 		
 		$scope.phraseClear = function() {
 			$scope.search.phrase = "";
