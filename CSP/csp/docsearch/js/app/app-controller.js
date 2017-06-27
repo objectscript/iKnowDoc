@@ -44,14 +44,6 @@ searchApp
 			else {
 				$scope.frankenshtein = true;}
 			}
-		$scope.SwitchClickV2 = function(){
-			if($scope.frankenshtein == true){
-				$scope.frankenshtein = false;
-			}
-			else {
-				$scope.frankenshtein = true;}
-				$scope.makeSearch();
-			}
 		
 		angular.element(document).ready(function(){
 			if ( (input != "#!/DocSearch") && (input != "#!/DocResults") && (input != "#!/SearchAdvance"))
@@ -94,13 +86,16 @@ searchApp
 				});
 				$scope.inputToggle = false;
 			}
-
-			if(angular.isDefined($scope.searchItems)){
-				if (($scope.searchItems[0].value == " ") || ($scope.search.words == ""))
-					$scope.inputToggle = false;
-				else 
-					$scope.inputToggle = true;
-			}
+			
+			/*if(angular.isDefined(!$scope.searchItems))
+				return;*/
+			if(angular.isDefined($scope.searchItems))
+				if($scope.searchItems.Length == 0 ){
+					if (($scope.searchItems[0].value == " ") || ($scope.search.words == ""))
+						$scope.inputToggle = false;
+					else 
+						$scope.inputToggle = true;
+				}
 		}
 		
 		$scope.handleClick = function (item) {
