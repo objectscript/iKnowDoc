@@ -87,10 +87,8 @@ searchApp
 				$scope.inputToggle = false;
 			}
 			
-			/*if(angular.isDefined(!$scope.searchItems))
-				return;*/
 			if(angular.isDefined($scope.searchItems))
-				if($scope.searchItems.Length == 0 ){
+				if($scope.searchItems.length != 0 ){
 					if (($scope.searchItems[0].value == " ") || ($scope.search.words == ""))
 						$scope.inputToggle = false;
 					else 
