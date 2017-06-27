@@ -53,7 +53,7 @@
 							<span class="input-group-addon">exact:</span>
 							<input type="text" ng-model = "search.phrase" class="form-control" ng-keydown="handle($event)">
 							<span class="input-group-btn">
-								<button class="btn btn-default ButtonSize" type="button" ng-click="phraseClear()">
+								<button class="btn btn-default ButtonSize" type="button" ng-click="phraseClear() " >
 									<span class="glyphicon glyphicon-remove"></span>
 								</button>
 							</span>
@@ -103,7 +103,7 @@
 					            </label>
 					            <div class="col-md-1 col-sm-2 col-xs-2 text-right" ng-show = "frankenshtein">
 									<label class="switch">
-										<input type="checkbox" ng-model="frankenshtein" ng-click = "SwitchClick()" >
+										<input type="checkbox" ng-model="frankenshtein" ng-click = "SwitchClickV2()" >
 										<div class="slider round"></div>
 									</label>
 								</div>
