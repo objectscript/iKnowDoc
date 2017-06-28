@@ -44,6 +44,10 @@ searchApp
 			else {
 				$scope.frankenshtein = true;}
 			}
+		$scope.SwitchClickV2 = function(){
+			$scope.SwitchClick();
+			$scope.makeSearch();
+			}
 		
 		angular.element(document).ready(function(){
 			if ( (input != "#!/DocSearch") && (input != "#!/DocResults") && (input != "#!/SearchAdvance"))
