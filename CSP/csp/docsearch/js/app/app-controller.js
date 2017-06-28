@@ -47,9 +47,10 @@ searchApp
 		
 		angular.element(document).ready(function(){
 			if ( (input != "#!/DocSearch") && (input != "#!/DocResults") && (input != "#!/SearchAdvance"))
-			{		
+			{	
+				
 				var linkStr = input.split('#');
-				$scope.search.words = linkStr[2];
+				$scope.search.words = decodeURIComponent(linkStr[2]);
 				$scope.makeSearch();
 			}
 		});	

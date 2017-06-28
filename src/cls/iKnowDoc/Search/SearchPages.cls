@@ -27,9 +27,8 @@ ClassMethod FormQuery(obj) As %Status
 	// Getting the search options:
 	// all these words:
 	//set words=obj.words
-	set words= $ZCONVERT(obj.words,"O","HTML")
-	/*set words = $REPLACE(words,"é","&eacute;")
-	set words = $REPLACE(words,"ñ","&ntilde;")*/
+	set words= $ZCONVERT(obj.words,"I","URL")
+	set obj.words = $ZCONVERT(obj.words,"I","URL")
 	// this exact word or phrase:
 	set phrase=obj.phrase
 	// any of these words:
