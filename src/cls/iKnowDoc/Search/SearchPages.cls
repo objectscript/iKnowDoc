@@ -128,7 +128,10 @@ ClassMethod FormQuery(obj) As %Status
 	
 	// Pagination
 	// Getting number of all elements
-	set myquery = "select count(*) as CountText from (select * from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,?))group by title)"
+	//set myquery = "select count(*) as CountText from (select * from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,?))group by title)"
+	
+	set myquery = "select count(*) as CountText from (select * from (select docKey, title, bookKey, bookTitle FROM SQLUser.DocBook WHERE %ID %FIND search_index(contentInd,?,?))group by title)"
+	
 	set tStatement = ##class(%SQL.Statement).%New()
   	set qStatus = tStatement.%Prepare(.myquery)
     IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
@@ -154,10 +157,9 @@ ClassMethod FormQuery(obj) As %Status
   	// Data table query
   	// TODO frequency sorting in iFind doesn't work fast enough due to DB containg text paragraphs, not text of a whole page.
   	if rank = 1 {
-  		set resultQuery = "select * from (select TOP ? * from (select TOP ? * from(select count(*) as cnt,* from(select *, sum(RankOne) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle, DocBook.block_contentIndRank(%ID, ?, ?) RankOne FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,?)) group by title)) order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
+  		set resultQuery = "select * from (select TOP ? * from (select TOP ? * from(select count(*) as cnt,* from(select *, sum(RankOne) as Rank from (select docKey, title, bookKey, bookTitle, SQLUser.DocBook_contentIndRank(%ID, ?, ?) RankOne FROM SQLUser.DocBook WHERE %ID %FIND search_index(contentInd,?,?)) group by title)) order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"
   	} else {
-  		set resultQuery = "select * from (select TOP ? * from (select TOP ? * from(select count(*) as cnt,* from(select *, count(*) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,?)) group by title))order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
-  	}
+  		set resultQuery = "sselect * from (select TOP ? * from (select TOP ? * from(select count(*) as cnt,* from(select *, count(*) as Rank from (select docKey, title, bookKey, bookTitle FROM SQLUser.DocBook WHERE %ID %FIND search_index(contentInd,?,?)) group by title))order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"    	}
   	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, sum(RankOne) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle, DocBook.block_contentIndRank(%ID, ?, '0') RankOne FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,?))order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
 	//set resultQuery = "select * from (select TOP "_recordCount_" * from (select TOP "_offset_" * from(select count(*) as cnt,* from(select *, count(*) as Rank from (select component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle FROM DocBook.block WHERE %ID %FIND search_index(contentInd,?,?)) group by title))order by RANK DESC,title DESC) order by RANK ASC,title ASC) order by RANK DESC,title DESC"  	
 	
@@ -175,7 +177,7 @@ ClassMethod FormQuery(obj) As %Status
     	// Assigning array with data
     	set tJSON = {"textInfo":[], "docKey": (result.docKey) ,"title": (##class(iKnowDoc.Search.Parser).ParseTitle(result.title)),   "bookKey": (result.bookKey) ,"bookTitle": (result.bookTitle) }
 		// Forming a query for receiving text for every page
-	  	set subresultQuery = "select DocBook.block_contentIndHighlight(%ID, ?, '0', '<span class=""Illumination"">', 0) text,blockid AS textKey,component->blockid AS docKey from DocBook.block where %ID %FIND search_index(contentInd,?,?) and component->blockid=?"
+	  	set subresultQuery = "select SQLUser.DocBook_contentIndHighlight(%ID, ?, '0', '<span class=""Illumination"">', 0) text, textKey, docKey from SQLUser.DocBook where %ID %FIND search_index(contentInd,?,?) and docKey=?"
 	  	set subStatement = ##class(%SQL.Statement).%New()
 	  	set subStatus = subStatement.%Prepare(subresultQuery)
 	   	if subStatus'=1 {write "%Prepare failed 2:" do $System.Status.DisplayError(subStatus) quit}
