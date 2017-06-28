@@ -19,7 +19,7 @@ searchApp
 		var prevNextCheck = 0;
 		var baseUrl = '/csp/docsearch/rest/';
 		var check = '';
-		var input = decodeURI(location.hash);
+		var input = location.hash;
 		
 		$scope.sce = $sce;
 		$scope.mylocation = location.host;
@@ -34,15 +34,25 @@ searchApp
 		$scope.anyWordsShow = false;
 		$scope.withoutShow = false;
 		$scope.errorToggle = false;
+		$scope.frankenshtein = false;
+		$scope.link="http://"+ location.host +"/csp/docbook/DocBook.UI.Page.cls?KEY=";
+		
+		$scope.SwitchClick = function(){
+			if($scope.frankenshtein == true){
+				$scope.frankenshtein = false;
+			}
+			else {
+				$scope.frankenshtein = true;}
+			}
 		
 		angular.element(document).ready(function(){
-			if ((input != "#!/DocSearch") && (input != "#!/DocResults") && (input != "#!/SearchAdvance"))
+			if ( (input != "#!/DocSearch") && (input != "#!/DocResults") && (input != "#!/SearchAdvance"))
 			{		
 				var linkStr = input.split('#');
 				$scope.search.words = linkStr[2];
 				$scope.makeSearch();
 			}
-		});
+		});	
 		
 		$scope.phraseClear = function() {
 			$scope.search.phrase = "";
@@ -76,13 +86,14 @@ searchApp
 				});
 				$scope.inputToggle = false;
 			}
-
-			if(angular.isDefined($scope.searchItems)){
-				if (($scope.searchItems[0].value == " ") || ($scope.search.words == ""))
-					$scope.inputToggle = false;
-				else 
-					$scope.inputToggle = true;
-			}
+			
+			if(angular.isDefined($scope.searchItems))
+				if($scope.searchItems.length != 0 ){
+					if (($scope.searchItems[0].value == " ") || ($scope.search.words == ""))
+						$scope.inputToggle = false;
+					else 
+						$scope.inputToggle = true;
+				}
 		}
 		
 		$scope.handleClick = function (item) {
@@ -114,11 +125,18 @@ searchApp
 			if (event.keyCode === 13)
 					$scope.inputToggle = false;			
 		}		
+		$scope.handle = function (event) {
+			if (event.keyCode === 13)
+					$scope.makeSearch();	
+		}		
 
 		$scope.makeSearch = function () {
 			$scope.inputToggle = false;
 			$scope.errorToggle = false;
-
+			
+			if($scope.frankenshtein == true){$scope.link="https://docs.intersystems.com/latest/csp/docbook/DocBook.UI.Page.cls?KEY=";}
+			else {$scope.link="http://"+ location.host +"/csp/docbook/DocBook.UI.Page.cls?KEY=";}
+			
 			$scope.search.phrase == '' ? $scope.phraseShow = false : $scope.phraseShow = true;
 			$scope.search.anyWords == '' ? $scope.anyWordsShow = false : $scope.anyWordsShow = true;
 			$scope.search.without == '' ? $scope.withoutShow = false : $scope.withoutShow = true;
