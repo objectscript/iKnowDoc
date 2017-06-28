@@ -38,11 +38,14 @@ searchApp
 		$scope.link="http://"+ location.host +"/csp/docbook/DocBook.UI.Page.cls?KEY=";
 		
 		$scope.SwitchClick = function(){
-			if($scope.frankenshtein == true){
+			if($scope.frankenshtein == true)
 				$scope.frankenshtein = false;
+			else
+				$scope.frankenshtein = true;
 			}
-			else {
-				$scope.frankenshtein = true;}
+		$scope.SwitchClickV2 = function(){
+			$scope.SwitchClick();
+			$scope.makeSearch();
 			}
 		
 		angular.element(document).ready(function(){
@@ -55,22 +58,22 @@ searchApp
 			}
 		});	
 		
-		$scope.phraseClear = function() {
+		$scope.phraseClear = function () {
 			$scope.search.phrase = "";
 			$scope.makeSearch();
 		}
 		
-		$scope.anyWordsClear = function() {
+		$scope.anyWordsClear = function () {
 			$scope.search.anyWords = "";
 			$scope.makeSearch();
 		}
 		
-		$scope.withoutClear = function() {
+		$scope.withoutClear = function () {
 			$scope.search.without = "";
 			$scope.makeSearch();
 		}
 		
-		$scope.clearAll = function() {
+		$scope.clearAll = function () {
 			$scope.search.words = "";
 			$scope.search.phrase = "";
 			$scope.search.anyWords = "";
@@ -83,13 +86,13 @@ searchApp
 				$http.get(baseUrl + 'GetSimilar/' + $scope.search.words)
 					.then(function(response) {
 						$scope.searchItems = response.data.entities;
+						
 						if(angular.isDefined($scope.searchItems))
-							if($scope.searchItems.length != 0 ){
+							if($scope.searchItems.length != 0 )
 								if (($scope.searchItems[0].value == " ") || ($scope.search.words == ""))
-								$scope.inputToggle = false;
+									$scope.inputToggle = false;
 								else 
-								$scope.inputToggle = true;
-				}
+									$scope.inputToggle = true;
 				});
 				$scope.inputToggle = false;
 			}
