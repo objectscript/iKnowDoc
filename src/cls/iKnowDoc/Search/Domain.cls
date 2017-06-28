@@ -49,6 +49,34 @@ ClassMethod GetIdDomain() As %Integer
     quit domoref.Id
 }
 
+// Метод заполнения таблицы без HTML кода из DocBook.block
+ClassMethod SelectInsert() As %Status
+{
+	set myquery = "SELECT book, component, container,content, blockid, title FROM DocBook.block"
+	set tStatement = ##class(%SQL.Statement).%New()
+  	set qStatus = tStatement.%Prepare(myquery)
+    IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
+    set rset = tStatement.%Execute() 
+    WHILE rset.%Next() {
+       	set insertQuery = "INSERT INTO SQLUser.DocBook (book, component, content, blockid, title) VALUES (?,?,?,?,?)"
+     	set insertStatement = ##class(%SQL.Statement).%New()
+     	set insertStatus = insertStatement.%Prepare(insertQuery)     	
+     	IF insertStatus'=1 {WRITE "%Prepare insert failed :" DO $System.Status.DisplayError(insertStatus) QUIT}
+     	set insertSet = insertStatement.%Execute(rset.book, rset.component, ##class(%iKnow.Source.Converter.Html).StripHTML(rset.content), rset.blockid, ##class(%iKnow.Source.Converter.Html).StripHTML(rset.title))	
+    }  
+}
+
+// Создаем таблицу. Будет содержать текст для поиска после преобразования HTML символов
+ClassMethod CreateTable() As %Status
+{
+	set myquery = "CREATE TABLE DocBook ( book VARCHAR(32000), component VARCHAR(32000), content VARCHAR(32000), blockid VARCHAR(32000), title VARCHAR(32000) )"
+	set tStatement = ##class(%SQL.Statement).%New()
+  	set qStatus = tStatement.%Prepare(myquery)
+    IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
+    set rset = tStatement.%Execute()  
+}
+
+
 Storage Default
 {
 <Data name="DomainDefaultData">
