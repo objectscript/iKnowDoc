@@ -77,23 +77,21 @@ searchApp
 		}
 		
 		$scope.change = function () {
-			
 			if ($scope.search.words != "")
 			{			
 				$http.get(baseUrl + 'GetSimilar/' + $scope.search.words)
 					.then(function(response) {
 						$scope.searchItems = response.data.entities;
+						if(angular.isDefined($scope.searchItems))
+							if($scope.searchItems.length != 0 ){
+								if (($scope.searchItems[0].value == " ") || ($scope.search.words == ""))
+								$scope.inputToggle = false;
+								else 
+								$scope.inputToggle = true;
+				}
 				});
 				$scope.inputToggle = false;
 			}
-			
-			if(angular.isDefined($scope.searchItems))
-				if($scope.searchItems.length != 0 ){
-					if (($scope.searchItems[0].value == " ") || ($scope.search.words == ""))
-						$scope.inputToggle = false;
-					else 
-						$scope.inputToggle = true;
-				}
 		}
 		
 		$scope.handleClick = function (item) {
