@@ -31,6 +31,6 @@ App database            -   Intersystems Ensemble 2017.1
 3. Импортировать Installer.xml в область %SYS через Студию, скомпилировать. В терминале в области %SYS ввести следующую команду:
 	do ##class(Docsearch.Installer).setup(.pVars)
  Процесс занимает около 30 минут.
- Поиск доступен по адресу http://localhost:[порт]/csp/docsearch/index.csp
+ Поиск доступен по адресу http://localhost:[порт]/csp/docsearch/index.html
 
 
