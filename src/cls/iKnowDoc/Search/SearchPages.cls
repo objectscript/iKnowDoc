@@ -28,8 +28,8 @@ ClassMethod FormQuery(obj) As %Status
 	// all these words:
 	//set words=obj.words
 	set words= $ZCONVERT(obj.words,"O","HTML")
-	set words = $REPLACE(words,"é","&eacute;")
-	set words = $REPLACE(words,"ñ","&ntilde;")
+	/*set words = $REPLACE(words,"é","&eacute;")
+	set words = $REPLACE(words,"ñ","&ntilde;")*/
 	// this exact word or phrase:
 	set phrase=obj.phrase
 	// any of these words:
@@ -185,8 +185,8 @@ ClassMethod FormQuery(obj) As %Status
 	  	while subresult.%Next() {
 	  		if subresult.text'="" {
 		  		set subtextKey = result.docKey_"#"_subresult.textKey
-		  		//set textInfoJSON = {"text":(subresult.text), "textKey":(subtextKey)}
-		  		set textInfoJSON = {"text":($ZCONVERT(subresult.text,"I","HTML")), "textKey":(subtextKey)}
+		  		set textInfoJSON = {"text":(subresult.text), "textKey":(subtextKey)}
+		  		//set textInfoJSON = {"text":($ZCONVERT(subresult.text,"I","HTML")), "textKey":(subtextKey)}
 		  		do tJSON.textInfo.%Push(textInfoJSON)
 		  	}
 	  	}
