@@ -20,10 +20,12 @@ ClassMethod GetSimilar(SearchString) As %Status
 		    for i=1:1:10 {
 		    	set оrd = $order(Result(i),1,Data)
 		    	if $li(Result(i),4)>2 {
-		    		if ( ($FIND($li(Data,2),"--")=0) || ($FIND($li(Data,2),"|")=0) ) {
-		    			set string =$li(Data,2)
-		    		} else {
+		    		if ($FIND($li(Data,2),"--")'=0) {
 		    			set string =" "
+		    		} elseif ($FIND($li(Data,2),"|")'=0) {
+		    			set string =" "
+		    		} else {
+		    			set string =$li(Data,2)
 		    		}
 		    	} else {
 		    		set string =" "
