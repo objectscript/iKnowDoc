@@ -20,9 +20,9 @@ ClassMethod GetSimilar(SearchString) As %Status
 		    for i=0:1:10 {
 		    	set оrd = $order(Result(i),1,Data)
 		    	//w "before ",$li(Data,2),!
-		    	set string = ##class(iKnowDoc.Search.Parser).ParseHints($li(Data,2))
+		    	//set string = ##class(iKnowDoc.Search.Parser).ParseHints($li(Data,2))
 		    	//w "string ",string,!
-		    	//set string =$li(Data,2)
+		    	set string =$li(Data,2)
 		    	if $EXTRACT(string,$LENGTH(string))=";"{
 		    		set string=$EXTRACT(string,1,($LENGTH(string)-1))
 		    	}
@@ -50,6 +50,7 @@ ClassMethod GetIdDomain() As %Integer
 }
 
 // Метод заполнения таблицы без HTML кода из DocBook.block
+
 ClassMethod SelectInsert() As %Status
 {
 	set myquery = "SELECT component->blockid AS docKey, component->title AS title,book->blockid AS bookKey, book->title AS bookTitle, content, blockid FROM DocBook.block"
@@ -63,19 +64,19 @@ ClassMethod SelectInsert() As %Status
      	set insertStatus = insertStatement.%Prepare(insertQuery)     	
      	IF insertStatus'=1 {WRITE "%Prepare insert failed :" DO $System.Status.DisplayError(insertStatus) QUIT}
      	set insertSet = insertStatement.%Execute(rset.docKey, ##class(%iKnow.Source.Converter.Html).StripHTML(rset.title), rset.bookKey, ##class(%iKnow.Source.Converter.Html).StripHTML(rset.bookTitle),##class(%iKnow.Source.Converter.Html).StripHTML(rset.content), rset.blockid )	
-    }  
+    }
 }
 
 // Создаем таблицу. Будет содержать текст для поиска после преобразования HTML символов
+
 ClassMethod CreateTable() As %Status
 {
 	set myquery = "CREATE TABLE DocBook ( docKey VARCHAR(32000), title VARCHAR(32000), bookKey VARCHAR(32000), bookTitle VARCHAR(32000), content VARCHAR(32000), textKey VARCHAR(32000))"
 	set tStatement = ##class(%SQL.Statement).%New()
   	set qStatus = tStatement.%Prepare(myquery)
     IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
-    set rset = tStatement.%Execute()  
+    set rset = tStatement.%Execute()
 }
-
 
 Storage Default
 {

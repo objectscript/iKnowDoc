@@ -58,7 +58,7 @@ ClassMethod FormQuery(obj) As %Status
 		if $LENGTH(words," ")>1 {
 			set listW=$LISTFROMSTRING(words," ")
 			for i=1:1:$LISTLENGTH(listW) {
-				if $LIST(listW,i)="not" || $LIST(listW,i)'="and" || $LIST(listW,i)'="or" {
+				if $LIST(listW,i)="not" || $LIST(listW,i)'="and" || $LIST(listW,i)'="or" || $LIST(listW,i)'="<" || $LIST(listW,i)'=">" {
 					set text=text_" \"_$LIST(listW,i)
 				} else {
 					set text=text_" "_$LIST(listW,i)

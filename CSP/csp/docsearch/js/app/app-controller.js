@@ -49,9 +49,8 @@ searchApp
 			}
 		
 		angular.element(document).ready(function(){
-			if ( (input != "#!/DocSearch") && (input != "#!/DocResults") && (input != "#!/SearchAdvance"))
+			if ( (input != "#!/DocSearch") && (input != "#!/DocResults") && (input != "#!/SearchAdvance") && (input != "")  )
 			{	
-				
 				var linkStr = input.split('#');
 				$scope.search.words = decodeURIComponent(linkStr[2]);
 				$scope.makeSearch();
