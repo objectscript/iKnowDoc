@@ -24,6 +24,10 @@ ClassMethod GetSimilar(SearchString) As %Status
 		    			set string =" "
 		    		} elseif ($FIND($li(Data,2),"|")'=0) {
 		    			set string =" "
+		    		} elseif ($FIND($li(Data,2),"**")'=0) {
+		    			set string =" "
+		    		} elseif ($FIND($li(Data,2),"==")'=0) {
+		    			set string =" "
 		    		} else {
 		    			set string =$li(Data,2)
 		    		}
