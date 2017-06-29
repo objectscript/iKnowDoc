@@ -17,16 +17,13 @@ ClassMethod GetSimilar(SearchString) As %Status
 			// Getting data from Result array and pushing to the dynamic object
 		    //zw Result
 	  	 	set Result(12) = $lb(999999," ",0,0)
-		    for i=0:1:10 {
+		    for i=1:1:10 {
 		    	set оrd = $order(Result(i),1,Data)
-		    	//w "before ",$li(Data,2),!
-		    	//set string = ##class(iKnowDoc.Search.Parser).ParseHints($li(Data,2))
-		    	//w "string ",string,!
-		    	set string =$li(Data,2)
-		    	if $EXTRACT(string,$LENGTH(string))=";"{
-		    		set string=$EXTRACT(string,1,($LENGTH(string)-1))
+		    	if $li(Result(i),4)>2 {
+		    		set string =$li(Data,2)
+		    	} else {
+		    		set string =" "
 		    	}
-		    	//set tJSON = { "value":(string) }
 		    	set tJSON = { "value":($ZCONVERT(string,"I","HTML")) }
 				do ResultJSON.entities.%Push(tJSON)
 				}
