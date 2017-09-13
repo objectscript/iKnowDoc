@@ -1,36 +1,22 @@
-﻿## Описание
+# DocSearch
 
-Веб приложение для поиска статей в документации InterSystems. 
-Задача: обеспечить оперативный и эффективный поиск статей в документации InterSystems.
-## Технологическое описание
+The InterSystems DBMS has a built-in technology for working with non-structured data called iKnow and a full-text search technology called iFind. We decided to take a dive into both and make something useful. As the result, we have DocSearch —  a web application for searching in InterSystems documentation using iKnow and iFind.
 
-Приложение представляет из себя клиент-серверный комплекс, размещяемый на Windows системе, 
-и доступный через интерфейс страниц веб сайта по заданному адресу с помощью веб браузера.  
-На сервере работает приложение: 
+## Usage description and information about technologies
 
-1. На языке Cache Object Script  -  отвечающее за работу с базой данных, 
-бизнес логику и обмен основными данными с клиентским приложением;
+Read <a href="https://community.intersystems.com/post/search-intersystems-documentation-using-iknow-and-ifind-technologies">post on Developer Community</a>. <a href="https://habrahabr.ru/company/intersystems/blog/333582">Russian article on Habrahabr</a>
 
-Также используется клиентское приложение, написанное на языке Javascript и фреймворке Angular.
-Приложение работает в браузере и отвечает за работу интерфейса веб страницы и обмен данными с сервером. 
+## Installation and Usage
 
+Download the Installer.xml file from the latest release available on the corresponding page.
+Import the loaded Installer.xml file into the %SYS namespace and compile it.
+Enter the following command in the terminal in the %SYS namespace: 
 
-## Технологии
+do ##class(Docsearch.Installer).setup(.pVars)
 
-Server system           -   Windows 7/8/10  
-App client side         -   Angular.js (Javascript ES5)  
-App server side         -   Intersystems Ensemble 2017.1
-App database            -   Intersystems Ensemble 2017.1
+The process takes around 15-30 minutes because of the domain builiding process.
 
-
-
-### Подготовка окружения
-
-1. Убедиться, что стоит Intersystems Cache, Ensemble или Healthshare версии 2017.1 или позднее и есть лицензия (необходимо для работы iKnow).
-2. Загрузить Installer.xml из релиза
-3. Импортировать Installer.xml в область %SYS через Студию, скомпилировать. В терминале в области %SYS ввести следующую команду:
-	do ##class(Docsearch.Installer).setup(.pVars)
- Процесс занимает около 30 минут.
- Поиск доступен по адресу http://localhost:[порт]/csp/docsearch/index.html
+After that, the search will be available at the following address
+http://localhost:[port]/csp/docsearch/index.html
 
 
