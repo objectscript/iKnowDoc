@@ -4,7 +4,8 @@ Class iKnowDoc.Search.Domain Extends %Persistent
 {
 
 /// Similar entity search method. Returns JSON-object containing 10 entities similar to input string.
-ClassMethod GetSimilar(SearchString) As %Status
+// Old version
+/*ClassMethod GetSimilar(SearchString) As %Status
 {
 	try {
 		if ($length(SearchString)>1) {
@@ -19,7 +20,7 @@ ClassMethod GetSimilar(SearchString) As %Status
 	  	 	set Result(12) = $lb(999999," ",0,0)
 		    for i=1:1:10 {
 		    	set оrd = $order(Result(i),1,Data)
-		    	if $li(Result(i),4)>2 {
+		    	if $li(Result(i),2)>2 {
 		    		if ($FIND($li(Data,2),"--")'=0) {
 		    			set string =" "
 		    		} elseif ($FIND($li(Data,2),"|")'=0) {
@@ -36,6 +37,40 @@ ClassMethod GetSimilar(SearchString) As %Status
 		    	}
 		    	set string = ##class(iKnowDoc.Search.Parser).ParseHints(string)
 		    	set tJSON = { "value":($ZCONVERT(string,"I","HTML")) }
+				do ResultJSON.entities.%Push(tJSON)
+				}
+	    }    
+	    // Converting dynamic object into JSON
+	    write ResultJSON.%ToJSON()	
+	} catch ex {
+		set ResultJSON = { "entities": [] }
+		write ResultJSON.%ToJSON()
+	} 
+	quit $$$OK
+}*/
+
+ClassMethod GetSimilar(SearchString) As %Status
+{
+	try {
+		if ($length(SearchString)>1) {
+			// Forming a dynamic object
+			set ResultJSON = { "entities": [] }
+			// Getting data from Result array and pushing to the dynamic object
+		    //set myquery = "SELECT TOP 10 e.Word as Word, s.Spread FROM %iFind.FindWords('"_SearchString_"*') e JOIN User_DocBook.DocBook_contentInd_WordSpread s ON e.WordId= s.WordId ORDER BY Spread DESC"
+		    set myquery = "SELECT TOP 10 e.Entity as Word, s.Spread FROM %iFind.FindEntities('"_SearchString_"*') e JOIN User_DocBook.DocBook_contentInd_EntSpread s ON e.EntityId = s.EntityId where s.Spread > 2 ORDER BY Spread DESC"
+		    set tStatement = ##class(%SQL.Statement).%New()
+		  	set qStatus = tStatement.%Prepare(.myquery)
+		    IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
+		    set rset = tStatement.%Execute() 
+		    //w 1
+		    //zw rset
+		    while rset.%Next() {
+		    	set word=rset.Word
+		    	//w rset.Word
+		    	/*set string = ##class(iKnowDoc.Search.Parser).ParseHints(word)
+		    	set tJSON = { "value":($ZCONVERT(string,"I","HTML")) }*/
+		    	//set tJSON = { "value":($ZCONVERT(rset.Word,"I","HTML")) }
+		    	set tJSON = { "value":(rset.Word) }
 				do ResultJSON.entities.%Push(tJSON)
 				}
 	    }    
