@@ -121,7 +121,7 @@
 					   </ul>
 					   <ul>
 						    <li ng-repeat = "result in results" style="margin-top:10px; list-style-type: none;">
-							     <a href="{{link}}" target="_blank"><b><span ng-bind-html = "sce.trustAsHtml(result.bookTitle)"></span></b></a>
+							     <a href="{{link}}{{result.bookKey}}" target="_blank"><b><span ng-bind-html = "sce.trustAsHtml(result.bookTitle)"></span></b></a>
 							     <span class="glyphicon glyphicon-arrow-right"></span>
 							     <a href="{{link}}{{result.docKey}}" target="_blank"><b><span ng-bind-html = "sce.trustAsHtml(result.title)"></span></b></a>
 							     <br>
