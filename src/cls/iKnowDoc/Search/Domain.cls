@@ -52,30 +52,40 @@ Class iKnowDoc.Search.Domain Extends %Persistent
 ClassMethod GetSimilar(SearchString) As %Status
 {
 	try {
-		if ($length(SearchString)>1) {
-			// Forming a dynamic object
-			set ResultJSON = { "entities": [] }
-			// Getting data from Result array and pushing to the dynamic object
-		    //set myquery = "SELECT TOP 10 e.Word as Word, s.Spread FROM %iFind.FindWords('"_SearchString_"*') e JOIN User_DocBook.DocBook_contentInd_WordSpread s ON e.WordId= s.WordId ORDER BY Spread DESC"
-		    set myquery = "SELECT TOP 10 e.Entity as Word, s.Spread FROM %iFind.FindEntities('"_SearchString_"*') e JOIN User_DocBook.DocBook_contentInd_EntSpread s ON e.EntityId = s.EntityId where s.Spread > 2 ORDER BY Spread DESC"
-		    set tStatement = ##class(%SQL.Statement).%New()
+		set ResultJSON = { "entities": [] }
+		if $Extract(SearchString,1)="$" {
+			set myquery = "SELECT TOP 10 title as Word FROM COS where title Like '"_SearchString_"%'"  
+			set tStatement = ##class(%SQL.Statement).%New()
 		  	set qStatus = tStatement.%Prepare(.myquery)
 		    IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
-		    set rset = tStatement.%Execute() 
-		    //w 1
-		    //zw rset
+		    set rset = tStatement.%Execute()
 		    while rset.%Next() {
 		    	set word=rset.Word
-		    	//w rset.Word
-		    	/*set string = ##class(iKnowDoc.Search.Parser).ParseHints(word)
-		    	set tJSON = { "value":($ZCONVERT(string,"I","HTML")) }*/
-		    	//set tJSON = { "value":($ZCONVERT(rset.Word,"I","HTML")) }
 		    	set tJSON = { "value":(rset.Word) }
 				do ResultJSON.entities.%Push(tJSON)
 				}
-	    }    
-	    // Converting dynamic object into JSON
-	    write ResultJSON.%ToJSON()	
+			} elseif ($length(SearchString)>1) {
+				// Forming a dynamic object
+				set ResultJSON = { "entities": [] }
+				// Getting data from Result array and pushing to the dynamic object
+			    //set myquery = "SELECT TOP 10 e.Word as Word, s.Spread FROM %iFind.FindWords('"_SearchString_"*') e JOIN User_DocBook.DocBook_contentInd_WordSpread s ON e.WordId= s.WordId ORDER BY Spread DESC"
+			    set myquery = "SELECT TOP 10 e.Entity as Word, s.Spread FROM %iFind.FindEntities('"_SearchString_"*') e JOIN User_DocBook.DocBook_contentInd_EntSpread s ON e.EntityId = s.EntityId where s.Spread > 2 ORDER BY Spread DESC"
+			    set tStatement = ##class(%SQL.Statement).%New()
+			  	set qStatus = tStatement.%Prepare(.myquery)
+			    IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
+			    set rset = tStatement.%Execute() 
+			    while rset.%Next() {
+			    	set word=rset.Word
+			    	//w rset.Word
+			    	/*set string = ##class(iKnowDoc.Search.Parser).ParseHints(word)
+		    	set tJSON = { "value":($ZCONVERT(string,"I","HTML")) }*/
+			    	//set tJSON = { "value":($ZCONVERT(rset.Word,"I","HTML")) }
+			    	set tJSON = { "value":(rset.Word) }
+					do ResultJSON.entities.%Push(tJSON)
+					}
+		    }    
+		    // Converting dynamic object into JSON
+		    write ResultJSON.%ToJSON()	
 	} catch ex {
 		set ResultJSON = { "entities": [] }
 		write ResultJSON.%ToJSON()
@@ -119,6 +129,51 @@ ClassMethod CreateTable() As %Status
   	set qStatus = tStatement.%Prepare(myquery)
     IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
     set rset = tStatement.%Execute()
+}
+
+ClassMethod CreateTableCOS() As %Status
+{
+	set myquery = "CREATE TABLE COS (title VARCHAR(32000))"
+	set tStatement = ##class(%SQL.Statement).%New()
+  	set qStatus = tStatement.%Prepare(myquery)
+    IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
+    set rset = tStatement.%Execute()
+    q $$$OK
+}
+
+// Дополняем функциями COS
+ClassMethod AddFunctions() As %Status
+{
+	set myquery = "SELECT docKey, title FROM SQLUser.DocBook where docKey Like 'RCOS_f%' and docKey<>'RCOS_FUNCTIONS' group by title"
+	set tStatement = ##class(%SQL.Statement).%New()
+  	set qStatus = tStatement.%Prepare(myquery)
+    IF qStatus'=1 {WRITE "%Prepare failed:" DO $System.Status.DisplayError(qStatus) QUIT}
+    set rset = tStatement.%Execute() 
+    s con= 0
+    WHILE rset.%Next() {
+    	s con= con +1
+    	if $Find(rset.title," AND ") '=0 {
+    		s list = $LISTFROMSTRING(rset.title, " AND ") 
+    		s word = $LIST(list,1)
+    		s word2 = $LIST(list,2)
+    		set insertQuery = "INSERT INTO SQLUser.COS (title) VALUES (?)"
+    		set insertStatement = ##class(%SQL.Statement).%New()
+    		set insertStatus = insertStatement.%Prepare(insertQuery)     	
+    		IF insertStatus'=1 {WRITE "%Prepare insert failed :" DO $System.Status.DisplayError(insertStatus) QUIT}
+    		set insertSet = insertStatement.%Execute(word2)
+    	} elseif $Find(rset.title,"(LEGACY FUNCTION)")'=0 {
+    		s word = $P(rset.title,"(LEGACY FUNCTION)")
+    	} else  {
+    		s word = rset.title
+    	}
+    	set insertQuery = "INSERT INTO SQLUser.COS (title) VALUES (?)"
+     	set insertStatement = ##class(%SQL.Statement).%New()
+     	set insertStatus = insertStatement.%Prepare(insertQuery)     	
+     	IF insertStatus'=1 {WRITE "%Prepare insert failed :" DO $System.Status.DisplayError(insertStatus) QUIT}
+     	set insertSet = insertStatement.%Execute(word)
+       	
+   }
+   q $$$OK
 }
 
 Storage Default
