@@ -9,6 +9,7 @@ XData UrlMap
 <Routes>	
 	<Route Url="/GetSimilar/:text" Method="GET" Call="iKnowDoc.Search.Domain:GetSimilar"/>
 	<Route Url="/Search" Method="POST" Call="iKnowDoc.Search.SearchPages:Search"/>
+	<Route Url="/GetVersion" Method="GET" Call="iKnowDoc.Search.SearchPages:GetVersion"/>
 </Routes>
 }
 
