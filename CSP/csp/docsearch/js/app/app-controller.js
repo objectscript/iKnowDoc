@@ -103,7 +103,6 @@ searchApp
 						$scope.version = response.data.version;
 				});
 		}
-		console.log($scope.version);
 		
 		$scope.handleClick = function (item) {
 		
