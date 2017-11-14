@@ -97,6 +97,14 @@ searchApp
 			}
 		}
 		
+		$scope.getVersion = function () {
+			$http.get(baseUrl + 'GetVersion')
+					.then(function(response) {
+						$scope.version = response.data.version;
+				});
+		}
+		console.log($scope.version);
+		
 		$scope.handleClick = function (item) {
 		
 			$scope.currrentSearchItem = item;

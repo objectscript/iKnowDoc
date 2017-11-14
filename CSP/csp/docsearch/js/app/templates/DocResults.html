@@ -24,8 +24,14 @@
 								<span class="glyphicon glyphicon-wrench"></span>
 								<span class="hidden-sm hidden-xs"> Advanced Search</span>
 							</a>
+							
+							<div class="text-right"> <!-- Version -->
+								<p ng-model="version" ng-init="getVersion()">Version {{version}}</p>
+							</div>
 					</div>	
 				</form>
+				
+							
 			</header>
 			
 			<div ng-show = "preloadToggle"> <!-- Preloader animation-->
@@ -139,7 +145,7 @@
 								 <br>
 								<button class="btn" ng-class="!result.show_all ? 'btn-success' : 'btn-default'" ng-click = "result.show_all = !result.show_all;" ng-hide = "result.textInfo.length <= 5"><span ng-hide="result.show_all">Show other results</span><span ng-show="result.show_all">Expand page results</span></button>
 						    </li>
-					   </ul>
+					   </ul>			   
 					   
 					   <div class="pagination-wrap text-center"> <!-- Pagination -->
 								<ul class="pagination Cursor">

@@ -204,11 +204,11 @@ ClassMethod FormQuery(obj) As %Status
 ClassMethod GetVersion() As %Status
 {
 	try {
-		set SystemVersion = $system.Version.Format(4)
+		set SystemVersion = $system.Version.Format(5)
 		set ResultJSON = { "version": (SystemVersion) }
 		write ResultJSON.%ToJSON()	
 	} catch ex {
-		set ResultJSON = { "entities": "Error" }
+		set ResultJSON = { "entities": "" }
 		write ResultJSON.%ToJSON()
 	} 
 	quit $$$OK
